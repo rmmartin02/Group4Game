@@ -1,0 +1,18 @@
+# Object files
+.o
+
+# Compiled Static Libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
+# Builds
+/Debug/
+/Release/
+
