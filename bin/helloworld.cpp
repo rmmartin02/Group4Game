@@ -1,5 +1,6 @@
 #include <SFML/Graphics.hpp>
 
+# test
 int main(int argc, char** argv)
 {
   // create main window
