@@ -1,6 +1,5 @@
 #include <SFML/Graphics.hpp>
 
-
 int main(int argc, char** argv)
 {
   // create main window
@@ -49,7 +48,7 @@ int main(int argc, char** argv)
     App.draw(logo_sprite);
 
 
-    // Tagline
+    // Title
     sf::Font titleFont;
 
     if (!titleFont.loadFromFile("/Users/arman/CLionProjects/Group4Game/resource/fonts/Adventure.otf"))
@@ -62,12 +61,42 @@ int main(int argc, char** argv)
 
     title.setString("Agent P: Infiltration");
     title.setColor(sf::Color::White);
-    title.setCharacterSize(48);
-    title.setPosition(sf::Vector2f(screen_width/2 - title.getLocalBounds().width/2, screen_height/2));
+    title.setCharacterSize(75);
+    title.setPosition(sf::Vector2f(screen_width/2 - title.getLocalBounds().width/2, screen_height/4));
 
     App.draw(title);
 
-    // display
+    // Tagline
+
+      sf::Font taglineFont;
+
+      if (!taglineFont.loadFromFile("/Users/arman/CLionProjects/Group4Game/resource/fonts/Adventure.otf"))
+      {
+          // error...
+      }
+
+      sf::Text tagline;
+      title.setFont(taglineFont);
+
+      title.setString("You have 10 minutes. Save the Earth.");
+      title.setColor(sf::Color::White);
+      title.setCharacterSize(36);
+      title.setPosition(sf::Vector2f(screen_width/2 - title.getLocalBounds().width/2, screen_height/2.5));
+
+      App.draw(title);
+
+      sf::RectangleShape start;
+      start.setSize(sf::Vector2f(200, 50));
+      start.setOutlineColor(sf::Color::White);
+      start.setFillColor(sf::Color::Transparent);
+      start.setOutlineThickness(5);
+      start.setPosition(screen_width/2 - start.getLocalBounds().width/2, screen_height/2);
+
+      App.draw(start);
+
+
+
+      // display
     App.display();
   }
 
