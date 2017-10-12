@@ -25,7 +25,7 @@ int main(int argc, char** argv)
 
     // background
     sf::Texture background;
-    if (!background.loadFromFile("/Users/arman/CLionProjects/Group4Game/resource/background/resized_bg.png"))
+    if (!background.loadFromFile("../resource/background/resized_bg.png"))
     {
       // error...
     }
@@ -38,7 +38,7 @@ int main(int argc, char** argv)
     // logo
     sf::Texture logo;
 
-    if (!background.loadFromFile("/Users/arman/CLionProjects/Group4Game/resource/API.png"))
+    if (!background.loadFromFile("../resource/API.png"))
     {
       // error...
     }
@@ -51,7 +51,7 @@ int main(int argc, char** argv)
     // Title
     sf::Font titleFont;
 
-    if (!titleFont.loadFromFile("/Users/arman/CLionProjects/Group4Game/resource/fonts/Adventure.otf"))
+    if (!titleFont.loadFromFile("../resource/fonts/Adventure.otf"))
     {
       // error...
     }
@@ -70,7 +70,7 @@ int main(int argc, char** argv)
 
       sf::Font taglineFont;
 
-      if (!taglineFont.loadFromFile("/Users/arman/CLionProjects/Group4Game/resource/fonts/Adventure.otf"))
+      if (!taglineFont.loadFromFile("../resource/fonts/Adventure.otf"))
       {
           // error...
       }
