@@ -111,7 +111,7 @@ endif()
 # executables (any CPP file in 'bin' dir)
 foreach(EXEC ${EXECLIST})
   get_filename_component(EXECNAME ${EXEC} NAME_WE)
-  add_executable(${EXECNAME} ${EXEC} include/Character.hpp src/Character.cpp src/Enemy.cpp include/Enemy.hpp)
+  add_executable(${EXECNAME} ${EXEC})
 
   if(NOT SRC STREQUAL "")
     target_link_libraries(${EXECNAME} LINK_PUBLIC ${LIBNAME})

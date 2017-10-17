@@ -1,0 +1,11 @@
+//
+// Created by Ruoying Hao on 10/17/17.
+//
+
+#ifndef CSCI437_DEFINITION_HPP
+#define CSCI437_DEFINITION_HPP
+
+#endif //CSCI437_DEFINITION_HPP
+
+#define SCREEN_WIDTH 800
+#define SCREEN_HEIGHT 600

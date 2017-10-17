@@ -1,13 +1,10 @@
 #include <SFML/Graphics.hpp>
+#include "DEFINITION.hpp"
 
 int main(int argc, char** argv)
 {
   // create main window
-  sf::RenderWindow App(sf::VideoMode(800,600,32), "Agent P: Infiltration");
-
-  int screen_width = 800;
-  int screen_height = 600;
-
+  sf::RenderWindow App(sf::VideoMode(SCREEN_WIDTH,SCREEN_HEIGHT,32), "Agent P: Infiltration");
   // start main loop
   while(App.isOpen())
   {
@@ -62,7 +59,7 @@ int main(int argc, char** argv)
     title.setString("Agent P: Infiltration");
     title.setColor(sf::Color::White);
     title.setCharacterSize(75);
-    title.setPosition(sf::Vector2f(screen_width/2 - title.getLocalBounds().width/2, screen_height/4));
+    title.setPosition(sf::Vector2f(SCREEN_WIDTH/2 - title.getLocalBounds().width/2, SCREEN_HEIGHT/4));
 
     App.draw(title);
 
@@ -81,7 +78,7 @@ int main(int argc, char** argv)
       title.setString("You have 10 minutes. Save the Earth.");
       title.setColor(sf::Color::White);
       title.setCharacterSize(36);
-      title.setPosition(sf::Vector2f(screen_width/2 - title.getLocalBounds().width/2, screen_height/2.5));
+      title.setPosition(sf::Vector2f(SCREEN_WIDTH/2 - title.getLocalBounds().width/2, SCREEN_HEIGHT/2.5));
 
       App.draw(title);
 
@@ -90,7 +87,7 @@ int main(int argc, char** argv)
       start.setOutlineColor(sf::Color::White);
       start.setFillColor(sf::Color::Transparent);
       start.setOutlineThickness(5);
-      start.setPosition(screen_width/2 - start.getLocalBounds().width/2, screen_height/2);
+      start.setPosition(SCREEN_WIDTH/2 - start.getLocalBounds().width/2, SCREEN_HEIGHT/2);
 
       App.draw(start);
 
