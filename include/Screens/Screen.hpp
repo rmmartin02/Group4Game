@@ -1,4 +1,4 @@
-#include "global.h"
+#include "global.hpp"
 
 class Screen {
 public:
@@ -6,4 +6,4 @@ public:
 	void update(const sf::Time& frameTime);
 	virtual void render()=0;
 	virtual void interpretInput()=0;
-}
+};
