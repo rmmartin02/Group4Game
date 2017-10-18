@@ -1,5 +1,4 @@
-#include "global.hpp"
-#include "DEFINITION.hpp"
+#include "Global.hpp"
 #include 'Screen.hpp'
 
 class Screen{

@@ -1,4 +1,4 @@
-#include "global.h"
+#include "Global.h"
 #include "Screen.h"
 
 class LoadingScreen final: public Screen{

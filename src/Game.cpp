@@ -2,7 +2,7 @@
 // Created by Ruoying Hao on 10/17/17.
 //
 
-#include "../include/Game.hpp"
+#include "Game.hpp"
 #include <SFML/Graphics.hpp>
 
 //#include "Screens/Screen.hpp"

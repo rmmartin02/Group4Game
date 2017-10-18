@@ -1,5 +1,4 @@
-#include "global.hpp"
-#include "DEFINITION.hpp"
+#include "Global.hpp"
 //#include "Screens/Screen.hpp"
 #include "Screens/MenuScreen.hpp"
 
