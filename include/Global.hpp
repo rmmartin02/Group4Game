@@ -5,7 +5,6 @@
 #ifndef CSCI437_GLOBAL_HPP
 #define CSCI437_GLOBAL_HPP
 
-#endif //CSCI437_GLOBAL_HPP
 
 // SFML
 #include <SFML/Graphics.hpp>
@@ -22,3 +21,6 @@
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 600
 #define LOGO_SCALE 0.7
+
+#endif // CSCI437_GLOBAL_HPP
+

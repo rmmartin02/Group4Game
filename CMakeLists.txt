@@ -30,10 +30,10 @@ endif()
 include_directories(${csci437_SOURCE_DIR}/include)
 
 # Get CPP files
-file(GLOB SRC src/*cpp)
+file(GLOB_RECURSE SRC src/*cpp)
 
 # Get executable files
-file(GLOB EXECLIST bin/*cpp)
+file(GLOB_RECURSE EXECLIST bin/*cpp)
 
 
 #################################################

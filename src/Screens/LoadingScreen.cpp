@@ -1,6 +1,5 @@
-#include "Global.h"
-#include "Screen.h"
-
+// #include "Screens/LoadingScreen.hpp"
+/*
 class LoadingScreen final: public Screen{
 public:
 	LoadingScreeen();
@@ -8,4 +7,5 @@ public:
 	void interpretInput() override;
 private:
 	void cancelLoad();
-};
+};*/
+
