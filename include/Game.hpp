@@ -6,9 +6,8 @@
 #define CSCI437_GAME_HPP
 
 #endif //CSCI437_GAME_HPP
-
+#include "global.hpp"
 #include <SFML/Graphics.hpp>
-#include "DEFINITION.hpp"
 //#include "Screens/MenuScreen.hpp"
 
 class Game

@@ -4,7 +4,7 @@
 
 #include "../include/Game.hpp"
 #include <SFML/Graphics.hpp>
-#include "DEFINITION.hpp"
+
 //#include "Screens/Screen.hpp"
 //#include "Screens/MenuScreen.hpp"
 

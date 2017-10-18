@@ -2,11 +2,10 @@
 #include "DEFINITION.hpp"
 //#include "Screens/Screen.hpp"
 
-//class MenuScreen final: public Screen{
-class MenuScreen{
+class MenuScreen final: public Screen{
 public:
 	MenuScreen();
-	void render(sf::RenderWindow window) override;
+	void render() override;
 	void interpretInput() override;
 
 private:
