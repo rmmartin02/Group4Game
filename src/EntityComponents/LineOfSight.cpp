@@ -1,7 +1,9 @@
 //Provides ability for enemy to have line of sight
-#include "global.hpp"
+#include "EntityComponents/LineOfSight.hpp"
+// header hasn't been written yet!
 
-LineOfSight::LineofSight(): {}
+/*
+LineOfSight::LineOfSight() {}
 
 bool LineOfSight::entityInSight(Entity enemy, Entity player){
 	float dist = sqrt(pow(enemy.x-player.x,2)+pow(enemy.y-player.y,2));
@@ -19,3 +21,5 @@ bool LineOfSight::entityInSight(Entity enemy, Entity player){
 	}
 	return false;
 }
+*/
+

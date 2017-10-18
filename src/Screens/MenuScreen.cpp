@@ -1,8 +1,7 @@
-#include "Global.hpp"
-//#include "Screens/Screen.hpp"
 #include "Screens/MenuScreen.hpp"
 
 MenuScreen::MenuScreen(){
+
 }
 
 void MenuScreen::render(sf::RenderWindow *window){
@@ -49,10 +48,14 @@ void MenuScreen::render(sf::RenderWindow *window){
     start.setOutlineThickness(5);
     start.setPosition(SCREEN_WIDTH/2 - start.getLocalBounds().width/2, SCREEN_HEIGHT/2);
 
-    window.draw(bg);
-    window.draw(logo_sprite);
-    window.draw(tagline);
-    window.draw(start);
-    window.display();
+    window->draw(bg);
+    window->draw(logo_sprite);
+    window->draw(tagline);
+    window->draw(start);
+    window->display();
+}
+
+void MenuScreen::interpretInput(){
 
 }
+

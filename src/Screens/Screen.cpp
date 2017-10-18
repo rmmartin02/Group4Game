@@ -1,6 +1,5 @@
-#include "Global.hpp"
-#include 'Screen.hpp'
+#include "Screens/Screen.hpp"
+// 
+//
+//
 
-class Screen{
-
-};

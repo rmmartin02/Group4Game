@@ -5,11 +5,11 @@
 #include "Game.hpp"
 
 Game::Game(){
-    window=new sf::RenderWindow(sf::VideoMode(SCREEN_WIDTH,SCREEN_HEIGHT,32), "Agent P: Infiltration");
-
-
+    window = new sf::RenderWindow(sf::VideoMode(SCREEN_WIDTH,SCREEN_HEIGHT,32), "Agent P: Infiltration");
+    menuScreen = MenuScreen();
 
 }
+
 Game::~Game()
 {
 }

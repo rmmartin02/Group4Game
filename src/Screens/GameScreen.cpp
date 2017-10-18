@@ -1,6 +1,7 @@
-#include "Global.h"
-#include "Screen.h"
+//#include "Screens/GameScreen.hpp"
 
+/*
+// What's here should be in GameScreen.hpp...
 class GameScreen final: public Screen{
 public:
 	GameScreeen();
@@ -9,3 +10,5 @@ public:
 private:
 	void renderEntities();
 };
+*/
+

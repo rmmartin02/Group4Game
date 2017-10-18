@@ -5,7 +5,6 @@
 #ifndef CSCI437_GAME_HPP
 #define CSCI437_GAME_HPP
 
-#endif //CSCI437_GAME_HPP
 #include "Global.hpp"
 #include "Screens/MenuScreen.hpp"
 
@@ -22,3 +21,6 @@ private:
     MenuScreen menuScreen;
 
 };
+
+#endif // CSCI437_GAME_HPP
+

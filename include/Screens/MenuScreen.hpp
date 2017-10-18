@@ -1,12 +1,14 @@
-#include "Global.hpp"
-//#include "Screens/Screen.hpp"
+#ifndef MENUSCREEN_HPP
+#define MENUSCREEN_HPP
 
-//class MenuScreen final: public Screen{
-class MenuScreen{
+#include "Global.hpp"
+#include "Screens/Screen.hpp"
+
+class MenuScreen : public Screen {
 public:
 	MenuScreen();
-	void render(sf::RenderWindow *window);
-	void interpretInput();// override;
+	void render(sf::RenderWindow *window) override;
+	void interpretInput() override;
 
 private:
 
@@ -21,3 +23,6 @@ private:
 	sf::Text tagline;
 	sf::RectangleShape start;
 };
+
+#endif // MENUSCREEN_HPP
+
