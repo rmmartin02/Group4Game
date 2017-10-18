@@ -6,7 +6,7 @@
 
 Game::Game(){
     window = new sf::RenderWindow(sf::VideoMode(SCREEN_WIDTH,SCREEN_HEIGHT,32), "Agent P: Infiltration");
-    menuScreen = MenuScreen();
+    menuScreen = new MenuScreen();
 
 }
 
@@ -25,7 +25,8 @@ void Game::Loop() {
                 window->close();
         }
 
-        menuScreen.render(window);
+        menuScreen->render(window);
+        window->display();
 
     }
 }

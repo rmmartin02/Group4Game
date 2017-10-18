@@ -18,7 +18,7 @@ public:
 
 private:
     sf::RenderWindow *window;
-    MenuScreen menuScreen;
+    MenuScreen *menuScreen;
 
 };
 

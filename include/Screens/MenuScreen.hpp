@@ -19,9 +19,10 @@ private:
 	sf::Sprite bg;
 	sf::Sprite logo_sprite;
 	sf::Texture logo;
-	sf::Font taglineFont;
+	sf::Font textFont;
 	sf::Text tagline;
-	sf::RectangleShape start;
+	sf::Text start;
+	//sf::RectangleShape start;
 };
 
 #endif // MENUSCREEN_HPP
