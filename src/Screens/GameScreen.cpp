@@ -1,14 +1,28 @@
-//#include "Screens/GameScreen.hpp"
+#include "Screens/GameScreen.hpp"
 
-/*
-// What's here should be in GameScreen.hpp...
-class GameScreen final: public Screen{
-public:
-	GameScreeen();
-	void render() override;
-	void interpretInput() override;
-private:
-	void renderEntities();
-};
-*/
+GameScreen::GameScreen(std::shared_ptr<Logic> logic) {
+    logic_ = logic;
+}
+
+void GameScreen::render(sf::RenderWindow *window) {
+    renderTiles(window);
+    renderEntities(window);
+    renderParticles(window);
+}
+
+void GameScreen::interpretInput() {
+
+}
+
+void GameScreen::renderTiles(sf::RenderWindow *window) {
+    
+}
+
+void GameScreen::renderEntities(sf::RenderWindow *window) {
+    
+}
+
+void GameScreen::renderParticles(sf::RenderWindow *window) {
+    
+}
 
