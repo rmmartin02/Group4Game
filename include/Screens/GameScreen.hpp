@@ -1,24 +1,25 @@
 #ifndef GAMESCREEN_HPP
 #define GAMESCREEN_HPP
 
+#include "Screens/Screen.hpp"
 #include "Logic.hpp"
 
-class GameScreen : Screen {
+class GameScreen : public Screen {
 
 public:
-    GameScreen(Logic& logic);
-    void render(sf::RenderWindow *window) override;
-    void interpretInput() override;
+    GameScreen(Logic logic);
+    void render(sf::RenderWindow *window);
+    void interpretInput();
 
 private:
-    std::shared_ptr<Logic> logic_;
+    Logic logic_;
 
     // Rendering order is tiles -> entities -> particles
     // If we find exceptions to this, we can restructure how this class orders
     // things. 
-    void renderTiles();
-    void renderEntities();
-    void renderParticles();
+    void renderTiles(sf::RenderWindow *window);
+    void renderEntities(sf::RenderWindow *window);
+    void renderParticles(sf::RenderWindow *window);
 
 };
 

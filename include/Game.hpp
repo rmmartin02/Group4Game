@@ -2,11 +2,13 @@
 // Created by Ruoying Hao on 10/17/17.
 //
 
-#ifndef CSCI437_GAME_HPP
-#define CSCI437_GAME_HPP
+#ifndef GAME_HPP
+#define GAME_HPP
 
 #include "Global.hpp"
+#include "Logic.hpp"
 #include "Screens/MenuScreen.hpp"
+#include "Screens/GameScreen.hpp"
 
 class Game
 {
@@ -16,11 +18,14 @@ public:
 
     void Loop();
 
+
 private:
     sf::RenderWindow *window;
+    Logic *logic;
+    Screen *currentScreen;
     MenuScreen *menuScreen;
-
+    GameScreen *gameScreen;
 };
 
-#endif // CSCI437_GAME_HPP
+#endif // GAME_HPP
 

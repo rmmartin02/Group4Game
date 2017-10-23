@@ -1,7 +1,10 @@
 #include "Logic.hpp"
+#include "Entities/Entity.hpp"
+#include "Entities/Character.hpp"
 
 Logic::Logic() {
-    
+    Character character_ = Character();
+    entities_["Character"] = character_;
 }
 
 void Logic::load(std::string filename) {
@@ -10,16 +13,13 @@ void Logic::load(std::string filename) {
 
 void Logic::update(float delta) {
     // update every entity
-    for (auto iter = entities_.begin(); iter != entities_.end(); iter++){
-        iter->second->update(delta);
-    }
 }
 
-TILE_GRID& Logic::getTiles() {
+std::vector<std::vector<int>> Logic::getTiles() {
     return tiles_;
 }
 
-ENTITY_MAP& Logic::getEntities() {
+std::map<std::string,Entity> Logic::getEntities() {
     return entities_;
 }
 

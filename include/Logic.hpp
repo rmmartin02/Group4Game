@@ -1,11 +1,3 @@
-#ifndef ENTITY_MAP
-#define ENTITY_MAP std::map<std::string, std::unique_ptr<Entity>>
-#endif
-
-#ifndef TILE_GRID
-#define TILE_GRID std::vector<std::vector<int>>
-#endif
-
 #ifndef LOGIC_HPP
 #define LOGIC_HPP
 
@@ -20,13 +12,13 @@ public:
     void load(std::string filename);
     
     // TODO: determine if these should be returning by reference
-    TILE_GRID& getTiles();
-    ENTITY_MAP& getEntities();
+    std::vector<std::vector<int>> getTiles();
+    std::map<std::string, Entity> getEntities();
     float getTimeLeft();
 
 private:
-    TILE_GRID tiles_;
-    ENTITY_MAP entities_;
+    std::vector<std::vector<int>> tiles_;
+    std::map<std::string, Entity> entities_;
     float time_left_;
 };
 

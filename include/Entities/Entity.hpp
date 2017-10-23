@@ -2,7 +2,6 @@
 #define ENTITY_HPP
 
 #include "Global.hpp"
-#include "Logic.hpp"
 
 // This class represents all game actors which move in
 // continuous 2D space.
@@ -13,7 +12,10 @@ public:
 
   // Update the entity's game state according to time delta
   // and state of other objects in the logic
-  virtual void update(float delta, Logic logic);
+  virtual void update(float delta, int &logic);
+
+  //Renders entity on window using sprite_
+  void render (sf::RenderWindow *window) const;
 
   // Return the current position
   sf::Vector2f getPos();
@@ -30,9 +32,13 @@ public:
   // Set the current velocity
   void setVel(sf::Vector2f vel);
 
+  void setSprite(sf::Sprite sprite);
+
+
 private:
   sf::Vector2f pos_;
   sf::Vector2f vel_;
+  sf::Sprite sprite_;
 };
 
 #endif // ENTITY_HPP

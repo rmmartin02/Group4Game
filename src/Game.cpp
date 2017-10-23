@@ -7,7 +7,9 @@
 Game::Game(){
     window = new sf::RenderWindow(sf::VideoMode(SCREEN_WIDTH,SCREEN_HEIGHT,32), "Agent P: Infiltration");
     menuScreen = new MenuScreen();
-
+    logic = new Logic();
+    gameScreen = new GameScreen(*logic);
+    currentScreen = menuScreen;
 }
 
 Game::~Game()
@@ -23,9 +25,15 @@ void Game::Loop() {
             // Exit
             if (Event.type == sf::Event::Closed)
                 window->close();
+
+            if (Event.type == sf::Event::KeyPressed){
+                if (Event.key.code == sf::Keyboard::S) {
+                    currentScreen = gameScreen;
+                }
+            }
         }
 
-        menuScreen->render(window);
+        currentScreen->render(window);
         window->display();
 
     }

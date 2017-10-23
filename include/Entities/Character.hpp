@@ -5,4 +5,11 @@
 #ifndef CHARACTER_HPP
 #define CHARACTER_HPP
 
+#include "Entities/Entity.hpp"
+
+class Character:public Entity{
+public:
+	Character();
+};
+
 #endif // CHARACTER_HPP
