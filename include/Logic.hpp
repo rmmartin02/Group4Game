@@ -16,6 +16,8 @@ public:
     std::map<std::string, Entity> getEntities();
     float getTimeLeft();
 
+    void moveCharacter();
+
 private:
     std::vector<std::vector<int>> tiles_;
     std::map<std::string, Entity> entities_;

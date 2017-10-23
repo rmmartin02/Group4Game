@@ -7,7 +7,7 @@
 Character::Character(){
 	sf::Texture texture;
 	//load texture and sprite
-	if (!texture.create(200, 200))
+	if (!texture.create(100, 100))
 	{
     // error...
 	}

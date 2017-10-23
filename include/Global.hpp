@@ -21,6 +21,7 @@
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 600
 #define LOGO_SCALE 0.7
+#define enum DIRECTION {UP, DOWN}
 
 #endif // GLOBAL_HPP
 

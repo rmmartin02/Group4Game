@@ -17,24 +17,32 @@ Game::~Game()
 }
 
 void Game::Loop() {
+    sf::Clock clock;
     window->clear();
     while (window->isOpen()) {
-        // process events
-        sf::Event Event;
-        while (window->pollEvent(Event)) {
-            // Exit
-            if (Event.type == sf::Event::Closed)
-                window->close();
+        float deltaTime = clock.getElapsedTime().asSeconds();
+        if (deltaTime >= 1.0f / 60.0f) {
+            // process events
+            sf::Event Event;
+            while (window->pollEvent(Event)) {
+                // Exit
+                if (Event.type == sf::Event::Closed)
+                    window->close();
 
-            if (Event.type == sf::Event::KeyPressed){
-                if (Event.key.code == sf::Keyboard::S) {
-                    currentScreen = gameScreen;
+                if (Event.type == sf::Event::KeyPressed){
+                    if (currentScreen == menuScreen){
+                        if (Event.key.code == sf::Keyboard::S)
+                            currentScreen = gameScreen;
+                    }
+                    if(currentScreen == gameScreen){
+
+                    }
                 }
             }
+
+            currentScreen->render(window);
+            window->display();
+            clock.restart();
         }
-
-        currentScreen->render(window);
-        window->display();
-
     }
 }
