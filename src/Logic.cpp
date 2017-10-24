@@ -8,6 +8,7 @@ Logic::Logic() {
 
     //Character character_ = Character();
     entities_["Character"] = Character();
+    entities_["Character"].setVel(sf::Vector2f(1,1));
     
     tiles_ = { 
         { -1, -1, 1, 1, 1 },
@@ -25,10 +26,12 @@ void Logic::load(std::string filename) {
 }
 
 void Logic::update(float delta) {
-    // update every entity
-    //std::cout << "Called update\n";
-    //entities_["Character"].move(sf::Vector2f(1,1));
-    entities_["Character"].move(sf::Vector2f(1,1));
+    // update every entity.
+    entities_["Character"].move(entities_["Character"].getVel());
+    for (auto e : getEntities()) {
+        // this currently doesn't work (because it's copying the Entity objects?)
+        e.second.move(e.second.getVel());
+    }
 }
 
 std::vector<std::vector<int>> Logic::getTiles() {
