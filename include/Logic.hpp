@@ -16,7 +16,7 @@ public:
     // TODO: determine if these should be returning by reference
     std::vector<std::vector<int>> getTiles();
     std::map<std::string, Entity> getEntities();
-    Character getCharacter();
+    Entity getCharacter();
     float getTimeLeft();
 
     //indicates characters needs to move up,down,left,right
@@ -26,7 +26,7 @@ public:
 private:
     std::vector<std::vector<int>> tiles_;
     std::map<std::string, Entity> entities_;
-    Character character_;
+    //Character character_;
     float time_left_;
 };
 

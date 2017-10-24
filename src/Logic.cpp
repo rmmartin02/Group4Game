@@ -6,8 +6,8 @@ Logic::Logic() {
 
     //entities_["Character"] = character_;
 
-    Character character_ = Character();
-    entities_["Character"] = character_;
+    //Character character_ = Character();
+    entities_["Character"] = Character();
     
     tiles_ = { 
         { -1, -1, 1, 1, 1 },
@@ -26,9 +26,9 @@ void Logic::load(std::string filename) {
 
 void Logic::update(float delta) {
     // update every entity
-    std::cout << "Called update\n";
+    //std::cout << "Called update\n";
     //entities_["Character"].move(sf::Vector2f(1,1));
-    character_.move(sf::Vector2f(1,1));
+    entities_["Character"].move(sf::Vector2f(1,1));
 }
 
 std::vector<std::vector<int>> Logic::getTiles() {
@@ -39,8 +39,8 @@ std::map<std::string,Entity> Logic::getEntities() {
     return entities_;
 }
 
-Character Logic::getCharacter(){
-	return character_;
+Entity Logic::getCharacter(){
+	return entities_["Character"];
 }
 
 float Logic::getTimeLeft(){

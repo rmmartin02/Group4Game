@@ -76,8 +76,8 @@ void GameScreen::renderEntities(sf::RenderWindow *window) {
 
 	//logic_->getCharacter().render(window);
 	//std::cout << "Render character " << logic_->getCharacter().getPos().x << "\n";
-	for (auto const& x : logic_->getEntities()) {
-        x.second.render(window);   
+	for (auto x : logic_->getEntities()) {
+        x.second.render(window);
     }
 
 }
@@ -93,7 +93,7 @@ void GameScreen::render(sf::RenderWindow *window) {
     renderEntities(window);
     renderParticles(window);
     window->display();
-    sf::sleep(sf::milliseconds(200));
+    //sf::sleep(sf::milliseconds(200));
 }
 
 void GameScreen::interpretInput() {

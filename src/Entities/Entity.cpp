@@ -9,7 +9,7 @@ void Entity::update(float delta, int &logic){};
 
   //Renders entity on window using sprite
 void Entity::render (sf::RenderWindow *window) {
-	std::cout << sprite_.getPosition().x << "\n";
+	//std::cout << sprite_.getPosition().x << "\n";
 	window->draw(sprite_);
 }
 
@@ -30,7 +30,7 @@ void Entity::move(sf::Vector2f displacement){
 	pos_.x += displacement.x;
 	pos_.y += displacement.y;
 	sprite_.setPosition(pos_);
-	std::cout << "Calling move \n" << sprite_.getPosition().x <<"\n";
+	//std::cout << "Calling move \n" << sprite_.getPosition().x <<"\n";
 }
 
 // Get the current velocity

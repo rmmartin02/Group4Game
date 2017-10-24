@@ -24,7 +24,7 @@ void Game::Loop() {
     while (window->isOpen()) {
  
         float deltaTime = clock.getElapsedTime().asSeconds();
-      //  if (deltaTime >= 1.0f / 60.0f) {
+        if (deltaTime >= 1.0f / 60.0f) {
             // process events
             sf::Event Event;
 
@@ -62,16 +62,13 @@ void Game::Loop() {
                     cam_offset.x -= CAMERA_SPEED * deltaTime;
                 }
                 gameScreen->panCamera(window, cam_offset);
-              logic->update(deltaTime);
+                logic->update(deltaTime);
             }
-
         
             currentScreen->render(window);
             //window->display();
 
-           clock.restart();
-       // }
-    
-
+            clock.restart();
+        }
     }
 }
