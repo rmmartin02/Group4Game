@@ -3,8 +3,8 @@
 #include "Entities/Character.hpp"
 
 Logic::Logic() {
-    Character character_ = Character();
-    entities_["Character"] = character_;
+    character_ = Character();
+    //entities_["Character"] = character_;
 }
 
 void Logic::load(std::string filename) {
@@ -14,7 +14,8 @@ void Logic::load(std::string filename) {
 void Logic::update(float delta) {
     // update every entity
     std::cout << "Called update\n";
-    entities_["Character"].move(sf::Vector2f(1,1));
+    //entities_["Character"].move(sf::Vector2f(1,1));
+    character_.move(sf::Vector2f(1,1));
 }
 
 std::vector<std::vector<int>> Logic::getTiles() {

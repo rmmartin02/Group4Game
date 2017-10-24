@@ -8,8 +8,8 @@ Game::Game(){
     window = new sf::RenderWindow(sf::VideoMode(SCREEN_WIDTH,SCREEN_HEIGHT,32), "Agent P: Infiltration");
     menuScreen = new MenuScreen();
     logic = new Logic();
-    gameScreen = new GameScreen(*logic);
-    currentScreen = gameScreen;
+    gameScreen = new GameScreen(logic);
+    currentScreen = menuScreen;
 }
 
 Game::~Game()
@@ -18,10 +18,11 @@ Game::~Game()
 
 void Game::Loop() {
     sf::Clock clock;
-    window->clear();
+    //window->clear();
     while (window->isOpen()) {
+        clock.restart();
         float deltaTime = clock.getElapsedTime().asSeconds();
-        if (deltaTime >= 1.0f / 60.0f) {
+      //  if (deltaTime >= 1.0f / 60.0f) {
             // process events
             sf::Event Event;
             while (window->pollEvent(Event)) {
@@ -42,8 +43,8 @@ void Game::Loop() {
             }
 
             currentScreen->render(window);
-            window->display();
-            clock.restart();
-        }
+            //window->display();
+           // clock.restart();
+       // }
     }
 }
