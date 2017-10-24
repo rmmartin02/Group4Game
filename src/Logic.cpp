@@ -27,18 +27,16 @@ void Logic::load(std::string filename) {
 
 void Logic::update(float delta) {
     // update every entity.
-    entities_["Character"].move(entities_["Character"].getVel());
-    for (auto e : getEntities()) {
-        // this currently doesn't work (because it's copying the Entity objects?)
-        e.second.move(e.second.getVel());
+    for (auto& pair : getEntities()) {
+        pair.second.move(pair.second.getVel());
     }
 }
 
-std::vector<std::vector<int>> Logic::getTiles() {
+std::vector<std::vector<int>>& Logic::getTiles() {
     return tiles_;
 }
 
-std::map<std::string,Entity> Logic::getEntities() {
+std::map<std::string,Entity>& Logic::getEntities() {
     return entities_;
 }
 
