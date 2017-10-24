@@ -53,11 +53,12 @@ MenuScreen::MenuScreen(){
 
 void MenuScreen::render(sf::RenderWindow *window){
 
-
+    window->clear();
     window->draw(bg);
     window->draw(logo_sprite);
     window->draw(tagline);
     window->draw(start);
+    window->display();
 
 }
 

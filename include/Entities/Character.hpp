@@ -2,7 +2,14 @@
 // Created by Ruoying Hao on 10/12/17.
 //
 
-#ifndef CSCI437_CHARACTER_HPP
-#define CSCI437_CHARACTER_HPP
+#ifndef CHARACTER_HPP
+#define CHARACTER_HPP
 
-#endif //CSCI437_CHARACTER_HPP
+#include "Entities/Entity.hpp"
+
+class Character:public Entity{
+public:
+	Character();
+};
+
+#endif // CHARACTER_HPP

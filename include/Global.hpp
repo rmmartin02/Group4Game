@@ -2,8 +2,8 @@
 // Created by Ruoying Hao on 10/18/17.
 //
 
-#ifndef CSCI437_GLOBAL_HPP
-#define CSCI437_GLOBAL_HPP
+#ifndef GLOBAL_HPP
+#define GLOBAL_HPP
 
 
 // SFML
@@ -21,6 +21,7 @@
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 600
 #define LOGO_SCALE 0.7
+#define enum DIRECTION {UP, DOWN}
 
-#endif // CSCI437_GLOBAL_HPP
+#endif // GLOBAL_HPP
 
