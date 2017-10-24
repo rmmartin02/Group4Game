@@ -1,10 +1,11 @@
 #include "Screens/GameScreen.hpp"
-#include "Logic.hpp"
+
 
 const std::string GameScreen::TILESET_FILENAME = "../resource/maps/tiles.png";
 const int GameScreen::TILE_SIZE = 32;
 
 GameScreen::GameScreen(Logic* logic) {
+
     logic_ = logic;
     textures_ = std::map<std::string, sf::Texture>();
 }
@@ -72,9 +73,13 @@ void GameScreen::renderTiles(sf::RenderWindow *window) {
 }
 
 void GameScreen::renderEntities(sf::RenderWindow *window) {
+
+	//logic_->getCharacter().render(window);
+	//std::cout << "Render character " << logic_->getCharacter().getPos().x << "\n";
 	for (auto const& x : logic_->getEntities()) {
         x.second.render(window);   
     }
+
 }
 
 void GameScreen::renderParticles(sf::RenderWindow *window) {
@@ -88,6 +93,7 @@ void GameScreen::render(sf::RenderWindow *window) {
     renderEntities(window);
     renderParticles(window);
     window->display();
+    sf::sleep(sf::milliseconds(200));
 }
 
 void GameScreen::interpretInput() {

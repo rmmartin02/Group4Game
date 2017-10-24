@@ -15,7 +15,7 @@ public:
   virtual void update(float delta, int &logic);
 
   //Renders entity on window using sprite_
-  void render (sf::RenderWindow *window) const;
+  void render (sf::RenderWindow *window);
 
   // Return the current position
   sf::Vector2f getPos();

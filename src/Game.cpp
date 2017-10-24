@@ -9,6 +9,7 @@ Game::Game(){
     menuScreen = new MenuScreen();
     logic = new Logic();
     gameScreen = new GameScreen(logic);
+
     gameScreen->loadTextures();
     currentScreen = menuScreen;
 }
@@ -19,10 +20,11 @@ Game::~Game()
 
 void Game::Loop() {
     sf::Clock clock;
-    window->clear();
+    //window->clear();
     while (window->isOpen()) {
+ 
         float deltaTime = clock.getElapsedTime().asSeconds();
-        if (deltaTime >= 1.0f / 60.0f) {
+      //  if (deltaTime >= 1.0f / 60.0f) {
             // process events
             sf::Event Event;
 
@@ -40,6 +42,7 @@ void Game::Loop() {
                         if (Event.key.code == sf::Keyboard::S)
                             currentScreen = gameScreen;
                     }
+
                     
                 }
             }
@@ -59,11 +62,16 @@ void Game::Loop() {
                     cam_offset.x -= CAMERA_SPEED * deltaTime;
                 }
                 gameScreen->panCamera(window, cam_offset);
+              logic->update(deltaTime);
             }
 
+        
             currentScreen->render(window);
             //window->display();
-            clock.restart();
-        }
+
+           clock.restart();
+       // }
+    
+
     }
 }

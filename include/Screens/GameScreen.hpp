@@ -7,7 +7,9 @@
 class GameScreen : public Screen {
 
 public:
-    GameScreen(Logic* logic);
+
+    GameScreen(Logic *logic);
+
     void render(sf::RenderWindow *window);
     void interpretInput();
     
@@ -18,6 +20,7 @@ public:
     void panCamera(sf::RenderWindow*, sf::Vector2f);
 
 private:
+
     // Filename for the texture file containing tile sprites
     static const std::string TILESET_FILENAME;
     
@@ -33,6 +36,7 @@ private:
     
     sf::VertexArray tile_vertices_;
     
+
     // Rendering order is tiles -> entities -> particles
     // If we find exceptions to this, we can restructure how this class orders
     // things. 
