@@ -8,7 +8,7 @@ Game::Game(){
     window = new sf::RenderWindow(sf::VideoMode(SCREEN_WIDTH,SCREEN_HEIGHT,32), "Agent P: Infiltration");
     menuScreen = new MenuScreen();
     logic = new Logic();
-    gameScreen = new GameScreen(*logic);
+    gameScreen = new GameScreen(logic);
     currentScreen = menuScreen;
 }
 

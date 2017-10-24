@@ -7,12 +7,12 @@
 class GameScreen : public Screen {
 
 public:
-    GameScreen(Logic logic);
+    GameScreen(Logic* logic);
     void render(sf::RenderWindow *window);
     void interpretInput();
 
 private:
-    Logic logic_;
+    Logic* logic_;
 
     // Rendering order is tiles -> entities -> particles
     // If we find exceptions to this, we can restructure how this class orders
