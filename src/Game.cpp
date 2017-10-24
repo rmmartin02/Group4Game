@@ -39,10 +39,25 @@ void Game::Loop() {
                         if (Event.key.code == sf::Keyboard::S)
                             currentScreen = gameScreen;
                     }
-                    if(currentScreen == gameScreen){
-
-                    }
+                    
                 }
+            }
+            
+            if(currentScreen == gameScreen){
+                sf::Vector2f cam_offset(0,0);
+                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)){
+                    cam_offset.y -= CAMERA_SPEED * deltaTime;
+                }
+                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)){
+                    cam_offset.y += CAMERA_SPEED * deltaTime;
+                }
+                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)){
+                    cam_offset.x += CAMERA_SPEED * deltaTime;
+                }
+                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)){
+                    cam_offset.x -= CAMERA_SPEED * deltaTime;
+                }
+                gameScreen->panCamera(window, cam_offset);
             }
 
             currentScreen->render(window);

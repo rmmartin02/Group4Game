@@ -20,8 +20,11 @@ bool GameScreen::loadTextures() {
     return true;
 }
 
-void GameScreen::panCamera(sf::Vector2f amount){
-    
+void GameScreen::panCamera(sf::RenderWindow *window, sf::Vector2f amount){
+    sf::View camera = window->getView();
+    camera.move(amount);
+    //std::cout << "cam pan " << amount.x << "," << amount.y << std::endl;
+    window->setView(camera);
 }
 
 void GameScreen::renderTiles(sf::RenderWindow *window) {

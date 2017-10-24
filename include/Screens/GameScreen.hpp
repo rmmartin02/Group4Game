@@ -14,7 +14,8 @@ public:
     // Return true if successfully loaded, false otherwise
     bool loadTextures();
     
-    void panCamera(sf::Vector2f);
+    // Move the view
+    void panCamera(sf::RenderWindow*, sf::Vector2f);
 
 private:
     // Filename for the texture file containing tile sprites

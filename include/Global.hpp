@@ -22,6 +22,7 @@
 #define SCREEN_HEIGHT 600
 #define LOGO_SCALE 0.7
 #define enum DIRECTION {UP, DOWN}
+#define CAMERA_SPEED 300
 
 #endif // GLOBAL_HPP
 
