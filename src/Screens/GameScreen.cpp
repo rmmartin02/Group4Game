@@ -40,33 +40,30 @@ void GameScreen::renderTiles(sf::RenderWindow *window) {
             //std::cout << "coord " << coord_pair.first << "," << coord_pair.second << ".\n";
             
             // top left vert
-            sf::Vertex v1;
-            v1.position = sf::Vector2f(r * TILE_SIZE,
+            sf::Vertex v;
+            v.position = sf::Vector2f(r * TILE_SIZE,
                                          c * TILE_SIZE);
-            v1.texCoords = sf::Vector2f( coord_pair.first, 
+            v.texCoords = sf::Vector2f( coord_pair.first, 
                                            coord_pair.second );
-            tile_vertices_.append(v1);
+            tile_vertices_.append(v);
             // top right vert
-            sf::Vertex v2;
-            v2.position = sf::Vector2f(r * TILE_SIZE + TILE_SIZE, 
+            v.position = sf::Vector2f(r * TILE_SIZE + TILE_SIZE, 
                                          c * TILE_SIZE);
-            v2.texCoords = sf::Vector2f( coord_pair.first + TILE_SIZE,
+            v.texCoords = sf::Vector2f( coord_pair.first + TILE_SIZE,
                                            coord_pair.second );
-            tile_vertices_.append(v2);
+            tile_vertices_.append(v);
             // bottom right vert
-            sf::Vertex v3;
-            v3.position = sf::Vector2f(r * TILE_SIZE + TILE_SIZE, 
+            v.position = sf::Vector2f(r * TILE_SIZE + TILE_SIZE, 
                                          c * TILE_SIZE + TILE_SIZE);
-            v3.texCoords = sf::Vector2f( coord_pair.first + TILE_SIZE,
+            v.texCoords = sf::Vector2f( coord_pair.first + TILE_SIZE,
                                            coord_pair.second + TILE_SIZE );
-            tile_vertices_.append(v3);
+            tile_vertices_.append(v);
             // bottom left vert
-            sf::Vertex v4;
-            v4.position = sf::Vector2f(r * TILE_SIZE, 
+            v.position = sf::Vector2f(r * TILE_SIZE, 
                                          c * TILE_SIZE + TILE_SIZE);
-            v4.texCoords = sf::Vector2f( coord_pair.first,
+            v.texCoords = sf::Vector2f( coord_pair.first,
                                            coord_pair.second + TILE_SIZE );
-            tile_vertices_.append(v4);
+            tile_vertices_.append(v);
             window->draw(tile_vertices_, &textures_["tileset"]);
         }
     }
