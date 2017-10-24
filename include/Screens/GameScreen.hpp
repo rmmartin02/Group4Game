@@ -10,10 +10,18 @@ public:
     GameScreen(Logic* logic);
     void render(sf::RenderWindow *window);
     void interpretInput();
+    
+    // Return true if successfully loaded, false otherwise
+    bool loadTextures();
 
 private:
+    static const std::string TILESET_FILENAME;
+    
     Logic* logic_;
-
+    
+    std::map<std::string, sf::Texture> textures_;
+    std::map<int, std::pair<int, int>> texture_coords_;
+    
     // Rendering order is tiles -> entities -> particles
     // If we find exceptions to this, we can restructure how this class orders
     // things. 

@@ -5,6 +5,13 @@
 Logic::Logic() {
     Character character_ = Character();
     entities_["Character"] = character_;
+    
+    tiles_ = { 
+        { -1, -1, 1, 1, 1 },
+        {  1, 1, -1, -1, 1},
+        {  1, 1, 1, 1, 1 },
+        { -1, -1, -1, -1, 1}
+    };
 }
 
 void Logic::load(std::string filename) {

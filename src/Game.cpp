@@ -9,6 +9,7 @@ Game::Game(){
     menuScreen = new MenuScreen();
     logic = new Logic();
     gameScreen = new GameScreen(logic);
+    gameScreen->loadTextures();
     currentScreen = menuScreen;
 }
 
