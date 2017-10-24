@@ -1,6 +1,6 @@
 #include "Screens/MenuScreen.hpp"
 
-// testtttt
+// testttttt
 
 MenuScreen::MenuScreen(){
     //background
