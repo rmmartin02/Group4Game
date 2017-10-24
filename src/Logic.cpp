@@ -13,6 +13,8 @@ void Logic::load(std::string filename) {
 
 void Logic::update(float delta) {
     // update every entity
+    std::cout << "Called update\n";
+    entities_["Character"].move(sf::Vector2f(1,1));
 }
 
 std::vector<std::vector<int>> Logic::getTiles() {
@@ -21,6 +23,10 @@ std::vector<std::vector<int>> Logic::getTiles() {
 
 std::map<std::string,Entity> Logic::getEntities() {
     return entities_;
+}
+
+Character Logic::getCharacter(){
+	return character_;
 }
 
 float Logic::getTimeLeft(){

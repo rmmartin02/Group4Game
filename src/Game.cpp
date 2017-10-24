@@ -9,7 +9,7 @@ Game::Game(){
     menuScreen = new MenuScreen();
     logic = new Logic();
     gameScreen = new GameScreen(*logic);
-    currentScreen = menuScreen;
+    currentScreen = gameScreen;
 }
 
 Game::~Game()
@@ -34,10 +34,11 @@ void Game::Loop() {
                         if (Event.key.code == sf::Keyboard::S)
                             currentScreen = gameScreen;
                     }
-                    if(currentScreen == gameScreen){
-
-                    }
                 }
+            }
+
+            if(currentScreen == gameScreen){
+                logic->update(deltaTime);
             }
 
             currentScreen->render(window);
