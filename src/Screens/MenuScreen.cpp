@@ -1,7 +1,5 @@
 #include "Screens/MenuScreen.hpp"
 
-// testttttt
-
 MenuScreen::MenuScreen(){
     //background
     if (!background.loadFromFile("../resource/background/start_background.jpg"))
