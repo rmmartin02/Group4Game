@@ -13,14 +13,24 @@ public:
     
     // Return true if successfully loaded, false otherwise
     bool loadTextures();
+    
+    void panCamera(sf::Vector2f);
 
 private:
+    // Filename for the texture file containing tile sprites
     static const std::string TILESET_FILENAME;
+    
+    // Represents the size of a tile, in pixels on the tileset file,
+    // and in SFML's drawing units. We may want to separate the two
+    // in the future.
+    static const int TILE_SIZE;
     
     Logic* logic_;
     
     std::map<std::string, sf::Texture> textures_;
     std::map<int, std::pair<int, int>> texture_coords_;
+    
+    sf::VertexArray tile_vertices_;
     
     // Rendering order is tiles -> entities -> particles
     // If we find exceptions to this, we can restructure how this class orders
