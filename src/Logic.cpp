@@ -3,8 +3,21 @@
 #include "Entities/Character.hpp"
 
 Logic::Logic() {
-    character_ = Character();
+
     //entities_["Character"] = character_;
+
+    Character character_ = Character();
+    entities_["Character"] = character_;
+    
+    tiles_ = { 
+        { -1, -1, 1, 1, 1 },
+        {  1, 1, -1, -1, 1},
+        {  1, 1, 1, 1, 1 },
+        { -1, -1, -1, -1, 1},
+        {  2,  1,  2,  1,  1},
+        { 1,  2,  1,  1,  1}
+    };
+
 }
 
 void Logic::load(std::string filename) {

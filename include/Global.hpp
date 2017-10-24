@@ -23,5 +23,7 @@
 #define LOGO_SCALE 0.7
 #define enum DIRECTION {UP, DOWN, LEFT, RIGHT}
 
+#define CAMERA_SPEED 300
+
 #endif // GLOBAL_HPP
 
