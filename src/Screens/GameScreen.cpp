@@ -15,9 +15,10 @@ bool GameScreen::loadTextures() {
     if (!textures_["tileset"].loadFromFile(TILESET_FILENAME)){
         return false;
     }
-    texture_coords_[-1] = std::make_pair(0, 0);
-    texture_coords_[1] = std::make_pair(0, TILE_SIZE*2);
-    texture_coords_[2] = std::make_pair(TILE_SIZE*6, TILE_SIZE*4);
+    texture_coords_[-1] = std::make_pair(0, TILE_SIZE*2);
+    texture_coords_[455] = std::make_pair(TILE_SIZE*6, TILE_SIZE*4);
+    texture_coords_[211] = std::make_pair(TILE_SIZE*6, TILE_SIZE*5);
+    texture_coords_[210] = std::make_pair(TILE_SIZE*7, TILE_SIZE*4);
     return true;
 }
 
@@ -30,13 +31,36 @@ void GameScreen::panCamera(sf::RenderWindow *window, sf::Vector2f amount){
 
 void GameScreen::renderTiles(sf::RenderWindow *window) {
     auto tiles = logic_->getTiles();
-    tile_vertices_ = sf::VertexArray(sf::Quads);
-    for (int r = 0; r != tiles.size(); r++) {
-        for (int c = 0; c != tiles[r].size(); c++) {
+    int tile_rows = tiles.size();
+    int tile_cols = tiles[0].size();
+    
+    tile_vertices_.clear();
+    tile_vertices_.setPrimitiveType(sf::Quads);
+    //tile_vertices_.resize(tiles.size() * tiles[0].size() * 4);
+    
+    sf::Vector2f viewport_bound = window->getView().getCenter()  - 
+                                (window->getView().getSize()/2.f); // view top left
+    // determine viewport bounds so we can cull and not draw tiles that aren't visible
+    int left = static_cast<int>(viewport_bound.x/TILE_SIZE);
+    int top = static_cast<int>(viewport_bound.y/TILE_SIZE);
+    viewport_bound += window->getView().getSize(); // view bottom right
+    int right = 1 + static_cast<int>(viewport_bound.x/TILE_SIZE);
+    int bottom = 1 + static_cast<int>(viewport_bound.y/TILE_SIZE);
+    // clamp to fit in array indices
+    left=std::max(0,std::min(left,tile_rows));
+    top=std::max(0,std::min(top,tile_cols));
+    right=std::max(0,std::min(right,tile_rows));
+    bottom=std::max(0,std::min(bottom,tile_cols));
+    
+    //std::cout << "Left " << left << ", Right " << right << ", Top " << top << ", Bottom " << bottom << std::endl;
+    
+    for (int r = left; r < right; r++) {
+        for (int c = top; c < bottom; c++) {
             
             //std::cout << "Tile at " << r << ", " << c << " is " << tiles[r][c] << std::endl;
             
             auto coord_pair = texture_coords_[tiles[r][c]];
+            
             //std::cout << "coord " << coord_pair.first << "," << coord_pair.second << ".\n";
             
             // top left vert
@@ -64,9 +88,9 @@ void GameScreen::renderTiles(sf::RenderWindow *window) {
             v.texCoords = sf::Vector2f( coord_pair.first,
                                            coord_pair.second + TILE_SIZE );
             tile_vertices_.append(v);
-            window->draw(tile_vertices_, &textures_["tileset"]);
         }
     }
+    window->draw(tile_vertices_, &textures_["tileset"]);
 }
 
 void GameScreen::renderEntities(sf::RenderWindow *window) {
