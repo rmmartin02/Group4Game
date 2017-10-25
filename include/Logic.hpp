@@ -14,8 +14,8 @@ public:
     void load(std::string filename);
     
     // TODO: determine if these should be returning by reference
-    std::vector<std::vector<int>> getTiles();
-    std::map<std::string, Entity> getEntities();
+    std::vector<std::vector<int>>& getTiles();
+    std::map<std::string, Entity>& getEntities();
     Entity getCharacter();
     float getTimeLeft();
 
