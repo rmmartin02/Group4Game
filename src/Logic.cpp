@@ -9,7 +9,6 @@ Logic::Logic() {
     //Character character_ = Character();
     entities_["Character"] = Character();
     entities_["Character"].setVel(sf::Vector2f(0,0));
-
     tiles_ = { 
         { -1, -1, 1, 1, 1 },
         {  1, 1, -1, -1, 1},
@@ -26,17 +25,17 @@ void Logic::load(std::string filename) {
 }
 
 void Logic::update(float delta) {
-    // update every entity
-    //std::cout << "Called update\n";
-    //entities_["Character"].move(sf::Vector2f(1,1));
-    entities_["Character"].move(sf::Vector2f(1,1));
+    // update every entity.
+    for (auto& pair : getEntities()) {
+        pair.second.move(pair.second.getVel());
+    }
 }
 
-std::vector<std::vector<int>> Logic::getTiles() {
+std::vector<std::vector<int>>& Logic::getTiles() {
     return tiles_;
 }
 
-std::map<std::string,Entity> Logic::getEntities() {
+std::map<std::string,Entity>& Logic::getEntities() {
     return entities_;
 }
 
