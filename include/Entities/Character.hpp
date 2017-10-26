@@ -10,6 +10,8 @@
 class Character:public Entity{
 public:
 	Character();
+
+	void setVel(sf::Vector2f vel);
 };
 
 #endif // CHARACTER_HPP

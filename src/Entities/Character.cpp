@@ -16,3 +16,13 @@ Character::Character(){
 	sprite.setColor(sf::Color(0, 255, 0));
 	this->setSprite(sprite);
 }
+
+// Set the current velocity
+void Character::setVel(sf::Vector2f vel){
+	float maxVel = 10;
+	if (vel.y>=maxVel)
+		vel.y = maxVel;
+	if(vel.x>=maxVel)
+		vel.x = maxVel;
+	vel_ = vel;
+}
