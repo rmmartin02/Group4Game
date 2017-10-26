@@ -7,7 +7,6 @@ const std::string GameScreen::TILESET_FILENAME = "../resource/maps/tiles.png";
 const int GameScreen::TILE_SIZE = 32;
 
 GameScreen::GameScreen(Logic* logic) {
-
     logic_ = logic;
     textures_ = std::map<std::string, sf::Texture>();
 }
@@ -44,35 +43,21 @@ void GameScreen::renderTiles(sf::RenderWindow *window) {
                                 (window->getView().getSize()/2.f); // view top left
     // determine viewport bounds so we can cull and not draw tiles that aren't visible
     sf::Vector2f topleft = viewport_bound * (1.0f / TILE_SIZE);
-    
-    //int left = static_cast<int>(viewport_bound.x/TILE_SIZE);
-    //int top = static_cast<int>(viewport_bound.y/TILE_SIZE);
     viewport_bound += window->getView().getSize(); // view bottom right
-    
     sf::Vector2f topright = sf::Vector2f(1,1) + (viewport_bound * (1.0f / TILE_SIZE));
-    
-    
-    //int right = 1 + static_cast<int>(viewport_bound.x/TILE_SIZE);
-    //int bottom = 1 + static_cast<int>(viewport_bound.y/TILE_SIZE);
     
     // clamp to fit in array indices
     sf::Vector2f clamp_min = vecutil::clampVec2(topleft, sf::Vector2f(0,0), sf::Vector2f(tile_rows, tile_cols));
     sf::Vector2f clamp_max = vecutil::clampVec2(topright, sf::Vector2f(0,0), sf::Vector2f(tile_rows, tile_cols));
-    //left = std::max(0,std::min(left,tile_rows));
-    //top = std::max(0,std::min(top,tile_cols));
-    //right = std::max(0,std::min(right,tile_rows));
-    //bottom = std::max(0,std::min(bottom,tile_cols));
     
-    std::cout << "Left " << static_cast<int>(clamp_min.x) << ", Right " << static_cast<int>(clamp_max.x)
-            << ", Top " << static_cast<int>(clamp_min.y) << ", Bottom " << static_cast<int>(clamp_max.y) << std::endl;
+    //std::cout << "Left " << static_cast<int>(clamp_min.x) << ", Right " << static_cast<int>(clamp_max.x)
+      //      << ", Top " << static_cast<int>(clamp_min.y) << ", Bottom " << static_cast<int>(clamp_max.y) << std::endl;
     
     for (int r = static_cast<int>(clamp_min.x); r < static_cast<int>(clamp_max.x); r++) {
         for (int c = static_cast<int>(clamp_min.y); c < static_cast<int>(clamp_max.y); c++) {
-            
             //std::cout << "Tile at " << r << ", " << c << " is " << tiles[r][c] << std::endl;
             
             auto coord_pair = texture_coords_[tiles[r][c]];
-            
             //std::cout << "coord " << coord_pair.first << "," << coord_pair.second << ".\n";
             
             // top left vert
@@ -111,7 +96,6 @@ void GameScreen::renderEntities(sf::RenderWindow *window) {
     for (auto pair : logic_->getEntities()) {
         pair.second.render(window);
     }
-
 }
 
 void GameScreen::renderParticles(sf::RenderWindow *window) {
