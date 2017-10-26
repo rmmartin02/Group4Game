@@ -19,6 +19,9 @@ public:
     // Move the view
     void panCamera(sf::RenderWindow*, sf::Vector2f);
 
+    //Center view on Character
+    void centerCameraOnCharacter(sf::RenderWindow*);
+
 private:
 
     // Filename for the texture file containing tile sprites

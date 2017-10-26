@@ -51,22 +51,22 @@ void Game::Loop() {
                 sf::Vector2f cam_offset(0,0);
                 if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)){
                     logic->moveCharacter(1);
-                    cam_offset.y -= CAMERA_SPEED * deltaTime;
+                    //cam_offset.y -= CAMERA_SPEED * deltaTime;
                 }
                 if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)){
                     logic->moveCharacter(0);
-                    cam_offset.y += CAMERA_SPEED * deltaTime;
+                    //cam_offset.y += CAMERA_SPEED * deltaTime;
                 }
                 if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)){
                     logic->moveCharacter(2);
-                    cam_offset.x += CAMERA_SPEED * deltaTime;
+                    //cam_offset.x += CAMERA_SPEED * deltaTime;
                 }
                 if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)){
                     logic->moveCharacter(3);
-                    cam_offset.x -= CAMERA_SPEED * deltaTime;
+                    //cam_offset.x -= CAMERA_SPEED * deltaTime;
                 }
-                gameScreen->panCamera(window, cam_offset);
                 logic->update(deltaTime);
+                gameScreen->centerCameraOnCharacter(window);
             }
         
             currentScreen->render(window);
