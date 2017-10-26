@@ -1,7 +1,8 @@
 #include "Logic.hpp"
 
 #include <sstream>
-#include "external/csv/csv.h"
+#include <fstream>
+//#include "external/csv/csv.h"
 
 Logic::Logic() {
     time_left_ = 10 * 60;
@@ -61,13 +62,18 @@ void Logic::clearLevel() {
     entities_.clear();
 }
 
-void Logic::loadTiles(std::string filename) {
-    io::LineReader file_in(filename);
-    std::string line_str;
+void Logic::loadTiles(std::string filename) { 
     tiles_.clear();
+    //io::LineReader file_in(filename);
+    std::ifstream file_in(filename);
+    if ( !file_in.is_open() ) {
+        std::cout << "failed to open level file " << filename << std::endl;
+        return;
+    }
+    std::string line_str;
     int ncols = 0;
-    while (char* line = file_in.next_line()) {
-        line_str = std::string(line);
+    while ( std::getline(file_in, line_str) ) {//char* line = file_in.next_line()) {
+        //line_str = std::string(line);
         if (ncols == 0) {
             ncols = std::count(line_str.begin(), line_str.end(), ',') + 1;
             //std::cout << "ncols is " << ncols << std::endl;
@@ -77,7 +83,13 @@ void Logic::loadTiles(std::string filename) {
         while (rstream.good()) {
             std::string sub;
             std::getline(rstream, sub, ',');
-            row.push_back(std::stoi(sub));
+            try {
+                row.push_back(std::stoi(sub));
+            }
+            catch ( const std::logic_error& e ){
+                std::cout << "could not parse value " << sub
+                          << " in tile csv " << filename << std::endl;
+            }
         }
         tiles_.push_back(row);
     }
