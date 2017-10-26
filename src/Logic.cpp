@@ -8,11 +8,8 @@ Logic::Logic() {
 
     //Character character_ = Character();
     entities_["Character"] = Character();
-<<<<<<< Updated upstream
-=======
     entities_["Character"].setVel(sf::Vector2f(0,0));
->>>>>>> Stashed changes
-    
+
     tiles_ = { 
         { -1, -1, 1, 1, 1 },
         {  1, 1, -1, -1, 1},
