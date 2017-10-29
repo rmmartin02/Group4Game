@@ -45,15 +45,32 @@ std::map<std::string,Entity>& Logic::getEntities() {
 }
 
 Entity Logic::getCharacter(){
-	return entities_["Character"];
+    return entities_["Character"];
+}
+
+//indicates characters needs to move up,down,left,right
+//0,1,2,3 for now need to make it an enum
+void Logic::moveCharacter(int direction){
+  switch(direction){
+		case 0:
+			entities_["Character"].setVel(entities_["Character"].getVel()+sf::Vector2f(0,-1));
+			break;
+		case 1:
+			entities_["Character"].setVel(entities_["Character"].getVel()+sf::Vector2f(0,1));
+			break;
+		case 2:
+			entities_["Character"].setVel(entities_["Character"].getVel()+sf::Vector2f(-1,0));
+			break;
+		case 3:
+			entities_["Character"].setVel(entities_["Character"].getVel()+sf::Vector2f(1,0));
+			break;
+		default:
+			break;
+	}
 }
 
 float Logic::getTimeLeft(){
     return time_left_;
-}
-
-void Logic::moveCharacter(int direction) {
-    // TODO this
 }
 
 void Logic::clearLevel() {
