@@ -35,7 +35,7 @@ public:
   void setSprite(sf::Sprite sprite);
 
 
-private:
+protected:
   sf::Vector2f pos_;
   sf::Vector2f vel_;
   sf::Sprite sprite_;

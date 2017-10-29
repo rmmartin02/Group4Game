@@ -24,7 +24,12 @@ bool GameScreen::loadTextures() {
 void GameScreen::panCamera(sf::RenderWindow *window, sf::Vector2f amount){
     sf::View camera = window->getView();
     camera.move(amount);
-    //std::cout << "cam pan " << amount.x << "," << amount.y << std::endl;
+    window->setView(camera);
+}
+
+void GameScreen::centerCameraOnCharacter(sf::RenderWindow *window){
+	sf::View camera = window->getView();
+    camera.setCenter(logic_->getCharacter().getPos());
     window->setView(camera);
 }
 
@@ -92,7 +97,6 @@ void GameScreen::render(sf::RenderWindow *window) {
     renderEntities(window);
     renderParticles(window);
     window->display();
-    //sf::sleep(sf::milliseconds(200));
 }
 
 void GameScreen::interpretInput() {

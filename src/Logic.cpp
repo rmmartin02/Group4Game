@@ -8,8 +8,7 @@ Logic::Logic() {
 
     //Character character_ = Character();
     entities_["Character"] = Character();
-    entities_["Character"].setVel(sf::Vector2f(1,1));
-    
+    entities_["Character"].setVel(sf::Vector2f(0,0));
     tiles_ = { 
         { -1, -1, 1, 1, 1 },
         {  1, 1, -1, -1, 1},
@@ -48,3 +47,23 @@ float Logic::getTimeLeft(){
     return time_left_;
 }
 
+//indicates characters needs to move up,down,left,right
+//0,1,2,3 for now need to make it an enum
+void Logic::moveCharacter(int direction){
+	switch(direction){
+		case 0:
+			entities_["Character"].setVel(entities_["Character"].getVel()+sf::Vector2f(0,-1));
+			break;
+		case 1:
+			entities_["Character"].setVel(entities_["Character"].getVel()+sf::Vector2f(0,1));
+			break;
+		case 2:
+			entities_["Character"].setVel(entities_["Character"].getVel()+sf::Vector2f(-1,0));
+			break;
+		case 3:
+			entities_["Character"].setVel(entities_["Character"].getVel()+sf::Vector2f(1,0));
+			break;
+		default:
+			break;
+	}
+}
