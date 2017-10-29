@@ -47,23 +47,23 @@ float Logic::getTimeLeft(){
     return time_left_;
 }
 
-//indicates characters needs to move up,down,left,right
-//0,1,2,3 for now need to make it an enum
-void Logic::moveCharacter(int direction){
-	switch(direction){
-		case 0:
+void Logic::registerMoveInput(Logic::Direction dir){
+	switch (dir){
+        case Logic::Direction::UP:
 			entities_["Character"].setVel(entities_["Character"].getVel()+sf::Vector2f(0,-1));
 			break;
-		case 1:
+        case Logic::Direction::DOWN:
 			entities_["Character"].setVel(entities_["Character"].getVel()+sf::Vector2f(0,1));
 			break;
-		case 2:
+        case Logic::Direction::LEFT:
 			entities_["Character"].setVel(entities_["Character"].getVel()+sf::Vector2f(-1,0));
 			break;
-		case 3:
+        case Logic::Direction::RIGHT:
 			entities_["Character"].setVel(entities_["Character"].getVel()+sf::Vector2f(1,0));
 			break;
+        case Logic::Direction::NONE:
 		default:
+            entities_["Character"].setVel(sf::Vector2f(0,0));
 			break;
 	}
 }

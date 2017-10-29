@@ -7,6 +7,14 @@
 
 class Logic {
 public:
+    enum Direction {
+        NONE = 0,
+        UP = 1,
+        DOWN = 2,
+        LEFT = 3,
+        RIGHT = 4,
+    };
+    
     Logic();
     void update(float delta);
     
@@ -19,9 +27,8 @@ public:
     Entity getCharacter();
     float getTimeLeft();
 
-    //indicates characters needs to move up,down,left,right
-    //0,1,2,3 for now need to make it an enum
-    void moveCharacter(int direction);
+    //indicates characters needs to move up,down,left,right, or not move
+    void registerMoveInput(Direction dir);
 
 private:
     std::vector<std::vector<int>> tiles_;
