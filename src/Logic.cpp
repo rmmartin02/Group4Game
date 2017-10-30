@@ -1,6 +1,9 @@
 #include "Logic.hpp"
+
 #include "Entities/Entity.hpp"
 #include "Entities/Character.hpp"
+
+#include "Box2D/Box2D.h"
 
 Logic::Logic() {
 
@@ -17,7 +20,19 @@ Logic::Logic() {
         {  2,  1,  2,  1,  1},
         { 1,  2,  1,  1,  1}
     };
-
+    
+    b2Vec2 gravity(0.0f, 0.0f); // no gravity
+    b2World world(gravity);
+    
+    // This compiles and runs without issue, so we know the Box2D lib works.
+    // However...
+    // we might want to use the underlying objects in the Collision module
+    // instead of letting Box2D do all the physics simulation that it does
+    // when you use the full World object.
+    // For example, we might attach b2__Shapes to our entities instead of
+    // rigid bodies. We don't need the box2D physics making everything bounce
+    // around. Just the shape classes give us the ability to check for intersections
+    // and even do ray casting (which will probably help with line-of-sight). 
 }
 
 void Logic::load(std::string filename) {
