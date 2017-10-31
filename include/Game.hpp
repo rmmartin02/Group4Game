@@ -7,8 +7,7 @@
 
 #include "Global.hpp"
 #include "Logic.hpp"
-#include "Screens/MenuScreen.hpp"
-#include "Screens/GameScreen.hpp"
+#include "Screens/ScreenManager.hpp"
 
 class Game
 {
@@ -24,9 +23,7 @@ public:
 private:
     sf::RenderWindow *window;
     Logic *logic;
-    Screen *currentScreen;
-    MenuScreen *menuScreen;
-    GameScreen *gameScreen;
+    ScreenManager *screenManager;
 };
 
 #endif // GAME_HPP

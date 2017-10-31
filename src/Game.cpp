@@ -6,11 +6,8 @@
 
 Game::Game(){
     window = new sf::RenderWindow(sf::VideoMode(SCREEN_WIDTH,SCREEN_HEIGHT,32), "Agent P: Infiltration");
-    menuScreen = new MenuScreen();
-    currentScreen = menuScreen;
-    
     logic = new Logic();
-    gameScreen = new GameScreen(logic);
+    screenManager = new ScreenManager(logic);
 }
 
 Game::~Game()
@@ -20,7 +17,7 @@ Game::~Game()
 void Game::initialize() {
     // if it can fail, or takes a long time, it shouldn't be in a constructor
     logic->load("../resource/maps/MapLevel1Merge.csv");
-    gameScreen->loadTextures();
+    screenManager->loadTextures();
 }
 
 void Game::Loop() {
@@ -42,16 +39,16 @@ void Game::Loop() {
                     if (Event.key.code == sf::Keyboard::Escape){
                         window->close();
                     }
-                    
+/*
                     if (currentScreen == menuScreen){
                         if (Event.key.code == sf::Keyboard::S)
                             currentScreen = gameScreen;
                     }
-
+*/
                     
                 }
             }
-            
+/*            
             if(currentScreen == gameScreen){
                 sf::Vector2f cam_offset(0,0);
                 if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)){
@@ -73,8 +70,8 @@ void Game::Loop() {
                 logic->update(deltaTime);
                 gameScreen->centerCameraOnCharacter(window);
             }
-        
-            currentScreen->render(window);
+ */     
+            screenManager->render(window);
             //window->display();
 
             clock.restart();
