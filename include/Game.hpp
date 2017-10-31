@@ -15,6 +15,8 @@ class Game
 public:
     Game();
     ~Game();
+    
+    void initialize();
 
     void Loop();
 

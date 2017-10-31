@@ -1,27 +1,10 @@
 #include "Logic.hpp"
-#include "Entities/Entity.hpp"
-#include "Entities/Character.hpp"
+
+#include <sstream>
+#include <fstream>
 
 Logic::Logic() {
-
-    //entities_["Character"] = character_;
-
-    //Character character_ = Character();
-    entities_["Character"] = Character();
-    entities_["Character"].setVel(sf::Vector2f(0,0));
-    tiles_ = { 
-        { -1, -1, 1, 1, 1 },
-        {  1, 1, -1, -1, 1},
-        {  1, 1, 1, 1, 1 },
-        { -1, -1, -1, -1, 1},
-        {  2,  1,  2,  1,  1},
-        { 1,  2,  1,  1,  1}
-    };
-
-}
-
-void Logic::load(std::string filename) {
-    return;
+    time_left_ = 10 * 60;
 }
 
 void Logic::update(float delta) {
@@ -29,6 +12,28 @@ void Logic::update(float delta) {
     for (auto& pair : getEntities()) {
         pair.second.move(pair.second.getVel());
     }
+    
+    // adjust the timer
+    time_left_ -= delta;
+    if (time_left_ < 0) {
+        std::cout << "Ran out of time!" << std::endl;
+    }
+}
+
+void Logic::load(std::string filename) {
+    clearLevel();
+    loadTiles(filename);
+    loadEntities(filename);
+    std::cout << "Map size: " << getMapSize().first 
+              << "," << getMapSize().second << std::endl;
+}
+
+std::pair<int, int> Logic::getMapSize() {
+    int cols = 0;
+    if (tiles_.size() > 0) { 
+        cols = tiles_[0].size();
+    }
+    return std::make_pair(tiles_.size(), cols);
 }
 
 std::vector<std::vector<int>>& Logic::getTiles() {
@@ -40,17 +45,13 @@ std::map<std::string,Entity>& Logic::getEntities() {
 }
 
 Entity Logic::getCharacter(){
-	return entities_["Character"];
-}
-
-float Logic::getTimeLeft(){
-    return time_left_;
+    return entities_["Character"];
 }
 
 //indicates characters needs to move up,down,left,right
 //0,1,2,3 for now need to make it an enum
 void Logic::moveCharacter(int direction){
-	switch(direction){
+  switch(direction){
 		case 0:
 			entities_["Character"].setVel(entities_["Character"].getVel()+sf::Vector2f(0,-1));
 			break;
@@ -66,4 +67,49 @@ void Logic::moveCharacter(int direction){
 		default:
 			break;
 	}
+}
+
+float Logic::getTimeLeft(){
+    return time_left_;
+}
+
+void Logic::clearLevel() {
+    tiles_.clear();
+    entities_.clear();
+}
+
+void Logic::loadTiles(std::string filename) { 
+    tiles_.clear();
+    std::ifstream file_in(filename);
+    if ( !file_in.is_open() ) {
+        std::cout << "failed to open level file " << filename << std::endl;
+        return;
+    }
+    std::string line_str;
+    int ncols = 0;
+    while ( std::getline(file_in, line_str) ) {
+        if (ncols == 0) {
+            ncols = std::count(line_str.begin(), line_str.end(), ',') + 1;
+        }
+        std::vector<int> row;
+        std::stringstream rstream(line_str);
+        while (rstream.good()) {
+            std::string sub;
+            std::getline(rstream, sub, ',');
+            try {
+                row.push_back(std::stoi(sub));
+            }
+            catch ( const std::logic_error& e ){
+                std::cout << "could not parse value " << sub
+                          << " in tile csv " << filename << std::endl;
+            }
+        }
+        tiles_.push_back(row);
+    }
+}
+
+void Logic::loadEntities(std::string filename) {
+    // dummy behavior, creating the character entity
+    entities_["Character"] = Character();
+    entities_["Character"].setVel(sf::Vector2f(1,1));
 }

@@ -7,15 +7,20 @@
 Game::Game(){
     window = new sf::RenderWindow(sf::VideoMode(SCREEN_WIDTH,SCREEN_HEIGHT,32), "Agent P: Infiltration");
     menuScreen = new MenuScreen();
+    currentScreen = menuScreen;
+    
     logic = new Logic();
     gameScreen = new GameScreen(logic);
-
-    gameScreen->loadTextures();
-    currentScreen = menuScreen;
 }
 
 Game::~Game()
 {
+}
+
+void Game::initialize() {
+    // if it can fail, or takes a long time, it shouldn't be in a constructor
+    logic->load("../resource/maps/MapLevel1Merge.csv");
+    gameScreen->loadTextures();
 }
 
 void Game::Loop() {
