@@ -109,10 +109,12 @@ void GameScreen::renderParticles(sf::RenderWindow *window) {
 
 
 void GameScreen::render(sf::RenderWindow *window) {
-	window->clear();
+	//std::cout <<"render Game Screen\n";
+    window->clear();
     renderTiles(window);
     renderEntities(window);
     renderParticles(window);
+    centerCameraOnCharacter(window);
     window->display();
 }
 

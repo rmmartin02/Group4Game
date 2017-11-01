@@ -43,38 +43,10 @@ void Game::Loop() {
                         screenManager->interpretInput(Event);
                     }
                 }
-            }
-/*            
-            if(currentScreen == gameScreen){
-                sf::Vector2f cam_offset(0,0);
-                bool key_pressed = false;
-                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)){
-                    logic->registerMoveInput(Logic::Direction::DOWN);
-                    key_pressed = true;
-                    //cam_offset.y -= CAMERA_SPEED * deltaTime;
-                }
-                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)){
-                    logic->registerMoveInput(Logic::Direction::UP);
-                    key_pressed = true;
-                    //cam_offset.y += CAMERA_SPEED * deltaTime;
-                }
-                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)){
-                    logic->registerMoveInput(Logic::Direction::LEFT);
-                    key_pressed = true;
-                    //cam_offset.x += CAMERA_SPEED * deltaTime;
-                }
-                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)){
-                    logic->registerMoveInput(Logic::Direction::RIGHT);
-                    key_pressed = true;
-                    //cam_offset.x -= CAMERA_SPEED * deltaTime;
-                }
-                if ( !key_pressed ) {
-                    logic->registerMoveInput(Logic::Direction::NONE);
-                }
-                logic->update(deltaTime);
-                gameScreen->centerCameraOnCharacter(window);
-            }
- */     
+            }   
+            //logic updating everyframe no matter if its on gameScreen
+            //might cause issues but not sure how to pass deltaTime to screenManager in a nice way
+            logic->update(deltaTime);
             screenManager->render(window);
             //window->display();
 
