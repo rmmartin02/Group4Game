@@ -3,10 +3,6 @@
 #include <sstream>
 #include <fstream>
 
-#include "Entities/Entity.hpp"
-#include "Entities/Character.hpp"
-
-#include "Box2D/Box2D.h"
 
 Logic::Logic() {
     
@@ -105,11 +101,13 @@ float Logic::getTimeLeft(){
 
 void Logic::clearLevel() {
     tiles_.clear();
+    tile_shapes_.clear();
     entities_.clear();
 }
 
 void Logic::loadTiles(std::string filename) { 
     tiles_.clear();
+    tile_shapes_.clear();
     std::ifstream file_in(filename);
     if ( !file_in.is_open() ) {
         std::cout << "failed to open level file " << filename << std::endl;
@@ -136,10 +134,49 @@ void Logic::loadTiles(std::string filename) {
         }
         tiles_.push_back(row);
     }
+    buildTileShapes();
 }
 
 void Logic::loadEntities(std::string filename) {
     // dummy behavior, creating the character entity
     entities_["Character"] = Character();
     entities_["Character"].setVel(sf::Vector2f(1,1));
+}
+
+void Logic::buildTileShapes() {
+    tile_shapes_.clear();
+    auto map_size = getMapSize();
+    
+    // Currently, scans along each row and forms rectangle shapes of
+    // height 1 that are as long horizontally as possible
+    int wall_start = -1;
+    int wall_end = -1; // the position AFTER the last block of the wall
+    for (int r = 0; r < map_size.first; r++) {
+        for (int c = 0; c < map_size.second; c++) {
+            if ( tileIsWall(tiles_[r][c]) ) {
+                if ( wall_start < 0 )
+                    wall_start = c;
+            }
+            else {
+                if ( wall_start >= 0 ) {
+                    wall_end = c;
+                }
+            }
+            if ( c == map_size.second - 1 ) {
+                wall_end = c + 1;
+            }
+            if ( wall_end > 0 ){
+                
+                // add a box2d shape of length size wall_end - wall_start
+                tile_shapes_.push_back(std::make_unique<b2Polygon>);
+                
+                wall_start = -1;
+                wall_end = -1;
+            }
+        }
+    }
+}
+
+void Logic::tileIsWall(int tile) {
+    return tile != 0;
 }
