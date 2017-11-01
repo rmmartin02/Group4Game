@@ -16,11 +16,9 @@ public:
     void interpretInput(sf::Event Event);
 
     bool loadTextures();
-
     bool isOnGameScreen();
 
 private:
-
     Screen *currentScreen;
     MenuScreen *menuScreen;
     GameScreen *gameScreen;

@@ -39,15 +39,14 @@ void Game::Loop() {
                     if (Event.key.code == sf::Keyboard::Escape){
                         window->close();
                     }
-                    else{
-                        screenManager->interpretInput(Event);
-                    }
                 }
+                //If not exiting pass to event to screen manager
+                screenManager->interpretInput(Event);
             }   
-            //logic updating everyframe no matter if its on gameScreen
-            //might cause issues but not sure how to pass deltaTime to screenManager in a nice way
+            //Don't really like this
             if (screenManager->isOnGameScreen())
                 logic->update(deltaTime);
+            
             screenManager->render(window);
             //window->display();
 
