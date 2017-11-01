@@ -52,3 +52,7 @@ void ScreenManager::interpretInput(sf::Event Event){
 bool ScreenManager::loadTextures(){
 	gameScreen->loadTextures();
 }
+
+bool ScreenManager::isOnGameScreen(){
+	return currentScreen==gameScreen;
+}

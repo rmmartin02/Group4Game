@@ -46,7 +46,8 @@ void Game::Loop() {
             }   
             //logic updating everyframe no matter if its on gameScreen
             //might cause issues but not sure how to pass deltaTime to screenManager in a nice way
-            logic->update(deltaTime);
+            if (screenManager->isOnGameScreen())
+                logic->update(deltaTime);
             screenManager->render(window);
             //window->display();
 

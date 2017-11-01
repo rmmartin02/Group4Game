@@ -17,6 +17,8 @@ public:
 
     bool loadTextures();
 
+    bool isOnGameScreen();
+
 private:
 
     Screen *currentScreen;
