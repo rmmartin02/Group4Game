@@ -39,13 +39,9 @@ void Game::Loop() {
                     if (Event.key.code == sf::Keyboard::Escape){
                         window->close();
                     }
-/*
-                    if (currentScreen == menuScreen){
-                        if (Event.key.code == sf::Keyboard::S)
-                            currentScreen = gameScreen;
+                    else{
+                        screenManager->interpretInput(Event);
                     }
-*/
-                    
                 }
             }
 /*            
