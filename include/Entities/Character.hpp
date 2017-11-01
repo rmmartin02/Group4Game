@@ -7,11 +7,16 @@
 
 #include "Entities/Entity.hpp"
 
-class Character:public Entity{
+class Character : public Entity{
 public:
 	Character();
 
 	void setVel(sf::Vector2f vel);
+    
+private:
+    // The maximum speed at which the character can move.
+    static const float MAX_SPEED;
+    
 };
 
 #endif // CHARACTER_HPP
