@@ -2,6 +2,8 @@
 #define LOGIC_HPP
 
 #include "Global.hpp"
+#include <memory>
+
 #include "Entities/Entity.hpp"
 #include "Entities/Character.hpp"
 

@@ -3,7 +3,6 @@
 #include <sstream>
 #include <fstream>
 
-
 Logic::Logic() {
     
     time_left_ = 10 * 60;
@@ -153,30 +152,35 @@ void Logic::buildTileShapes() {
     int wall_end = -1; // the position AFTER the last block of the wall
     for (int r = 0; r < map_size.first; r++) {
         for (int c = 0; c < map_size.second; c++) {
-            if ( tileIsWall(tiles_[r][c]) ) {
-                if ( wall_start < 0 )
+            if ( wall_start < 0 ) {
+                if ( tileIsWall(tiles_[r][c]) )
                     wall_start = c;
             }
             else {
-                if ( wall_start >= 0 ) {
+                if ( !tileIsWall(tiles_[r][c]) )
                     wall_end = c;
-                }
+                if ( c == map_size.second - 1 )
+                    wall_end = c+1;
             }
-            if ( c == map_size.second - 1 ) {
-                wall_end = c + 1;
-            }
-            if ( wall_end > 0 ){
-                
+            if ( wall_end > 0 ) {
+                std::cout << "created wall from " << wall_start << " to " << (wall_end - 1) << std::endl;
+                b2PolygonShape* box = new b2PolygonShape();
+                box->SetAsBox((wall_end - wall_start)/(0.2f), 0.5f, b2Vec2(0,0), 0.0f);
                 // add a box2d shape of length size wall_end - wall_start
-                tile_shapes_.push_back(std::make_unique<b2Polygon>);
-                
+                tile_shapes_.push_back(std::unique_ptr<b2PolygonShape>(box));
                 wall_start = -1;
                 wall_end = -1;
             }
         }
     }
+    
+    std::cout << "Created " << tile_shapes_.size() << " Box2D shapes for the tiles." << std::endl;
+    for (int i = 0; i < tile_shapes_.size(); i++) {
+        continue;
+        //std::cout << static_cast<int>(tile_shapes_[i]->m_type) << std::endl;
+    }
 }
 
-void Logic::tileIsWall(int tile) {
-    return tile != 0;
+bool Logic::tileIsWall(int tile) {
+    return tile == 455 || tile == 211 || tile == 210 || tile == -1;
 }
