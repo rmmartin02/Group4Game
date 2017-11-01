@@ -15,7 +15,7 @@ void ScreenManager::interpretInput(sf::Event Event){
 	if(currentScreen = menuScreen){
 		if (Event.type == sf::Event::KeyPressed){
         	if (Event.key.code == sf::Keyboard::S){
-            	window->close();
+            	currentScreen = gameScreen;
             }
     	}
 	}
