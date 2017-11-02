@@ -13,7 +13,7 @@ public:
     ScreenManager(Logic *logic);
 
     void render(sf::RenderWindow *window);
-    void interpretInput(sf::Event Event);
+    void interpretInput(sf::Event event);
 
     bool loadTextures();
     bool isOnGameScreen();

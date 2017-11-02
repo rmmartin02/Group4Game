@@ -28,20 +28,20 @@ void Game::Loop() {
         float deltaTime = clock.getElapsedTime().asSeconds();
         if (deltaTime >= 1.0f / 60.0f) {
             // process events
-            sf::Event Event;
+            sf::Event event;
 
-            while (window->pollEvent(Event)) {
+            while (window->pollEvent(event)) {
                 // Exit
-                if (Event.type == sf::Event::Closed)
+                if (event.type == sf::Event::Closed)
                     window->close();
 
-                if (Event.type == sf::Event::KeyPressed){
-                    if (Event.key.code == sf::Keyboard::Escape){
+                if (event.type == sf::Event::KeyPressed){
+                    if (event.key.code == sf::Keyboard::Escape){
                         window->close();
                     }
                 }
                 //If not exiting pass to event to screen manager
-                screenManager->interpretInput(Event);
+                screenManager->interpretInput(event);
             }   
             //Don't really like this
             if (screenManager->isOnGameScreen())

@@ -12,17 +12,17 @@ void ScreenManager::render(sf::RenderWindow *window){
 	currentScreen->render(window);
 }
 
-void ScreenManager::interpretInput(sf::Event Event){
+void ScreenManager::interpretInput(sf::Event event){
 	//check for events that might change the screen
 	if(currentScreen == menuScreen){
-		if (Event.type == sf::Event::KeyPressed){
-        	if (Event.key.code == sf::Keyboard::S){
+		if (event.type == sf::Event::KeyPressed){
+        	if (event.key.code == sf::Keyboard::S){
             	currentScreen = gameScreen;
             }
     	}
 	}
 	//otherwise send event to appropriate screen to interpret
-	currentScreen->interpretInput(Event);
+	currentScreen->interpretInput(event);
 }
 
 bool ScreenManager::loadTextures(){
