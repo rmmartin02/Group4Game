@@ -52,7 +52,7 @@ MenuScreen::MenuScreen(){
 }
 
 void MenuScreen::render(sf::RenderWindow *window){
-
+    //std::cout <<"render Menu Screen\n";
     window->clear();
     window->draw(bg);
     window->draw(logo_sprite);
@@ -62,7 +62,7 @@ void MenuScreen::render(sf::RenderWindow *window){
 
 }
 
-void MenuScreen::interpretInput(){
+void MenuScreen::interpretInput(sf::Event event){
 
 }
 

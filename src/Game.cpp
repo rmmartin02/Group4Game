@@ -6,11 +6,8 @@
 
 Game::Game(){
     window = new sf::RenderWindow(sf::VideoMode(SCREEN_WIDTH,SCREEN_HEIGHT,32), "Agent P: Infiltration");
-    menuScreen = new MenuScreen();
-    currentScreen = menuScreen;
-    
     logic = new Logic();
-    gameScreen = new GameScreen(logic);
+    screenManager = new ScreenManager(logic);
 }
 
 Game::~Game()
@@ -20,7 +17,7 @@ Game::~Game()
 void Game::initialize() {
     // if it can fail, or takes a long time, it shouldn't be in a constructor
     logic->load("../resource/maps/MapLevel1Merge.csv");
-    gameScreen->loadTextures();
+    screenManager->loadTextures();
 }
 
 void Game::Loop() {
@@ -31,58 +28,26 @@ void Game::Loop() {
         float deltaTime = clock.getElapsedTime().asSeconds();
         if (deltaTime >= 1.0f / 60.0f) {
             // process events
-            sf::Event Event;
+            sf::Event event;
 
-            while (window->pollEvent(Event)) {
+            while (window->pollEvent(event)) {
                 // Exit
-                if (Event.type == sf::Event::Closed)
+                if (event.type == sf::Event::Closed)
                     window->close();
 
-                if (Event.type == sf::Event::KeyPressed){
-                    if (Event.key.code == sf::Keyboard::Escape){
+                if (event.type == sf::Event::KeyPressed){
+                    if (event.key.code == sf::Keyboard::Escape){
                         window->close();
                     }
-                    
-                    if (currentScreen == menuScreen){
-                        if (Event.key.code == sf::Keyboard::S)
-                            currentScreen = gameScreen;
-                    }
-
-                    
                 }
-            }
-            
-            if(currentScreen == gameScreen){
-                sf::Vector2f cam_offset(0,0);
-                bool key_pressed = false;
-                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)){
-                    logic->registerMoveInput(Logic::Direction::DOWN);
-                    key_pressed = true;
-                    //cam_offset.y -= CAMERA_SPEED * deltaTime;
-                }
-                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)){
-                    logic->registerMoveInput(Logic::Direction::UP);
-                    key_pressed = true;
-                    //cam_offset.y += CAMERA_SPEED * deltaTime;
-                }
-                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)){
-                    logic->registerMoveInput(Logic::Direction::LEFT);
-                    key_pressed = true;
-                    //cam_offset.x += CAMERA_SPEED * deltaTime;
-                }
-                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)){
-                    logic->registerMoveInput(Logic::Direction::RIGHT);
-                    key_pressed = true;
-                    //cam_offset.x -= CAMERA_SPEED * deltaTime;
-                }
-                if ( !key_pressed ) {
-                    logic->registerMoveInput(Logic::Direction::NONE);
-                }
+                //If not exiting pass to event to screen manager
+                screenManager->interpretInput(event);
+            }   
+            //Don't really like this
+            if (screenManager->isOnGameScreen())
                 logic->update(deltaTime);
-                gameScreen->centerCameraOnCharacter(window);
-            }
-        
-            currentScreen->render(window);
+            
+            screenManager->render(window);
             //window->display();
 
             clock.restart();
