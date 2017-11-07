@@ -121,27 +121,44 @@ void GameScreen::render(sf::RenderWindow *window) {
 void GameScreen::interpretInput(sf::Event Event) {
     sf::Vector2f cam_offset(0,0);
     bool key_pressed = false;
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)){
+    if (sf::Keyboard::isKeyPressed(down_key)){
         logic_->registerMoveInput(Logic::Direction::DOWN);
         key_pressed = true;
         //cam_offset.y -= CAMERA_SPEED * deltaTime;
     }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)){
+    if (sf::Keyboard::isKeyPressed(up_key)){
         logic_->registerMoveInput(Logic::Direction::UP);
         key_pressed = true;
         //cam_offset.y += CAMERA_SPEED * deltaTime;
     }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)){
+    if (sf::Keyboard::isKeyPressed(left_key)){
         logic_->registerMoveInput(Logic::Direction::LEFT);
         key_pressed = true;
         //cam_offset.x += CAMERA_SPEED * deltaTime;
     }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)){
+    if (sf::Keyboard::isKeyPressed(right_key)){
         logic_->registerMoveInput(Logic::Direction::RIGHT);
         key_pressed = true;
         //cam_offset.x -= CAMERA_SPEED * deltaTime;
     }
     if ( !key_pressed ) {
         logic_->registerMoveInput(Logic::Direction::NONE);
+    }
+}
+
+void GameScreen::rebindKey(Logic::Direction direction, sf::Keyboard::Key key){
+    switch (direction){
+        case Logic::Direction::UP:
+            up_key = key;
+            break;
+        case Logic::Direction::DOWN:
+            down_key = key;
+            break;
+        case Logic::Direction::LEFT:
+            left_key = key;
+            break;
+        case Logic::Direction::RIGHT:
+            right_key = key;
+            break;
     }
 }

@@ -5,6 +5,7 @@ ScreenManager::ScreenManager(Logic *logic){
 	logic_ = logic;
 	gameScreen = new GameScreen(logic);
 	menuScreen = new MenuScreen();
+	controlsScreen = new ControlsScreen();
 	currentScreen = menuScreen;
 }
 
@@ -18,6 +19,9 @@ void ScreenManager::interpretInput(sf::Event event){
 		if (event.type == sf::Event::KeyPressed){
         	if (event.key.code == sf::Keyboard::S){
             	currentScreen = gameScreen;
+            }
+            if (event.key.code == sf::Keyboard::M){
+            	currentScreen = controlsScreen;
             }
     	}
 	}

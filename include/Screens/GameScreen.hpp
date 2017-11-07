@@ -22,6 +22,9 @@ public:
     //Center view on Character
     void centerCameraOnCharacter(sf::RenderWindow*);
 
+    //rebinds direction to given key
+    void rebindKey(Logic::Direction direction, sf::Keyboard::Key key);
+
 private:
 
     // Filename for the texture file containing tile sprites
@@ -31,6 +34,11 @@ private:
     // and in SFML's drawing units. We may want to separate the two
     // in the future.
     static const int TILE_SIZE;
+
+    sf::Keyboard::Key up_key = sf::Keyboard::Up;
+    sf::Keyboard::Key down_key = sf::Keyboard::Down;
+    sf::Keyboard::Key left_key = sf::Keyboard::Left;
+    sf::Keyboard::Key right_key = sf::Keyboard::Right;
     
     Logic* logic_;
     

@@ -5,6 +5,7 @@
 #include "Screens/GameScreen.hpp"
 #include "Screens/MenuScreen.hpp"
 #include "Screens/LoadingScreen.hpp"
+#include "Screens/ControlsScreen.hpp"
 
 class ScreenManager{
 
@@ -22,6 +23,7 @@ private:
     Screen *currentScreen;
     MenuScreen *menuScreen;
     GameScreen *gameScreen;
+    ControlsScreen *controlsScreen;
     Logic* logic_;
 };
 
