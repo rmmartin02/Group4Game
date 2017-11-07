@@ -6,7 +6,7 @@ ScreenManager::ScreenManager(Logic *logic){
 	gameScreen = new GameScreen(logic);
 	menuScreen = new MenuScreen();
 	controlsScreen = new ControlsScreen();
-	currentScreen = menuScreen;
+	currentScreen = controlsScreen;
 }
 
 void ScreenManager::render(sf::RenderWindow *window){
@@ -24,6 +24,13 @@ void ScreenManager::interpretInput(sf::Event event){
             	currentScreen = controlsScreen;
             }
     	}
+	}
+	else if(currentScreen == controlsScreen){
+		if (event.type == sf::Event::KeyPressed){
+        	if (event.key.code == sf::Keyboard::B){
+            	currentScreen = menuScreen;
+            }
+        }
 	}
 	//otherwise send event to appropriate screen to interpret
 	currentScreen->interpretInput(event);

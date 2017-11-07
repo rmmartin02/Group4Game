@@ -17,8 +17,13 @@ private:
 	sf::Texture logo;
 	sf::Font textFont;
 	sf::Text tagline;
-	sf::Text start;
-	//sf::RectangleShape start;
+	sf::Text back;
+
+	sf::Text upText;
+	sf::Text downText;
+	sf::Text rightText;
+	sf::Text leftText;
+	//sf::RectangleShape back;
 };
 
 #endif // CONTROLSSCREEN_HPP

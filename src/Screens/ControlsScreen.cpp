@@ -16,7 +16,7 @@ ControlsScreen::ControlsScreen(){
     }
     logo_sprite.setTexture(logo);
     logo_sprite.setScale(LOGO_SCALE,LOGO_SCALE);
-    logo_sprite.setPosition(SCREEN_WIDTH/2 - 476*LOGO_SCALE,100);
+    logo_sprite.setPosition(SCREEN_WIDTH/2 - 476*LOGO_SCALE,50);
 
 
     //tagline
@@ -30,24 +30,30 @@ ControlsScreen::ControlsScreen(){
     tagline.setString("Rebind Controls");
     tagline.setFillColor(sf::Color::White);
     tagline.setCharacterSize(36);
-    tagline.setPosition(sf::Vector2f(SCREEN_WIDTH/2 - tagline.getLocalBounds().width/2, SCREEN_HEIGHT/2.5));
+    tagline.setPosition(sf::Vector2f(SCREEN_WIDTH/2 - tagline.getLocalBounds().width/2, logo_sprite.getPosition().y + logo_sprite.getLocalBounds().height - 20));
 
 
 
-    //start
-    start.setFont(textFont);
+    //back
+    back.setFont(textFont);
 
-    start.setString("Back [B]");
-    start.setFillColor(sf::Color::White);
-    start.setCharacterSize(30);
-    start.setPosition(sf::Vector2f(SCREEN_WIDTH/2 - start.getLocalBounds().width/2, SCREEN_HEIGHT/2));
+    back.setString("Back [B]");
+    back.setFillColor(sf::Color::White);
+    back.setCharacterSize(30);
+    back.setPosition(sf::Vector2f(SCREEN_WIDTH/2 - back.getLocalBounds().width/2, SCREEN_HEIGHT-back.getLocalBounds().height-30));
     /*
-    start.setSize(sf::Vector2f(200, 50));
-    start.setOutlineColor(sf::Color::White);
-    start.setFillColor(sf::Color::Transparent);
-    start.setOutlineThickness(5);
-    start.setPosition(SCREEN_WIDTH/2 - start.getLocalBounds().width/2, SCREEN_HEIGHT/2);
+    back.setSize(sf::Vector2f(200, 50));
+    back.setOutlineColor(sf::Color::White);
+    back.setFillColor(sf::Color::Transparent);
+    back.setOutlineThickness(5);
+    back.setPosition(SCREEN_WIDTH/2 - back.getLocalBounds().width/2, SCREEN_HEIGHT/2);
      */
+    upText.setFont(textFont);
+
+    upText.setString("Up:");
+    upText.setFillColor(sf::Color::White);
+    upText.setCharacterSize(30);
+    upText.setPosition(sf::Vector2f(SCREEN_WIDTH/2 - upText.getLocalBounds().width/2, tagline.getPosition().y+tagline.getLocalBounds().height+30));
 
 }
 
@@ -57,7 +63,8 @@ void ControlsScreen::render(sf::RenderWindow *window){
     window->draw(bg);
     window->draw(logo_sprite);
     window->draw(tagline);
-    window->draw(start);
+    window->draw(back);
+    window->draw(upText);
     window->display();
 
 }
