@@ -5,4 +5,11 @@
 #ifndef LASER_HPP
 #define LASER_HPP
 
+#include "Entities/Device.hpp"
+
+class Laser : public Device{
+public:
+    Laser();
+};
+
 #endif //LASER_HPP

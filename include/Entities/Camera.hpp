@@ -5,4 +5,7 @@
 #ifndef CAMERA_HPP
 #define CAMERA_HPP
 
+#include "Entities/Device.hpp"
+
+
 #endif //CAMERA_HPP

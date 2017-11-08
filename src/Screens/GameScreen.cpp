@@ -102,6 +102,12 @@ void GameScreen::renderEntities(sf::RenderWindow *window) {
         pair.second.render(window);
     }
 }
+void GameScreen::renderDevices(sf::RenderWindow *window) {
+
+    for (auto pair : logic_->getDevices()) {
+        pair.second.render(window);
+    }
+}
 
 void GameScreen::renderParticles(sf::RenderWindow *window) {
     
@@ -113,6 +119,7 @@ void GameScreen::render(sf::RenderWindow *window) {
     window->clear();
     renderTiles(window);
     renderEntities(window);
+    renderDevices(window);
     renderParticles(window);
     centerCameraOnCharacter(window);
     window->display();

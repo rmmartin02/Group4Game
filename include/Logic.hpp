@@ -4,6 +4,8 @@
 #include "Global.hpp"
 #include "Entities/Entity.hpp"
 #include "Entities/Character.hpp"
+#include "Entities/Device.hpp"
+#include "Entities/Laser.hpp"
 
 class Logic {
 public:
@@ -29,6 +31,7 @@ public:
     
     // Returns reference to map containing entities
     std::map<std::string, Entity>& getEntities();
+    std::map<std::string, Device>& getDevices();
     
     // Returns copy of the player character entity
     Entity getCharacter();
@@ -44,6 +47,7 @@ private:
     
     std::vector<std::vector<int>> tiles_;
     std::map<std::string, Entity> entities_;
+    std::map<std::string, Device> devices_;
     
     // Clear data structures for tiles and entities
     void clearLevel();
@@ -53,6 +57,8 @@ private:
     
     // Load entities from a file
     void loadEntities(std::string filename);
+
+    void loadDevices(std::string filename);
 };
 
 #endif // LOGIC_HPP

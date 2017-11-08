@@ -45,6 +45,7 @@ private:
     // things. 
     void renderTiles(sf::RenderWindow *window);
     void renderEntities(sf::RenderWindow *window);
+    void renderDevices(sf::RenderWindow *window);
     void renderParticles(sf::RenderWindow *window);
 
 };

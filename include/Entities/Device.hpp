@@ -13,7 +13,6 @@ class Device {
 
 public:
     Device();
-    ~Device();
 
     //update
     virtual void update(float delta, int &logic);
@@ -24,13 +23,18 @@ public:
     // Return the current position
     sf::Vector2f getPos();
 
+    //return direction: 0,1,2,3 -> NORTH,EAST,SOUTH,WEST
+    int getDirection();
+
     // Place the device at a new position
     void setPos(sf::Vector2f pos);
+
+    void setDirection(int dir);
 
     //rotate the device
     void rotate(float angle);
 
-    void alertEnemy();
+    //void alertEnemy();
 
     //check if the device is hacked by the player
     bool isHacked();
@@ -42,6 +46,7 @@ protected:
     sf::Vector2f pos_;
     bool hacked;
     sf::Sprite sprite_;
+    int dir_;
 };
 
 #endif //DEVICE_HPP

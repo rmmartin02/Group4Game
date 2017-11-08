@@ -12,7 +12,8 @@ void Logic::update(float delta) {
     for (auto& pair : getEntities()) {
         pair.second.move(pair.second.getVel());
     }
-    
+
+
     // adjust the timer
     time_left_ -= delta;
     if (time_left_ < 0) {
@@ -24,6 +25,7 @@ void Logic::load(std::string filename) {
     clearLevel();
     loadTiles(filename);
     loadEntities(filename);
+    loadDevices(filename);
     std::cout << "Map size: " << getMapSize().first 
               << "," << getMapSize().second << std::endl;
 }
@@ -42,6 +44,9 @@ std::vector<std::vector<int>>& Logic::getTiles() {
 
 std::map<std::string,Entity>& Logic::getEntities() {
     return entities_;
+}
+std::map<std::string,Device>& Logic::getDevices() {
+    return devices_;
 }
 
 Entity Logic::getCharacter(){
@@ -112,4 +117,11 @@ void Logic::loadEntities(std::string filename) {
     // dummy behavior, creating the character entity
     entities_["Character"] = Character();
     entities_["Character"].setVel(sf::Vector2f(1,1));
+}
+
+void Logic::loadDevices(std::string filename){
+    devices_["Laser"]=Laser();
+    devices_["Laser"].setPos(sf::Vector2f(12,12));
+
+
 }
