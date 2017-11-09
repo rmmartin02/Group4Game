@@ -3,6 +3,7 @@
 
 #include "Global.hpp"
 #include "Screens/Screen.hpp"
+#include <cmath>
 
 class ControlsScreen : public Screen {
 public:
@@ -23,6 +24,10 @@ private:
 	sf::Text downText;
 	sf::Text rightText;
 	sf::Text leftText;
+
+	sf::Text* controlOptions[4];
+	int highlighted = 0;
+
 	//sf::RectangleShape back;
 };
 
