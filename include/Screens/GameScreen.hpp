@@ -3,6 +3,8 @@
 
 #include "Screens/Screen.hpp"
 #include "Logic.hpp"
+#include <sstream>
+#include <fstream>
 
 class GameScreen : public Screen {
 
@@ -21,6 +23,9 @@ public:
 
     //Center view on Character
     void centerCameraOnCharacter(sf::RenderWindow*);
+
+    //loads current key bindings
+    bool loadKeys();
 
     //rebinds direction to given key
     void rebindKey(Logic::Direction direction, sf::Keyboard::Key key);

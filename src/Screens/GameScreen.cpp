@@ -9,6 +9,7 @@ const int GameScreen::TILE_SIZE = 32;
 GameScreen::GameScreen(Logic* logic) {
     logic_ = logic;
     textures_ = std::map<std::string, sf::Texture>();
+    loadKeys();
 }
 
 bool GameScreen::loadTextures() {
@@ -161,4 +162,20 @@ void GameScreen::rebindKey(Logic::Direction direction, sf::Keyboard::Key key){
             right_key = key;
             break;
     }
+}
+
+bool GameScreen::loadKeys(){
+    std::cout << "load keys\n";
+    std::string line;
+    std::ifstream myfile("../resource/keyBindings.txt");
+    if ( !myfile.is_open() ) {
+        std::cout << "Failed to open keyBindings.txt" << std::endl;
+        return false;
+    }
+    while ( getline (myfile,line) )
+    {
+      std::cout << line << '\n';
+    }
+    myfile.close();
+    return true;
 }

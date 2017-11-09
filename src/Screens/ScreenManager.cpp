@@ -28,6 +28,7 @@ void ScreenManager::interpretInput(sf::Event event){
 	else if(currentScreen == controlsScreen){
 		if (event.type == sf::Event::KeyPressed){
         	if (event.key.code == sf::Keyboard::B){
+        		gameScreen->loadKeys();
             	currentScreen = menuScreen;
             }
         }
