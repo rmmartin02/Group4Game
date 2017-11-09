@@ -9,6 +9,11 @@ const int GameScreen::TILE_SIZE = 32;
 GameScreen::GameScreen(Logic* logic) {
     logic_ = logic;
     textures_ = std::map<std::string, sf::Texture>();
+    //load default keys in case custom binding fails to load
+    keys[0] = sf::Keyboard::Up;
+    keys[1] = sf::Keyboard::Down;
+    keys[2] = sf::Keyboard::Left;
+    keys[3] = sf::Keyboard::Right;
     loadKeys();
 }
 
@@ -122,22 +127,22 @@ void GameScreen::render(sf::RenderWindow *window) {
 void GameScreen::interpretInput(sf::Event Event) {
     sf::Vector2f cam_offset(0,0);
     bool key_pressed = false;
-    if (sf::Keyboard::isKeyPressed(down_key)){
+    if (sf::Keyboard::isKeyPressed(keys[1])){
         logic_->registerMoveInput(Logic::Direction::DOWN);
         key_pressed = true;
         //cam_offset.y -= CAMERA_SPEED * deltaTime;
     }
-    if (sf::Keyboard::isKeyPressed(up_key)){
+    if (sf::Keyboard::isKeyPressed(keys[0])){
         logic_->registerMoveInput(Logic::Direction::UP);
         key_pressed = true;
         //cam_offset.y += CAMERA_SPEED * deltaTime;
     }
-    if (sf::Keyboard::isKeyPressed(left_key)){
+    if (sf::Keyboard::isKeyPressed(keys[2])){
         logic_->registerMoveInput(Logic::Direction::LEFT);
         key_pressed = true;
         //cam_offset.x += CAMERA_SPEED * deltaTime;
     }
-    if (sf::Keyboard::isKeyPressed(right_key)){
+    if (sf::Keyboard::isKeyPressed(keys[3])){
         logic_->registerMoveInput(Logic::Direction::RIGHT);
         key_pressed = true;
         //cam_offset.x -= CAMERA_SPEED * deltaTime;
@@ -150,16 +155,16 @@ void GameScreen::interpretInput(sf::Event Event) {
 void GameScreen::rebindKey(Logic::Direction direction, sf::Keyboard::Key key){
     switch (direction){
         case Logic::Direction::UP:
-            up_key = key;
+            keys[0] = key;
             break;
         case Logic::Direction::DOWN:
-            down_key = key;
+            keys[1] = key;
             break;
         case Logic::Direction::LEFT:
-            left_key = key;
+            keys[2] = key;
             break;
         case Logic::Direction::RIGHT:
-            right_key = key;
+            keys[3] = key;
             break;
     }
 }
@@ -172,9 +177,12 @@ bool GameScreen::loadKeys(){
         std::cout << "Failed to open keyBindings.txt" << std::endl;
         return false;
     }
+    int i = 0;
     while ( getline (myfile,line) )
     {
       std::cout << line << '\n';
+      keys[i] = sf::Keyboard::Key(std::stoi(line));
+      i += 1;
     }
     myfile.close();
     return true;

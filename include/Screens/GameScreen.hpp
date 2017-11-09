@@ -40,10 +40,7 @@ private:
     // in the future.
     static const int TILE_SIZE;
 
-    sf::Keyboard::Key up_key = sf::Keyboard::Up;
-    sf::Keyboard::Key down_key = sf::Keyboard::Down;
-    sf::Keyboard::Key left_key = sf::Keyboard::Left;
-    sf::Keyboard::Key right_key = sf::Keyboard::Right;
+    sf::Keyboard::Key keys[4];
     
     Logic* logic_;
     
