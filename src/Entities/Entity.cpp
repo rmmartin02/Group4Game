@@ -1,7 +1,6 @@
-#include "Global.hpp"
 #include "Entities/Entity.hpp"
-#include "Logic.hpp"
 
+#include "Logic.hpp"
   
 Entity::Entity(){};
 
@@ -45,3 +44,25 @@ void Entity::setVel(sf::Vector2f vel){
 void Entity::setSprite(sf::Sprite sprite){
 	sprite_ = sprite;
 }
+
+void Entity::attachShape(b2Shape* shape){
+    coll_shape_.reset(shape);
+}
+
+b2Shape* Entity::getShape(){
+    return coll_shape_.get();
+}
+
+b2Transform Entity::getTransform(){
+    //b2Transform ret;
+    return b2Transform(b2Vec2(pos_.x, pos_.y), b2Rot());
+}
+
+bool Entity::wallCollision() {
+    return true;
+}
+
+void Entity::onTouchWall() {
+    return;
+}
+

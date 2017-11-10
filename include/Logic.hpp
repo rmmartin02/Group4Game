@@ -1,3 +1,7 @@
+#ifndef ENTITY_DATA
+#define ENTITY_DATA std::map<std::string, std::unique_ptr<Entity>>
+#endif // ENTITY_DATA
+
 #ifndef LOGIC_HPP
 #define LOGIC_HPP
 
@@ -8,6 +12,7 @@
 #include "Entities/Character.hpp"
 
 #include "Box2D/Box2D.h"
+
 
 class Logic {
 public:
@@ -31,11 +36,17 @@ public:
     // Returns reference to 2D vector of tile data
     std::vector<std::vector<int>>& getTiles();
     
+    // Add an entity
+    void addEntity(std::string id, Entity* e);
+
+    // Returns a reference to the entity matching the id
+    Entity& getEntity(std::string id);
+
     // Returns reference to map containing entities
-    std::map<std::string, Entity>& getEntities();
+    ENTITY_DATA& getEntities();
     
-    // Returns copy of the player character entity
-    Entity getCharacter();
+    // Returns reference to the player character entity
+    Character& getCharacter();
     
     // Return the current value of the countdown timer
     float getTimeLeft();
@@ -47,10 +58,11 @@ private:
     float time_left_;
     
     std::vector<std::vector<int>> tiles_;
-    std::map<std::string, Entity> entities_;
+    ENTITY_DATA entities_;
     
-    std::vector<std::unique_ptr<b2Shape>> tile_shapes_;
-    
+    std::vector<std::unique_ptr<b2Shape>> wall_shapes_;
+    std::vector<b2Transform> wall_transforms_;
+
     // Clear data structures for tiles and entities
     void clearLevel();
     
@@ -60,12 +72,15 @@ private:
     // Load entities from a file
     void loadEntities(std::string filename);
     
-    // Build Box2D shapes of the map tiles
-    void buildTileShapes();
+    // Build Box2D shapes for walls in the map tiles
+    void buildWallShapes();
     
-    // Returns true if the the given tile value represents a wall
+    // Returns true if the given tile value represents a wall
     // (should block line of sight and movement), false otherwise
     bool tileIsWall(int tile);
+    
+    // Returns true if the entity is colliding with any wall shape
+    bool checkWallCollision(Entity&);
 };
 
 #endif // LOGIC_HPP

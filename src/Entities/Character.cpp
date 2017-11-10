@@ -17,6 +17,10 @@ Character::Character(){
 	sprite.setTexture(texture);
 	sprite.setColor(sf::Color(0, 255, 0));
 	this->setSprite(sprite);
+    
+    b2PolygonShape* collide_box = new b2PolygonShape();
+    collide_box->SetAsBox(1,1);
+    this->attachShape(collide_box);
 }
 
 // Set the current velocity

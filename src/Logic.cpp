@@ -7,8 +7,8 @@ Logic::Logic() {
     
     time_left_ = 10 * 60;
     
-    entities_["Character"] = Character();
-    entities_["Character"].setVel(sf::Vector2f(0,0));
+    //entities_["Character"] = Character();
+    //entities_["Character"].setVel(sf::Vector2f(0,0));
     tiles_ = { 
         { -1, -1, 1, 1, 1 },
         {  1, 1, -1, -1, 1},
@@ -34,10 +34,22 @@ Logic::Logic() {
 
 void Logic::update(float delta) {
     // update every entity.
-    for (auto& pair : getEntities()) {
-        pair.second.move(pair.second.getVel());
+    for ( auto& pair : getEntities() ) {
+        pair.second->move(pair.second->getVel());
+        if (pair.second->wallCollision()){            
+        }
     }
     
+    // testing box2d integration
+   // b2Transform ctrans = getCharacter().getTransform();
+   // std::cout << "Transform: " << ctrans.p.x << ", " << ctrans.p.y << "." << std::endl;
+    if (checkWallCollision(getCharacter())){
+        std::cout << "Character hitting wall" << std::endl;
+    }
+    else{
+        std::cout << "no wall collision" << std::endl;
+    }
+
     // adjust the timer
     time_left_ -= delta;
     if (time_left_ < 0) {
@@ -65,33 +77,44 @@ std::vector<std::vector<int>>& Logic::getTiles() {
     return tiles_;
 }
 
-std::map<std::string,Entity>& Logic::getEntities() {
+void Logic::addEntity(std::string id, Entity* e) {
+    entities_[id] = std::unique_ptr<Entity>(e);
+}
+
+Entity& Logic::getEntity(std::string id) {
+    return *(entities_[id].get());
+}
+
+ENTITY_DATA& Logic::getEntities() {
     return entities_;
 }
 
-Entity Logic::getCharacter(){
-    return entities_["Character"];
+Character& Logic::getCharacter(){
+    return static_cast<Character&>(getEntity("Character"));
 }
 
 void Logic::registerMoveInput(Logic::Direction dir){
+    sf::Vector2f motion(0,0);
 	switch (dir){
         case Logic::Direction::UP:
-			entities_["Character"].setVel(entities_["Character"].getVel()+sf::Vector2f(0,-1));
+			motion = sf::Vector2f(0,-1);
 			break;
         case Logic::Direction::DOWN:
-			entities_["Character"].setVel(entities_["Character"].getVel()+sf::Vector2f(0,1));
+			motion = sf::Vector2f(0,1);
 			break;
         case Logic::Direction::LEFT:
-			entities_["Character"].setVel(entities_["Character"].getVel()+sf::Vector2f(-1,0));
+			motion = sf::Vector2f(-1,0);
 			break;
         case Logic::Direction::RIGHT:
-			entities_["Character"].setVel(entities_["Character"].getVel()+sf::Vector2f(1,0));
+			motion = sf::Vector2f(1,0);
 			break;
         case Logic::Direction::NONE:
 		default:
-            entities_["Character"].setVel(sf::Vector2f(0,0));
-			break;
+            motion = sf::Vector2f(0,0);
+            getCharacter().setVel(motion);
+			return;
 	}
+    getCharacter().setVel(getCharacter().getVel() + motion);
 }
 
 float Logic::getTimeLeft(){
@@ -100,13 +123,13 @@ float Logic::getTimeLeft(){
 
 void Logic::clearLevel() {
     tiles_.clear();
-    tile_shapes_.clear();
+    wall_shapes_.clear();
     entities_.clear();
 }
 
 void Logic::loadTiles(std::string filename) { 
     tiles_.clear();
-    tile_shapes_.clear();
+    wall_shapes_.clear();
     std::ifstream file_in(filename);
     if ( !file_in.is_open() ) {
         std::cout << "failed to open level file " << filename << std::endl;
@@ -133,17 +156,19 @@ void Logic::loadTiles(std::string filename) {
         }
         tiles_.push_back(row);
     }
-    buildTileShapes();
+    buildWallShapes();
 }
 
 void Logic::loadEntities(std::string filename) {
     // dummy behavior, creating the character entity
-    entities_["Character"] = Character();
-    entities_["Character"].setVel(sf::Vector2f(1,1));
+    //entities_["Character"] = Character();
+    //entities_["Character"].setVel(sf::Vector2f(1,1));
+    addEntity("Character", new Character());
+    getCharacter().setVel(sf::Vector2f(1,1));
 }
 
-void Logic::buildTileShapes() {
-    tile_shapes_.clear();
+void Logic::buildWallShapes() {
+    wall_shapes_.clear();
     auto map_size = getMapSize();
     
     // Currently, scans along each row and forms rectangle shapes of
@@ -167,20 +192,44 @@ void Logic::buildTileShapes() {
                 b2PolygonShape* box = new b2PolygonShape();
                 box->SetAsBox((wall_end - wall_start)/(0.2f), 0.5f, b2Vec2(0,0), 0.0f);
                 // add a box2d shape of length size wall_end - wall_start
-                tile_shapes_.push_back(std::unique_ptr<b2PolygonShape>(box));
+                wall_shapes_.push_back(std::unique_ptr<b2PolygonShape>(box));
+                // TODO verify where box2d expects the origin point of its shapes to be
+                wall_transforms_.push_back(b2Transform(b2Vec2(wall_start,r), b2Rot()));
                 wall_start = -1;
                 wall_end = -1;
             }
         }
     }
     
-    std::cout << "Created " << tile_shapes_.size() << " Box2D shapes for the tiles." << std::endl;
-    for (int i = 0; i < tile_shapes_.size(); i++) {
-        continue;
-        //std::cout << static_cast<int>(tile_shapes_[i]->m_type) << std::endl;
+    std::cout << "Created " << wall_shapes_.size() << " Box2D shapes for the tiles." << std::endl;
+    for (int i = 0; i < wall_shapes_.size(); i++) {
+        std::cout << static_cast<int>(wall_shapes_[i]->m_type) << std::endl;
+        std::cout << static_cast<float>(wall_transforms_[i].p.x) << "," << static_cast<float>(wall_transforms_[i].p.y) << std::endl;
     }
 }
 
 bool Logic::tileIsWall(int tile) {
     return tile == 455 || tile == 211 || tile == 210 || tile == -1;
 }
+
+bool Logic::checkWallCollision(Entity& e) {
+    if ( wall_shapes_.size() == 0 || wall_transforms_.size() == 0 ) {
+        std::cout << "Logic.cpp: tried to check collision without complete wall info" << std::endl;
+        return false;
+    }
+    if ( e.getShape() == nullptr ) {
+        return false;
+    }
+
+    std::cout << "Reached collision checks." << std::endl;
+
+    for (int i = 0; i < wall_shapes_.size(); i++) {
+        auto part_collision = b2TestOverlap( e.getShape(), 0, wall_shapes_[i].get(), 0, 
+                e.getTransform(), wall_transforms_[i]);
+        if (part_collision) {
+            return true;
+        }
+    }
+    return false;
+}
+

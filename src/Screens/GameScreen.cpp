@@ -98,8 +98,8 @@ void GameScreen::renderTiles(sf::RenderWindow *window) {
 void GameScreen::renderEntities(sf::RenderWindow *window) {
 	//logic_->getCharacter().render(window);
 	//std::cout << "Render character " << logic_->getCharacter().getPos().x << "\n";
-    for (auto pair : logic_->getEntities()) {
-        pair.second.render(window);
+    for (auto& pair : logic_->getEntities()) {
+        pair.second->render(window);
     }
 }
 
