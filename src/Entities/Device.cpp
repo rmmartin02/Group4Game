@@ -19,6 +19,8 @@ void Device::render (sf::RenderWindow *window) {
 
 void Device::setPos(sf::Vector2f pos){
     pos_=pos;
+    sprite_.setOrigin(sprite_.getLocalBounds().width/2,sprite_.getLocalBounds().height/2);
+   
 }
 
 sf::Vector2f Device::getPos(){
@@ -34,7 +36,8 @@ int Device::getDirection(){
 }
 
 void Device::rotate(float angle){
-    sprite_.rotate(10);
+
+    sprite_.rotate(angle);
 
 }
 

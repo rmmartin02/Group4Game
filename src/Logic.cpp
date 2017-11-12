@@ -123,8 +123,8 @@ void Logic::loadDevices(std::string filename){
     devices_["Laser"]=Laser();
     sf::Sprite l;
 
-    logictm.loadTexture("laser","../resource/laser.png");
-    l.setTexture(logictm.getRef("laser"));
+    logictm.loadTexture("Laser","../resource/laser.png");
+    l.setTexture(logictm.getRef("Laser"));
     devices_["Laser"].setSprite(l);
     devices_["Laser"].setPos(sf::Vector2f(12,12));
 

@@ -157,6 +157,13 @@ void GameScreen::interpretInput(sf::Event Event) {
         key_pressed = true;
         //cam_offset.x -= CAMERA_SPEED * deltaTime;
     }
+
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z)){
+        logic_->registerMoveInput(Logic::Direction::NONE);
+        logic_->getDevices().at("Laser").rotate(1);
+        key_pressed = true;
+        //cam_offset.x -= CAMERA_SPEED * deltaTime;
+    }
     if ( !key_pressed ) {
         logic_->registerMoveInput(Logic::Direction::NONE);
     }
