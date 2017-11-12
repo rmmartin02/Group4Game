@@ -42,9 +42,17 @@ bool Device::isHacked(){
     return hacked;
 }
 
+void Device::setTexture(sf::Texture tex){
+    sprite_.setTexture(tex);
+    this->setSprite(sprite_);
+
+}
+
 void Device::setSprite(sf::Sprite sprite){
     sprite_ = sprite;
 
 }
+
+
 
 

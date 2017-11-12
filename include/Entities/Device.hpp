@@ -39,6 +39,7 @@ public:
     //check if the device is hacked by the player
     bool isHacked();
 
+    void setTexture(sf::Texture tex);
     void setSprite(sf::Sprite sprite);
 
 

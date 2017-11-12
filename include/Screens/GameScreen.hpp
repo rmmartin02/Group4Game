@@ -3,6 +3,7 @@
 
 #include "Screens/Screen.hpp"
 #include "Logic.hpp"
+#include "TextureManager.hpp"
 
 class GameScreen : public Screen {
 
@@ -21,6 +22,8 @@ public:
 
     //Center view on Character
     void centerCameraOnCharacter(sf::RenderWindow*);
+
+    TextureManager texmgr;
 
 private:
 

@@ -6,6 +6,7 @@
 #include "Entities/Character.hpp"
 #include "Entities/Device.hpp"
 #include "Entities/Laser.hpp"
+#include "TextureManager.hpp"
 
 class Logic {
 public:
@@ -41,6 +42,8 @@ public:
 
     //indicates characters needs to move up,down,left,right, or not move
     void registerMoveInput(Direction dir);
+
+    TextureManager logictm;
 
 private:
     float time_left_;
