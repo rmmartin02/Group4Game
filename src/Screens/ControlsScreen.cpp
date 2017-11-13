@@ -113,11 +113,40 @@ void ControlsScreen::interpretInput(sf::Event event){
             }
             if (event.key.code == sf::Keyboard::Return){
                 selected = highlighted;
+                switch(selected){
+                case 0:
+                    controlOptions[highlighted]->setString("Up: ");
+                    break;
+                case 1:
+                    controlOptions[highlighted]->setString("Down: ");
+                    break;
+                case 2:
+                    controlOptions[highlighted]->setString("Left: ");
+                    break;
+                case 3:
+                    controlOptions[highlighted]->setString("Right: ");
+                    break;
+            }
             }
         }
         else{
             //change selected key to pressed key
-            //keys[selected] = event.key.code;
+            keys[selected] = event.key.code;
+            switch(selected){
+                case 0:
+                    controlOptions[selected]->setString("Up: " + keyStrings[keys[0]+1]);
+                    break;
+                case 1:
+                    controlOptions[selected]->setString("Down: " + keyStrings[keys[1]+1]);
+                    break;
+                case 2:
+                    controlOptions[selected]->setString("Left: " + keyStrings[keys[2]+1]);
+                    break;
+                case 3:
+                    controlOptions[selected]->setString("Right: " + keyStrings[keys[3]+1]);
+                    break;
+            }
+            selected = -1;
         }
     }
 }
