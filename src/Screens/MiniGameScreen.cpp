@@ -29,7 +29,6 @@ std::vector<std::vector<int>> setCurrentBoard (int size) {
     for (int i = 0; i < size; ++ i) {
         MiniGameScreen().currentBoard[i].resize(size);
     }
-
 }
 
 void MiniGameScreen::setToInitialState(int numberOfEmptySlots) {
@@ -388,11 +387,134 @@ MiniGameScreen MiniGameScreen::flip (int startRow, int startColumn, int endRow, 
 
 }
 
-MiniGameScreen MiniGameScreen::shuffleBoard(int pathLength) {
+MiniGameScreen* MiniGameScreen::shuffleBoard(int pathLength) {
 
+    int direction;
+    int row = 0;
+    int column = 0;
 
+    for (int i = 0; i < currentBoard.size(); i++) {
+        for (int x = 0; x < currentBoard.size(); x++) {
+            if(currentBoard[i][x] == 0) {
+                row = i;
+                column = x;
+            }
+        }
+    }
+
+    // 0 = UP, 1 = RIGHT, 2 = DOWN, 3 = LEFT
+
+    if (column == 3 && row == 3) {
+
+        int array [] = {0, 3}; //CORNER CASE: Excludes RIGHT & DOWN
+        direction = getRandom(array);
+
+    } else if (column == 0 && row == 0) {
+
+        int array [] = {1, 2}; //CORNER CASE: Excludes LEFT & UP
+        direction = getRandom(array);
+
+    } else if (column == 3 && row == 0) {
+
+        int array [] = {2, 3}; //CORNER CASE: Excludes RIGHT & UP
+        direction = getRandom(array);
+
+    } else if (column == 0 && row == 3) {
+
+        int array [] = {0, 1}; //CORNER CASE: Excludes LEFT & DOWN
+        direction = getRandom(array);
+
+    } else if (column == 3) {
+
+        int array [] = {0, 2, 3};
+        direction = getRandom(array); //EXCLUDES RIGHT
+
+    } else if (row == 3) {
+
+        int array [] = {0, 1, 3}; // EXCLUDES DOWN
+        direction = getRandom(array);
+
+    } else if (column == 0) {
+
+        int array [] = {0, 1, 2}; //EXCLUDES LEFT
+        direction = getRandom(array);
+
+    } else if (row == 0) {
+
+        int array [] = {1, 2, 3}; //EXCLUDES UP
+        direction = getRandom(array);
+
+    } else {
+
+        int array [] = {0, 1, 2, 3}; // NO EXCLUSIONS
+        direction = getRandom(array);
+
+    }
+
+    if (pathLength == 0) {
+        return this;
+
+    } else if (direction == 0 && getValue(row - 1, column) != 0) {
+
+        //EMPTY SPACE MOVES UP
+        MiniGameScreen newState;
+        newState = move(row - 1, column, MiniGameScreen().MOVEDOWN);
+        return newState.shuffleBoard(pathLength - 1);
+
+    } else if (direction == 1 && getValue(row, column + 1) != 0) {
+
+        //EMPTY SPACE MOVES RIGHT
+        MiniGameScreen newState;
+        newState = move(row, column + 1, MiniGameScreen().MOVELEFT);
+        return newState.shuffleBoard(pathLength - 1);
+
+    } else if (direction == 2 && getValue(row + 1, column) != 0) {
+
+        //EMPTY SPACE MOVES DOWN
+        MiniGameScreen newState;
+        newState = move(row + 1, column, MiniGameScreen().MOVEUP);
+        return newState.shuffleBoard(pathLength - 1);
+
+    } else if (direction == 3 && getValue(row, column - 1) != 0) {
+
+        //EMPTY SPACE MOVES LEFT
+        MiniGameScreen newState;
+        newState = move(row, column - 1, MiniGameScreen().MOVERIGHT);
+        return newState.shuffleBoard(pathLength - 1);
+
+    } else {
+        return shuffleBoard(pathLength);
+    }
 
 }
+
+bool MiniGameScreen::isEmpty(int row, int column) {
+
+    // CHECK IF VALUE AT GIVEN TILE LOCATION IS EMPTY (i.e. is 0)
+
+    int value = currentBoard[row][column];
+
+    if (value == 0) {
+        return true;
+    } else {
+        return false;
+    }
+
+}
+
+MiniGameScreen* MiniGameScreen::getStateWithShortestPath() {
+
+    // Trivial default implementation
+    return this;
+}
+
+int MiniGameScreen::getRandom (int array[]) {
+
+    // METHOD TO PULL RANDOM INTEGER FROM A GIVEN ARRAY
+    int randIndex = rand() % sizeof(array);
+    return array[randIndex];
+
+};
 
 
 

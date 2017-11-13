@@ -48,12 +48,14 @@ public:
 
     MiniGameScreen flip(int startRow, int startColumn, int endRow, int endColumn);
 
-    MiniGameScreen shuffleBoard(int pathLength);
+    MiniGameScreen* shuffleBoard(int pathLength);
 
     bool isEmpty(int row, int column);
 
-    MiniGameScreen getStateWithShortestPath();
+    MiniGameScreen* getStateWithShortestPath();
 
+
+    int getRandom(int array[]);
 
 };
 
