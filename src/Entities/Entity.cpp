@@ -54,8 +54,7 @@ b2Shape* Entity::getShape(){
 }
 
 b2Transform Entity::getTransform(){
-    //b2Transform ret;
-    return b2Transform(b2Vec2(pos_.x, pos_.y), b2Rot());
+    return b2Transform(b2Vec2(pos_.x, pos_.y), b2Rot(0.0f));
 }
 
 bool Entity::wallCollision() {

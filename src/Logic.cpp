@@ -38,7 +38,8 @@ void Logic::update(float delta) {
     // update every entity.
     for ( auto& pair : getEntities() ) {
         pair.second->move(pair.second->getVel());
-        if (pair.second->wallCollision()){            
+        if (pair.second->wallCollision()){
+            
         }
     }
     
@@ -228,7 +229,7 @@ bool Logic::checkWallCollision(Entity& e) {
         std::cout << "Logic.cpp: tried to check collision without complete wall info" << std::endl;
         return false;   
     }
-    if ( e.getShape() == nullptr ) {
+    if ( !e.getShape() ) {
         return false;
     }
 
@@ -245,33 +246,40 @@ bool Logic::checkWallCollision(Entity& e) {
     else {
         std::cout << "tile " << vecutil::vecInfo(tpos) << " out of bounds" << std::endl;
     }
+    //std::cout << "Reached collision checks for " << vecutil::vecInfo(pt) << std::endl;
     
-    std::cout << "Reached collision checks for " << vecutil::vecInfo(pt) << std::endl;
     
-    std::cout << "intersected indices: ";
-    
-    bool hit = false;
+    float closest = vecutil::infinity();
+    b2Vec2 c_point;
+    b2Vec2 normal;
     for (int i = 0; i < wall_shapes_.size(); i++) {
-        
-        if (wall_shapes_[i]->TestPoint(vecutil::iform(), b2Vec2(pt.x, pt.y)) ){
-            std::cout << i << ", ";
-            hit = true;
+        bool part_collision = b2TestOverlap( e.getShape(), 0, wall_shapes_[i].get(), 0, 
+                e.getTransform(), vecutil::iform());
+        if (part_collision) {
+            b2Manifold manifold;
+            b2CollidePolygonAndCircle(&manifold, 
+                                      static_cast<b2PolygonShape*>(wall_shapes_[i].get()), vecutil::iform(),
+                                      static_cast<b2CircleShape*>(e.getShape()), e.getTransform()
+                                     );
+            
+            b2WorldManifold worldManifold;
+            worldManifold.Initialize(&manifold, 
+                                     vecutil::iform(), wall_shapes_[i]->m_radius,
+                                     e.getTransform(), e.getShape()->m_radius
+                                    );
+            // circle-poly collisions generate only one manifold pt and normal
+            if (worldManifold.separations[0] < closest) {
+                closest = worldManifold.separations[i];
+                c_point = worldManifold.points[0];
+                normal  = worldManifold.normal;
+            }
         }
-        else {
-            //std::cout << "pt AVOIDED wall index " << i << std::endl;
-            //return false;
-        }
-        
-        //bool part_collision = b2TestOverlap( e.getShape(), 0, wall_shapes_[i].get(), 0, 
-         //       e.getTransform(), wall_transforms_[i]);
-        //if (part_collision) {
-          //  return true;
-        //}
     }
-    std::cout << std::endl;
-    if (!hit) {
-        std::cout << "AVOIDED walls" << std::endl;
+    if (closest < vecutil::infinity()) {
+        std::cout << "normal: " << vecutil::vecInfo(normal) << std::endl;
+        std::cout << "cpoint: " << vecutil::vecInfo(c_point) << std::endl;
+        return true;
     }
-    return hit;
+    return false;
 }
 

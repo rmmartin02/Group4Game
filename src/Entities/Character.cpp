@@ -5,6 +5,7 @@
 #include "Entities/Character.hpp"
 
 const float Character::MAX_SPEED = 10.0f;
+const float Character::COLLISION_SIZE = 32.0f;
 
 Character::Character(){
 	sf::Texture texture;
@@ -18,9 +19,10 @@ Character::Character(){
 	sprite.setColor(sf::Color(0, 255, 0));
 	this->setSprite(sprite);
     
-    b2PolygonShape* collide_box = new b2PolygonShape();
-    collide_box->SetAsBox(1,1);
-    this->attachShape(collide_box);
+    b2CircleShape* collider = new b2CircleShape();
+    collider->m_p.Set(0.0f, 0.0f);
+    collider->m_radius = COLLISION_SIZE;
+    this->attachShape(collider);
 }
 
 // Set the current velocity

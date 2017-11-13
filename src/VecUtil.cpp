@@ -1,7 +1,12 @@
 #include "VecUtil.hpp"
 
+#include <limits>
 #include <cmath>
 #include <sstream>
+
+float vecutil::infinity() {
+    return std::numeric_limits<float>::infinity();
+}
 
 float vecutil::clamp(float val, float cmin, float cmax) {
     return std::max(cmin, std::min(cmax, val));

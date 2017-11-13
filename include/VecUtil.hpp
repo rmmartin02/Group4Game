@@ -11,6 +11,9 @@
 
 namespace vecutil {
 
+// Returns a float representing infinity
+float infinity();
+    
 // Enforces lower and upper bounds on val.
 float clamp(float val, float cmin, float cmax);
 
