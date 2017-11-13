@@ -67,7 +67,6 @@ private:
     ENTITY_DATA entities_;
     
     std::vector<std::unique_ptr<b2Shape>> wall_shapes_;
-    std::vector<b2Transform> wall_transforms_;
 
     // Clear data structures for tiles and entities
     void clearLevel();

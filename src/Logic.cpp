@@ -193,8 +193,8 @@ void Logic::buildWallShapes() {
                 std::cout << r << ": created wall from " << wall_start << " to " << wall_end << std::endl;
                 b2PolygonShape* pshape = new b2PolygonShape();
                 
-                // center is the vector from the top left corner of the shape to the the middle of it
-                b2Vec2 center(0.5f, (wall_end - wall_start)/(2.0f));
+                // center is the vector from 0,0 to the the middle of the shape
+                b2Vec2 center(r + 0.5f, wall_start + (wall_end - wall_start)/(2.0f));
                 center = TILE_SIZE * center;
                 
                 // hsize is half the size of the shape
@@ -207,13 +207,6 @@ void Logic::buildWallShapes() {
                                  center,
                                  0.0f); // rotation degrees
                 wall_shapes_.push_back(std::unique_ptr<b2PolygonShape>(pshape));
-                
-                // transpos is the vector from world (0,0) to top left corner of the shape 
-                b2Vec2 transpos(r, wall_start);
-                transpos = TILE_SIZE * transpos;
-                b2Transform trans(transpos, b2Rot(0.0f));
-                std::cout << "transform at " << vecutil::transformInfo(trans) << std::endl;
-                wall_transforms_.push_back(trans);
                 wall_start = -1;
                 wall_end = -1;
             }
@@ -223,7 +216,6 @@ void Logic::buildWallShapes() {
     std::cout << "Created " << wall_shapes_.size() << " Box2D shapes for the tiles." << std::endl;
     for (int i = 0; i < wall_shapes_.size(); i++) {
         std::cout << static_cast<int>(wall_shapes_[i]->m_type) << std::endl;
-        std::cout << static_cast<float>(wall_transforms_[i].p.x) << "," << static_cast<float>(wall_transforms_[i].p.y) << std::endl;
     }
 }
 
@@ -232,7 +224,7 @@ bool Logic::tileIsWall(int tile) {
 }
 
 bool Logic::checkWallCollision(Entity& e) {
-    if ( wall_shapes_.size() == 0 || wall_transforms_.size() == 0 ) {
+    if ( wall_shapes_.size() == 0 ) {
         std::cout << "Logic.cpp: tried to check collision without complete wall info" << std::endl;
         return false;   
     }
@@ -261,7 +253,7 @@ bool Logic::checkWallCollision(Entity& e) {
     bool hit = false;
     for (int i = 0; i < wall_shapes_.size(); i++) {
         
-        if (wall_shapes_[i]->TestPoint(wall_transforms_[i], b2Vec2(pt.x, pt.y)) ){
+        if (wall_shapes_[i]->TestPoint(vecutil::iform(), b2Vec2(pt.x, pt.y)) ){
             std::cout << i << ", ";
             hit = true;
         }

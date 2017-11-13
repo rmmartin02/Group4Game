@@ -45,6 +45,9 @@ std::string vecInfo(sf::Vector2f);
 // Returns string describing Box2D transform contents
 std::string transformInfo(b2Transform);
 
+// Returns the identity transform
+b2Transform iform();
+
 }
 
 #endif // VECUTIL_H

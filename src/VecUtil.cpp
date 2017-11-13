@@ -48,3 +48,9 @@ std::string vecutil::transformInfo(b2Transform bt) {
     ss << "[pos:<" << bt.p.x << "," << bt.p.y << "> rad:" << bt.q.GetAngle() << "]";
     return ss.str();
 }
+
+b2Transform vecutil::iform() {
+    b2Transform t;
+    t.SetIdentity();
+    return t;
+}
