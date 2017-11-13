@@ -1,7 +1,9 @@
 #ifndef LOGIC_HPP
 #define LOGIC_HPP
 
+#include "Global.hpp"
 #include "Entities/Entity.hpp"
+#include "Entities/Character.hpp"
 
 class Logic {
 public:
@@ -14,13 +16,17 @@ public:
     // TODO: determine if these should be returning by reference
     std::vector<std::vector<int>> getTiles();
     std::map<std::string, Entity> getEntities();
+    Entity getCharacter();
     float getTimeLeft();
 
-    void moveCharacter();
+    //indicates characters needs to move up,down,left,right
+    //0,1,2,3 for now need to make it an enum
+    void moveCharacter(int direction);
 
 private:
     std::vector<std::vector<int>> tiles_;
     std::map<std::string, Entity> entities_;
+    //Character character_;
     float time_left_;
 };
 
