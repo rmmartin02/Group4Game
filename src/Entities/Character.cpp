@@ -7,16 +7,16 @@
 const float Character::MAX_SPEED = 10.0f;
 
 Character::Character(){
-	sf::Texture texture;
+	//sf::Texture texture;
 	//load texture and sprite
-	if (!texture.create(100, 100))
-	{
+	//if (!texture.loadFromFile("../resource/Entities/character.png"))
+	//{
     // error...
-	}
-	sf::Sprite sprite;
-	sprite.setTexture(texture);
-	sprite.setColor(sf::Color(0, 255, 0));
-	this->setSprite(sprite);
+	//}
+	//sf::Sprite sprite;
+	//sprite.setTexture(texture);
+	//sprite.setColor(sf::Color(0, 255, 0));
+	//this->setSprite(sprite);
     
     b2PolygonShape* collide_box = new b2PolygonShape();
     collide_box->SetAsBox(1,1);

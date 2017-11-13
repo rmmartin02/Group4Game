@@ -4,18 +4,24 @@
 
 
 const std::string GameScreen::TILESET_FILENAME = "../resource/maps/tiles.png";
+const std::string GameScreen::LASER_FILENAME = "../resource/laser.png";
+const std::string GameScreen::CHAR_FILENAME = "../resource/Entities/Character.png";
 const int GameScreen::TILE_SIZE = 32;
 
 GameScreen::GameScreen(Logic* logic) {
     logic_ = logic;
-    textures_ = std::map<std::string, sf::Texture>();
+    //textures_ = std::map<std::string, sf::Texture>();
+
 }
 
 bool GameScreen::loadTextures() {
-    textures_["tileset"] = sf::Texture();
-    if (!textures_["tileset"].loadFromFile(TILESET_FILENAME)){
-        return false;
-    }
+   // textures_["tileset"] = sf::Texture();
+    texmgr.loadTexture("tileset",TILESET_FILENAME);
+    texmgr.loadTexture("laser",LASER_FILENAME);
+    texmgr.loadTexture("character",CHAR_FILENAME);
+    //if (!textures_["tileset"].loadFromFile(TILESET_FILENAME)){
+    //    return false;
+    //}
     texture_coords_[-1] = std::make_pair(0, TILE_SIZE*2);
     texture_coords_[455] = std::make_pair(TILE_SIZE*6, TILE_SIZE*4);
     texture_coords_[211] = std::make_pair(TILE_SIZE*6, TILE_SIZE*5);
@@ -92,15 +98,20 @@ void GameScreen::renderTiles(sf::RenderWindow *window) {
             tile_vertices_.append(v);
         }
     }
-    window->draw(tile_vertices_, &textures_["tileset"]);
+    window->draw(tile_vertices_, &texmgr.getRef("tileset"));
 }
 
 void GameScreen::renderEntities(sf::RenderWindow *window) {
 	//logic_->getCharacter().render(window);
 	//std::cout << "Render character " << logic_->getCharacter().getPos().x << "\n";
     for (auto& pair : logic_->getEntities()) {
+        //sf::Sprite l;
+        pair.second->setTexture(texmgr.getRef("character"));
+
+        //pair.second->setSprite(l);
         pair.second->render(window);
     }
+    std::cout << "render render\n";
 }
 
 void GameScreen::renderParticles(sf::RenderWindow *window) {

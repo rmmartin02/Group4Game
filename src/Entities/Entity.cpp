@@ -2,11 +2,13 @@
 
 #include "Logic.hpp"
   
-Entity::Entity(){};
+Entity::Entity(){
+};
 
 void Entity::update(float delta, int &logic){};
 
   //Renders entity on window using sprite
+
 void Entity::render (sf::RenderWindow *window) {
 	//std::cout << sprite_.getPosition().x << "\n";
 	sprite_.setPosition(pos_);
@@ -43,6 +45,9 @@ void Entity::setVel(sf::Vector2f vel){
 
 void Entity::setSprite(sf::Sprite sprite){
 	sprite_ = sprite;
+}
+void Entity::setTexture(const sf::Texture& tex){
+	sprite_.setTexture(tex);
 }
 
 void Entity::attachShape(b2Shape* shape){
