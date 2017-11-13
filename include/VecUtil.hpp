@@ -4,7 +4,10 @@
 #ifndef VECUTIL_H
 #define VECUTIL_H
 
+#include <string>
+
 #include <SFML/Graphics.hpp>
+#include "Box2D/Box2D.h"
 
 namespace vecutil {
 
@@ -32,6 +35,15 @@ sf::Vector2f normalize(sf::Vector2f);
 
 // Returns a vector equivalent to a point at the given angle and distance.
 sf::Vector2f fromPolar(float length, float angle);
+
+// Returns string describing Box2D vector contents
+std::string vecInfo(b2Vec2);
+
+// Returns string describing SFML vector contents
+std::string vecInfo(sf::Vector2f);
+
+// Returns string describing Box2D transform contents
+std::string transformInfo(b2Transform);
 
 }
 

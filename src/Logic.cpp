@@ -3,6 +3,8 @@
 #include <sstream>
 #include <fstream>
 
+#include "VecUtil.hpp"
+
 Logic::Logic() {
     
     time_left_ = 10 * 60;
@@ -188,13 +190,30 @@ void Logic::buildWallShapes() {
                     wall_end = c+1;
             }
             if ( wall_end > 0 ) {
-                std::cout << "created wall from " << wall_start << " to " << (wall_end - 1) << std::endl;
-                b2PolygonShape* box = new b2PolygonShape();
-                box->SetAsBox((wall_end - wall_start)/(0.2f), 0.5f, b2Vec2(0,0), 0.0f);
-                // add a box2d shape of length size wall_end - wall_start
-                wall_shapes_.push_back(std::unique_ptr<b2PolygonShape>(box));
-                // TODO verify where box2d expects the origin point of its shapes to be
-                wall_transforms_.push_back(b2Transform(b2Vec2(wall_start,r), b2Rot()));
+                std::cout << r << ": created wall from " << wall_start << " to " << wall_end << std::endl;
+                b2PolygonShape* pshape = new b2PolygonShape();
+                
+                // center is the vector from the top left corner of the shape to the the middle of it
+                b2Vec2 center(0.5f, (wall_end - wall_start)/(2.0f));
+                center = TILE_SIZE * center;
+                
+                // hsize is half the size of the shape
+                b2Vec2 hsize(0.5f, (wall_end - wall_start)/(2.0f));
+                hsize = TILE_SIZE * hsize;
+                
+                std::cout << "center at " << vecutil::vecInfo(center) << std::endl;
+                std::cout << "half size is " << vecutil::vecInfo(hsize) << std::endl;
+                pshape->SetAsBox(hsize.x, hsize.y, // half width, half height
+                                 center,
+                                 0.0f); // rotation degrees
+                wall_shapes_.push_back(std::unique_ptr<b2PolygonShape>(pshape));
+                
+                // transpos is the vector from world (0,0) to top left corner of the shape 
+                b2Vec2 transpos(r, wall_start);
+                transpos = TILE_SIZE * transpos;
+                b2Transform trans(transpos, b2Rot(0.0f));
+                std::cout << "transform at " << vecutil::transformInfo(trans) << std::endl;
+                wall_transforms_.push_back(trans);
                 wall_start = -1;
                 wall_end = -1;
             }
@@ -209,27 +228,58 @@ void Logic::buildWallShapes() {
 }
 
 bool Logic::tileIsWall(int tile) {
-    return tile == 455 || tile == 211 || tile == 210 || tile == -1;
+    return tile == 455 || tile == 211 || tile == -1;
 }
 
 bool Logic::checkWallCollision(Entity& e) {
     if ( wall_shapes_.size() == 0 || wall_transforms_.size() == 0 ) {
         std::cout << "Logic.cpp: tried to check collision without complete wall info" << std::endl;
-        return false;
+        return false;   
     }
     if ( e.getShape() == nullptr ) {
         return false;
     }
 
-    std::cout << "Reached collision checks." << std::endl;
-
-    for (int i = 0; i < wall_shapes_.size(); i++) {
-        auto part_collision = b2TestOverlap( e.getShape(), 0, wall_shapes_[i].get(), 0, 
-                e.getTransform(), wall_transforms_[i]);
-        if (part_collision) {
-            return true;
-        }
+    auto pt = e.getPos();
+        //std::cout << "---------Wall shape: " << wall_shapes_[i]->GetType() << std::endl;
+        //std::cout << vecutil::vecInfo(wall_transforms_[i].p) << std::endl;
+    
+    sf::Vector2f tpos = (1.0f/TILE_SIZE) * pt;
+    tpos.x = (int)tpos.x;
+    tpos.y = (int)tpos.y;
+    if (tpos.x >= 0 && tpos.y >= 0 && tpos.x < getMapSize().first && tpos.y < getMapSize().second) {
+        std::cout << "tile is " << vecutil::vecInfo(tpos) << ":" << tiles_[(int)(pt.x / TILE_SIZE)][(int)(pt.y / TILE_SIZE)] << std::endl; 
     }
-    return false;
+    else {
+        std::cout << "tile " << vecutil::vecInfo(tpos) << " out of bounds" << std::endl;
+    }
+    
+    std::cout << "Reached collision checks for " << vecutil::vecInfo(pt) << std::endl;
+    
+    std::cout << "intersected indices: ";
+    
+    bool hit = false;
+    for (int i = 0; i < wall_shapes_.size(); i++) {
+        
+        if (wall_shapes_[i]->TestPoint(wall_transforms_[i], b2Vec2(pt.x, pt.y)) ){
+            std::cout << i << ", ";
+            hit = true;
+        }
+        else {
+            //std::cout << "pt AVOIDED wall index " << i << std::endl;
+            //return false;
+        }
+        
+        //bool part_collision = b2TestOverlap( e.getShape(), 0, wall_shapes_[i].get(), 0, 
+         //       e.getTransform(), wall_transforms_[i]);
+        //if (part_collision) {
+          //  return true;
+        //}
+    }
+    std::cout << std::endl;
+    if (!hit) {
+        std::cout << "AVOIDED walls" << std::endl;
+    }
+    return hit;
 }
 
