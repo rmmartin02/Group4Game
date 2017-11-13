@@ -4,10 +4,9 @@
 
 #include "Screens/MiniGameScreen.hpp"
 #include <vector>
+#include <cmath>
 
 int boardSize;
-
-enum class MiniGameScreen::Operation;
 
 int pathLength;
 
@@ -33,7 +32,7 @@ std::vector<std::vector<int>> setCurrentBoard (int size) {
 
 }
 
-void setToInitialState(int numberOfEmptySlots) {
+void MiniGameScreen::setToInitialState(int numberOfEmptySlots) {
 
     std::vector<int> full_array(boardSize);
     std::vector<int> blank_array(boardSize);
@@ -72,7 +71,7 @@ void setToInitialState(int numberOfEmptySlots) {
     }
 }
 
-int getValue(int row, int column) {
+int MiniGameScreen::getValue(int row, int column) {
     // RETRIEVE A VALUE AT GIVEN COORDINATES
 
     int value = MiniGameScreen().currentBoard[row][column];
@@ -80,27 +79,27 @@ int getValue(int row, int column) {
 
 }
 
-MiniGameScreen getParent() {
+MiniGameScreen* MiniGameScreen::getParent() {
 
-    return MiniGameScreen().getParent();
-
-}
-
-enum Operation getOperation() {
-
-    return Operation;
+    return parentBoard;
 
 }
 
-int getpathLength () {
+MiniGameScreen::Operation MiniGameScreen::getOperation() {
+
+    return boardOperation;
+
+}
+
+int MiniGameScreen::getPathLength () {
 
     return pathLength;
 
 }
 
-MiniGameScreen move (int row, int column, MiniGameScreen::Operation op) {
+MiniGameScreen MiniGameScreen::move (int row, int column, MiniGameScreen::Operation op) {
 
-    if (op == ) {
+    if (op == MiniGameScreen().MOVERIGHT) {
 
         if (column == 3) {
             //OUT OF BOUNDS
@@ -111,10 +110,289 @@ MiniGameScreen move (int row, int column, MiniGameScreen::Operation op) {
         } else {
             // GENERATE NEW MiniGameScreen AND UPDATE VARIABLES
             MiniGameScreen newState;
+            newState.boardOperation = op;
+            newState.parentBoard = this;
+            newState.pathLength = pathLength + 1;
 
+            // REFRESH NEW BOARD
+            newState.currentBoard = currentBoard; // CHECK EFFICACY
+            int value = newState.currentBoard[row][column];
+            newState.currentBoard[row][column] = 0;
+            newState.currentBoard[row][column + 1] = value;
 
+            return newState;
+        }
+    } else if (op == MiniGameScreen().MOVELEFT) {
+        if (column == 0) {
+            // OUT OF BOUNDS
+            return NULL;
+        } else if (currentBoard[row][column - 1] != 0) {
+            // DESTINATION NOT EMPTY
+            return NULL;
+        } else {
+
+            // GENERATE NEW MiniGameScreen AND UPDATE VARIABLES
+            MiniGameScreen newState;
+            newState.boardOperation = op;
+            newState.parentBoard = this;
+            newState.pathLength = pathLength + 1;
+
+            // REFRESH NEW BOARD
+            newState.currentBoard = currentBoard;
+            int value = newState.currentBoard[row][column];
+            newState.currentBoard[row][column] = 0;
+            newState.currentBoard[row][column - 1] = value;
+
+            return newState;
+        }
+    } else if (op == MiniGameScreen().MOVEDOWN){
+
+        if (row == 3) {
+            // OUT OF BOUNDS
+            return NULL;
+        } else if (currentBoard[row + 1][column] != 0) {
+            // DESITNATION NOT EMPTY
+            return NULL;
+        } else {
+            // Generate new PuzzleState and update variables
+            MiniGameScreen newState;
+            newState.boardOperation = op;
+            newState.parentBoard = this;
+            newState.pathLength = pathLength + 1;
+
+            // Update new board
+            newState.currentBoard = currentBoard;
+            int value = newState.currentBoard[row][column];
+            newState.currentBoard[row][column] = 0;
+            newState.currentBoard[row + 1][column] = value;
+
+            return newState;
+        }
+    } else if (op == MiniGameScreen().MOVEUP) {
+
+        if (row == 0) {
+            // OUT OF BOUNDS
+            return NULL;
+        } else if (currentBoard[row - 1][column] != 0) {
+            // DESTINATION NOT EMPTY
+            return NULL;
+        } else {
+            // Create new PuzzleState and update variables
+            MiniGameScreen newState;
+            newState.boardOperation = op;
+            newState.parentBoard = this;
+            newState.pathLength = pathLength + 1;
+
+            // Update new board
+            newState.currentBoard = currentBoard;
+            int value = newState.currentBoard[row][column];
+            newState.currentBoard[row][column] = 0;
+            newState.currentBoard[row - 1][column] = value;
+
+            return newState;
 
         }
+
+    } else {
+        // Any other case
+        return NULL;
     }
+}
+
+MiniGameScreen MiniGameScreen::flip (int startRow, int startColumn, int endRow, int endColumn) {
+
+// Generate puzzle state
+    MiniGameScreen newState;
+    int distance = std::abs(startRow-endRow) + std::abs(startColumn-endColumn);
+
+    if (distance == 1) {
+        if (startRow == endRow && startColumn < endColumn) {
+            newState = move(startRow, startColumn, MiniGameScreen().MOVERIGHT);
+            return newState;
+        }else if (startRow == endRow && endColumn < startColumn) {
+            newState = move(startRow, startColumn, MiniGameScreen().MOVELEFT);
+            return newState;
+        } else if (startColumn == endColumn && startRow < endRow) {
+            newState = move(startRow, startColumn, MiniGameScreen().MOVEDOWN);
+            return newState;
+        } else if (startColumn == endColumn && endRow < startRow) {
+            newState = move(startRow, startColumn, MiniGameScreen().MOVEUP);
+            return newState;
+        }
+        return NULL;
+    } else if (distance == 2) {
+
+        if (startRow < endRow && startColumn < endColumn) {
+            if (getValue(startRow, startColumn + 1) == 0) {
+                newState = move(startRow, startColumn, MiniGameScreen().MOVERIGHT);
+                return newState.flip(startRow, startColumn + 1, endRow, endColumn);
+            } else {
+                newState = move(startRow, startColumn, MiniGameScreen().MOVEDOWN);
+                return newState.flip(startRow + 1, startColumn, endRow, endColumn);
+            }
+        } else if (startRow > endRow && startColumn > endColumn) {
+            if (getValue(startRow, startColumn - 1) == 0) {
+                newState = move(startRow, startColumn, MiniGameScreen().MOVELEFT);
+                return newState.flip(startRow, startColumn - 1, endRow, endColumn);
+            } else {
+                newState = move(startRow, startColumn, MiniGameScreen().MOVEUP);
+                return newState.flip(startRow - 1, startColumn, endRow, endColumn);
+            }
+        } else if (startRow < endRow && startColumn > endColumn) {
+            if (getValue(startRow, startColumn - 1) == 0) {
+                newState = move(startRow, startColumn, MiniGameScreen().MOVELEFT);
+                return newState.flip(startRow, startColumn - 1, endRow, endColumn);
+            } else {
+                newState = move(startRow, startColumn, MiniGameScreen().MOVEDOWN);
+                return newState.flip(startRow + 1, startColumn, endRow, endColumn);
+            }
+        } else if (startRow > endRow && startColumn < endColumn) {
+            if (getValue(startRow, startColumn + 1) == 0) {
+                newState = move(startRow, startColumn, MiniGameScreen().MOVERIGHT);
+                return newState.flip(startRow, startColumn + 1, endRow, endColumn);
+            } else {
+                newState = move(startRow, startColumn, MiniGameScreen().MOVEUP);
+                return newState.flip(startRow - 1, startColumn, endRow, endColumn);
+            }
+        } else if (startRow == endRow && startColumn < endColumn) {
+            if (getValue(startRow, startColumn + 1) == 0) {
+                newState = move(startRow, startColumn, MiniGameScreen().MOVERIGHT);
+                return newState.flip(startRow, startColumn + 1, endRow, endColumn);
+            } else {
+                return NULL;
+            }
+        } else if (startRow == endRow && startColumn > endColumn) {
+            if (getValue(startRow, startColumn - 1) == 0) {
+                newState = move(startRow, startColumn, MiniGameScreen().MOVELEFT);
+                return newState.flip(startRow, startColumn - 1, endRow, endColumn);
+            } else {
+                return NULL;
+            }
+        } else if (startRow < endRow && startColumn == endColumn) {
+            if (getValue(startRow + 1, startColumn) == 0) {
+                newState = move(startRow, startColumn, MiniGameScreen().MOVEDOWN);
+                return newState.flip(startRow + 1, startColumn, endRow, endColumn);
+            } else {
+                return NULL;
+            }
+        } else if (startRow > endRow && startColumn == endColumn) {
+            if (getValue(startRow - 1, startColumn) == 0) {
+                newState = move(startRow, startColumn, MiniGameScreen().MOVEUP);
+                return newState.flip(startRow - 1, startColumn, endRow, endColumn);
+            } else {
+                return NULL;
+            }
+        } else {
+            return NULL;
+        }
+
+    } else if (distance == 3) {
+
+        if (std::abs(startColumn-endColumn) == 2 && startColumn < endColumn) {
+            if (endRow < startRow) {
+                if (getValue(startRow - 1, startColumn) == 0) {
+                    newState = move(startRow, startColumn, MiniGameScreen().MOVEUP);
+                    return newState.flip(startRow - 1, startColumn, endRow, endColumn);
+                } else {
+                    newState = move(startRow, startColumn, MiniGameScreen().MOVERIGHT);
+                    return newState.flip(startRow, startColumn + 1, endRow, endColumn);
+                }
+            } else if (endRow > startRow) {
+                if (getValue(startRow + 1, startColumn) == 0) {
+                    newState = move(startRow, startColumn, MiniGameScreen().MOVEDOWN);
+                    return newState.flip(startRow + 1, startColumn, endRow, endColumn);
+                } else {
+                    newState = move(startRow, startColumn, MiniGameScreen().MOVERIGHT);
+                    return newState.flip(startRow, startColumn + 1, endRow, endColumn);
+                }
+            } else {
+                return NULL;
+            }
+        } else if (std::abs(startColumn-endColumn) == 2 && startColumn > endColumn) {
+            if (endRow < startRow) {
+                if (getValue(startRow - 1, startColumn) == 0) {
+                    newState = move(startRow, startColumn, MiniGameScreen().MOVEUP);
+                    return newState.flip(startRow - 1, startColumn, endRow, endColumn);
+                } else {
+                    newState = move(startRow, startColumn, MiniGameScreen().MOVELEFT);
+                    return newState.flip(startRow, startColumn - 1, endRow, endColumn);
+                }
+            } else if (endRow > startRow) {
+                if (getValue(startRow + 1, startColumn) == 0) {
+                    newState = move(startRow, startColumn, MiniGameScreen().MOVEDOWN);
+                    return newState.flip(startRow + 1, startColumn, endRow, endColumn);
+                } else {
+                    newState = move(startRow, startColumn, MiniGameScreen().MOVELEFT);
+                    return newState.flip(startRow, startColumn - 1, endRow, endColumn);
+                }
+            } else {
+                return NULL;
+            }
+        } else if (std::abs(startRow-endRow) == 2 && startRow < endRow) {
+            if (startColumn > endColumn) {
+                if (getValue(startRow, startColumn - 1) == 0) {
+                    newState = move(startRow, startColumn, MiniGameScreen().MOVELEFT);
+                    return newState.flip(startRow, startColumn - 1, endRow, endColumn);
+                } else {
+                    newState = move(startRow, startColumn, MiniGameScreen().MOVEDOWN);
+                    return newState.flip(startRow + 1, startColumn, endRow, endColumn);
+                }
+            } else if (startColumn < endColumn) {
+                if (getValue(startRow, startColumn + 1) == 0) {
+                    newState = move(startRow, startColumn, MiniGameScreen().MOVERIGHT);
+                    return newState.flip(startRow, startColumn + 1, endRow, endColumn);
+                } else {
+                    newState = move(startRow, startColumn, MiniGameScreen().MOVEDOWN);
+                    return newState.flip(startRow + 1, startColumn, endRow, endColumn);
+                }
+            }else {
+                return NULL;
+            }
+        } else if (std::abs(startRow-endRow) == 2 && startRow > endRow) {
+            if (startColumn > endColumn) {
+                if (getValue(startRow, startColumn - 1) == 0) {
+                    newState = move(startRow, startColumn, MiniGameScreen().MOVELEFT);
+                    return newState.flip(startRow, startColumn - 1, endRow, endColumn);
+                } else {
+                    newState = move(startRow, startColumn, MiniGameScreen().MOVEUP);
+                    return newState.flip(startRow - 1, startColumn, endRow, endColumn);
+                }
+            } else if (startColumn < endColumn) {
+                if (getValue(startRow, startColumn + 1) == 0) {
+                    newState = move(startRow, startColumn, MiniGameScreen().MOVERIGHT);
+                    return newState.flip(startRow, startColumn + 1, endRow, endColumn);
+                } else {
+                    newState = move(startRow, startColumn, MiniGameScreen().MOVEUP);
+                    return newState.flip(startRow - 1, startColumn, endRow, endColumn);
+                }
+            } else {
+                return NULL;
+            }
+        } else if (startRow - endRow == 3) {
+            newState = move(startRow, startColumn, MiniGameScreen().MOVEUP);
+            return newState.flip(startRow - 1, startColumn, endRow, endColumn);
+        } else if (startRow - endRow == -3) {
+            newState = move(startRow, startColumn, MiniGameScreen().MOVEDOWN);
+            return newState.flip(startRow + 1, startColumn, endRow, endColumn);
+        } else if (startColumn - endColumn == 3) {
+            newState = move(startRow, startColumn, MiniGameScreen().MOVELEFT);
+            return newState.flip(startRow, startColumn - 1, endRow, endColumn);
+        } else if (startColumn - endColumn == -3) {
+            newState = move(startRow, startColumn, MiniGameScreen().MOVERIGHT);
+            return newState.flip(startRow, startColumn + 1, endRow, endColumn);
+        }
+    } else {
+        return NULL;
+    }
+    return NULL;
 
 }
+
+MiniGameScreen MiniGameScreen::shuffleBoard(int pathLength) {
+
+
+
+}
+
+
+

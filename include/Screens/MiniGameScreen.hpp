@@ -17,6 +17,10 @@ public:
 
     int boardSize;
 
+    int pathLength;
+
+    MiniGameScreen* parentBoard;
+
     MiniGameScreen();
 
     // NEW
@@ -25,13 +29,16 @@ public:
 
 
     // INHERITED
-    enum class Operation {MOVERIGHT, MOVELEFT, MOVEUP, MOVEDOWN};
+
+    enum Operation {MOVERIGHT, MOVELEFT, MOVEUP, MOVEDOWN};
+
+    Operation boardOperation;
 
     void setToInitialState(int numberOfEmptySlots);
 
     int getValue(int row, int column);
 
-    MiniGameScreen getParent();
+    MiniGameScreen* getParent();
 
     Operation getOperation();
 
