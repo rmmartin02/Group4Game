@@ -4,7 +4,6 @@
 #include "Global.hpp"
 #include "Entities/Entity.hpp"
 #include "Entities/Character.hpp"
-#include "Entities/Device.hpp"
 #include "Entities/Laser.hpp"
 #include "TextureManager.hpp"
 
@@ -32,7 +31,7 @@ public:
     
     // Returns reference to map containing entities
     std::map<std::string, Entity>& getEntities();
-    std::map<std::string, Device>& getDevices();
+    std::map<std::string, Laser>& getDevices();
     
     // Returns copy of the player character entity
     Entity getCharacter();
@@ -50,7 +49,7 @@ private:
     
     std::vector<std::vector<int>> tiles_;
     std::map<std::string, Entity> entities_;
-    std::map<std::string, Device> devices_;
+    std::map<std::string, Laser> lasers_;
     
     // Clear data structures for tiles and entities
     void clearLevel();

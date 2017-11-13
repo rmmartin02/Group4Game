@@ -12,7 +12,8 @@
 class Device {
 
 public:
-    Device();
+
+    Device(sf::Vector2f pos, float startRotate, float endRotate, float shootTime, float stopTime );
 
     //update
     virtual void update(float delta, int &logic);
@@ -48,6 +49,10 @@ protected:
     bool hacked;
     sf::Sprite sprite_;
     int dir_;
+    float startRotate_;
+    float endRotate_;
+    float shootTime_;
+    float stopTime_;
 };
 
 #endif //DEVICE_HPP

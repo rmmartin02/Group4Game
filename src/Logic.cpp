@@ -45,8 +45,8 @@ std::vector<std::vector<int>>& Logic::getTiles() {
 std::map<std::string,Entity>& Logic::getEntities() {
     return entities_;
 }
-std::map<std::string,Device>& Logic::getDevices() {
-    return devices_;
+std::map<std::string,Laser>& Logic::getDevices() {
+    return lasers_;
 }
 
 Entity Logic::getCharacter(){
@@ -120,13 +120,18 @@ void Logic::loadEntities(std::string filename) {
 }
 
 void Logic::loadDevices(std::string filename){
-    devices_["Laser"]=Laser();
+    lasers_["Laser"]=Laser();
     sf::Sprite l;
 
     logictm.loadTexture("Laser","../resource/laser.png");
     l.setTexture(logictm.getRef("Laser"));
-    devices_["Laser"].setSprite(l);
-    devices_["Laser"].setPos(sf::Vector2f(12,12));
+    lasers_["Laser"].setSprite(l);
+    lasers_["Laser"].setPos(sf::Vector2f(100,100));
+    lasers_["Laser"].setRotate(-20,20);
+    lasers_["Laser"].setShootTime(3);
+    lasers_["Laser"].setStopTime(1);
+
+    //lasers_["Laser"].setPos(sf::Vector2f(12,12));
 
 
 }

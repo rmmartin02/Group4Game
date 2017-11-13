@@ -1,11 +1,16 @@
 //
 // Created by Ruoying Hao on 10/31/17.
 //
-#include "Global.hpp"
 #include "Entities/Device.hpp"
 #include "Logic.hpp"
 
-Device::Device(){
+Device::Device(sf::Vector2f pos, float startRotate, float endRotate, float shootTime, float stopTime ){
+    pos_=pos;
+    startRotate_=startRotate;
+    endRotate_=endRotate;
+    shootTime_=shootTime;
+    stopTime_=shootTime;
+
 
 };
 
@@ -20,7 +25,7 @@ void Device::render (sf::RenderWindow *window) {
 void Device::setPos(sf::Vector2f pos){
     pos_=pos;
     sprite_.setOrigin(sprite_.getLocalBounds().width/2,sprite_.getLocalBounds().height/2);
-   
+
 }
 
 sf::Vector2f Device::getPos(){
