@@ -23,15 +23,6 @@ Logic::Logic() {
     b2Vec2 gravity(0.0f, 0.0f); // no gravity
     b2World world(gravity);
     
-    // This compiles and runs without issue, so we know the Box2D lib works.
-    // However...
-    // we might want to use the underlying objects in the Collision module
-    // instead of letting Box2D do all the physics simulation that it does
-    // when you use the full World object.
-    // For example, we might attach b2__Shapes to our entities instead of
-    // rigid bodies. We don't need the box2D physics making everything bounce
-    // around. Just the shape classes give us the ability to check for intersections
-    // and even do ray casting (which will probably help with line-of-sight). 
 }
 
 void Logic::update(float delta) {
@@ -43,8 +34,11 @@ void Logic::update(float delta) {
             b2Vec2 wall_norm;
             if (checkWallCollision(e, wall_touch, wall_norm)){
                 //std::cout << "entity " << pair.first << " hitting wall" << std::endl;
+                
+                // TODO fix this so it doesn't cause occasional bouncing off walls
+                
                 // restrict velocity so we don't move into walls
-                // project velocity onto wall normal
+                // project velocity vector onto wall normal
                 float vrestrict = vecutil::clamp(vecutil::dotProd(e.getVel(),
                                     vecutil::normalize(vecutil::toSFVec(wall_norm))),
                                                  -vecutil::infinity(), 0);
@@ -53,7 +47,7 @@ void Logic::update(float delta) {
                 e.setVel(vadjusted);
             }
             else {
-                std::cout << "no wall collision" << std::endl;
+                //std::cout << "no wall collision" << std::endl;
             }
         }
         e.move(e.getVel());
@@ -189,38 +183,54 @@ void Logic::loadEntities(std::string filename) {
 
 void Logic::buildWallShapes() {
     wall_shapes_.clear();
-    auto map_size = getMapSize();
-    
-    // Currently, scans along each row and forms rectangle shapes of
-    // height 1 that are as long as possible (vertical rectangles)
+    buildAxisWalls(true);
+    buildAxisWalls(false);
+    std::cout << "Created " << wall_shapes_.size() << " Box2D shapes for the tiles." << std::endl;
+}
+
+int Logic::buildAxisWalls(bool vertical) {
     int wall_start = -1;
     int wall_end = -1; // the position AFTER the last block of the wall
-    for (int r = 0; r < map_size.first; r++) {
-        for (int c = 0; c < map_size.second; c++) {
+    
+    auto map_size = getMapSize();
+    
+    int inner_limit = vertical ? map_size.first : map_size.second;
+    int outer_limit = vertical ? map_size.second : map_size.first;
+    
+    for (int outer = 0; outer < outer_limit; outer++) {
+        for (int inner = 0; inner < inner_limit; inner++) {
+            int tile = vertical ? tiles_[outer][inner] : tiles_[inner][outer];
             if ( wall_start < 0 ) {
-                if ( tileIsWall(tiles_[r][c]) )
-                    wall_start = c;
+                if ( tileIsWall(tile) )
+                    wall_start = inner;
             }
             if ( wall_start >= 0 ) {
-                if ( !tileIsWall(tiles_[r][c]) )
-                    wall_end = c;
-                if ( c == map_size.second - 1 )
-                    wall_end = c+1;
+                if ( !tileIsWall(tile) )
+                    wall_end = inner;
+                if ( inner == map_size.second - 1 )
+                    wall_end = inner+1;
             }
             if ( wall_end >= 0 ) {
-                std::cout << r << ": created wall from " << wall_start << " to " << wall_end << std::endl;
+                //std::cout << outer << ": created wall from " << wall_start << " to " << wall_end << std::endl;
                 b2PolygonShape* pshape = new b2PolygonShape();
                 
                 // center is the vector from 0,0 to the the middle of the shape
-                b2Vec2 center(r + 0.5f, wall_start + (wall_end - wall_start)/(2.0f));
-                center = TILE_SIZE * center;
-                
                 // hsize is half the size of the shape
-                b2Vec2 hsize(0.5f, (wall_end - wall_start)/(2.0f));
+                b2Vec2 center;
+                b2Vec2 hsize;
+                if ( vertical ) {
+                    center = b2Vec2(outer + 0.5f, wall_start + (wall_end - wall_start)/(2.0f));
+                    hsize  = b2Vec2(0.5f, (wall_end - wall_start)/(2.0f));
+                }
+                else {
+                    center = b2Vec2(wall_start + (wall_end - wall_start)/(2.0f), outer + 0.5f);
+                    hsize  = b2Vec2((wall_end - wall_start)/(2.0f), 0.5f);
+                }
+                center = TILE_SIZE * center;
                 hsize = TILE_SIZE * hsize;
                 
-                std::cout << "center at " << vecutil::vecInfo(center) << std::endl;
-                std::cout << "half size is " << vecutil::vecInfo(hsize) << std::endl;
+                //std::cout << "center at " << vecutil::vecInfo(center) << std::endl;
+                //std::cout << "half size is " << vecutil::vecInfo(hsize) << std::endl;
                 pshape->SetAsBox(hsize.x, hsize.y, // half width, half height
                                  center,
                                  0.0f); // rotation degrees
@@ -229,52 +239,6 @@ void Logic::buildWallShapes() {
                 wall_end = -1;
             }
         }
-    }
-    
-    std::cout << "HORIZONTAL----" << std::endl;
-    
-    // Then, generates horizontal horizontal rectangles in similar fashion
-    wall_start = -1;
-    wall_end = -1;
-    for (int c = 0; c < map_size.second; c++) {
-        for (int r = 0; r < map_size.first; r++) {
-            if ( wall_start < 0 ) {
-                if ( tileIsWall(tiles_[r][c]) )
-                    wall_start = r;
-            }
-            if ( wall_start >= 0 ) {
-                if ( !tileIsWall(tiles_[r][c]) )
-                    wall_end = r;
-                if ( r == map_size.first - 1 )
-                    wall_end = r+1;
-            }
-            if ( wall_end >= 0 ) {
-                std::cout << c << ": created wall from " << wall_start << " to " << wall_end << std::endl;
-                b2PolygonShape* pshape = new b2PolygonShape();
-                
-                // center is the vector from 0,0 to the the middle of the shape
-                b2Vec2 center(wall_start + (wall_end - wall_start)/(2.0f), c + 0.5f);
-                center = TILE_SIZE * center;
-                
-                // hsize is half the size of the shape
-                b2Vec2 hsize((wall_end - wall_start)/(2.0f), 0.5f);
-                hsize = TILE_SIZE * hsize;
-                
-                std::cout << "center at " << vecutil::vecInfo(center) << std::endl;
-                std::cout << "half size is " << vecutil::vecInfo(hsize) << std::endl;
-                pshape->SetAsBox(hsize.x, hsize.y, // half width, half height
-                                 center,
-                                 0.0f); // rotation degrees
-                wall_shapes_.push_back(std::unique_ptr<b2PolygonShape>(pshape));
-                wall_start = -1;
-                wall_end = -1;
-            }
-        }
-    }
-    
-    std::cout << "Created " << wall_shapes_.size() << " Box2D shapes for the tiles." << std::endl;
-    for (int i = 0; i < wall_shapes_.size(); i++) {
-        std::cout << static_cast<int>(wall_shapes_[i]->m_type) << std::endl;
     }
 }
 
@@ -291,23 +255,6 @@ bool Logic::checkWallCollision(Entity& e, b2Vec2& collision_pt, b2Vec2& norm) {
         return false;
     }
 
-    auto pt = e.getPos();
-        //std::cout << "---------Wall shape: " << wall_shapes_[i]->GetType() << std::endl;
-        //std::cout << vecutil::vecInfo(wall_transforms_[i].p) << std::endl;
-    
-    /*
-    sf::Vector2f tpos = (1.0f/TILE_SIZE) * pt;
-    tpos.x = (int)tpos.x;
-    tpos.y = (int)tpos.y;
-    if (tpos.x >= 0 && tpos.y >= 0 && tpos.x < getMapSize().first && tpos.y < getMapSize().second) {
-        std::cout << "tile is " << vecutil::vecInfo(tpos) << ":" << tiles_[(int)(pt.x / TILE_SIZE)][(int)(pt.y / TILE_SIZE)] << std::endl;
-    }
-    else {
-        std::cout << "tile " << vecutil::vecInfo(tpos) << " out of bounds" << std::endl;
-    }
-    //std::cout << "Reached collision checks for " << vecutil::vecInfo(pt) << std::endl;
-    */
-    
     float closest = vecutil::infinity();
     int num_collisions = 0;
     collision_pt = b2Vec2(0,0);
@@ -328,8 +275,10 @@ bool Logic::checkWallCollision(Entity& e, b2Vec2& collision_pt, b2Vec2& norm) {
                                      e.getTransform(), e.getShape()->m_radius
                                     );
             // circle-poly collisions generate only one manifold pt and normal
-            // if we collided at all
             collision_pt += worldManifold.points[0];
+            // TODO figure out the best way to handle normal and location for multiple collisions
+            // we may need to restructure so collision with each block is resolved independently
+            // otherwise, if the character is colliding with two walls on opposite sides, they can cancel out due to the summation of normal vectors that is here for now
             norm += worldManifold.normal;
             num_collisions ++;
             if (worldManifold.separations[0] < closest) {
@@ -338,7 +287,7 @@ bool Logic::checkWallCollision(Entity& e, b2Vec2& collision_pt, b2Vec2& norm) {
         }
     }
     
-    std::cout << "Collided with " << num_collisions << " wall shapes" << std::endl;
+    //std::cout << "Collided with " << num_collisions << " wall shapes" << std::endl;
     
     if (closest < vecutil::infinity()) {
         //std::cout << "normal: " << vecutil::vecInfo(norm) << std::endl;

@@ -84,6 +84,10 @@ private:
     // Build Box2D shapes for walls in the map tiles
     void buildWallShapes();
     
+    // Build Box2D wall shapes out of 1-wide rectangles
+    // Returns number of shapes created
+    int buildAxisWalls(bool vertical);
+    
     // Returns true if the given tile value represents a wall
     // (should block line of sight and movement), false otherwise
     bool tileIsWall(int tile);
