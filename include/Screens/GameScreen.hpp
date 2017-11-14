@@ -29,6 +29,7 @@ private:
     static const std::string TILESET_FILENAME;
     static const std::string LASER_FILENAME;
     static const std::string CHAR_FILENAME;
+    static const int TILE_SIZE;
 
     
     Logic* logic_;
