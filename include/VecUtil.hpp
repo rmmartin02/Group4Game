@@ -4,10 +4,16 @@
 #ifndef VECUTIL_H
 #define VECUTIL_H
 
+#include <string>
+
 #include <SFML/Graphics.hpp>
+#include "Box2D/Box2D.h"
 
 namespace vecutil {
 
+// Returns a float representing infinity
+float infinity();
+    
 // Enforces lower and upper bounds on val.
 float clamp(float val, float cmin, float cmax);
 
@@ -32,6 +38,27 @@ sf::Vector2f normalize(sf::Vector2f);
 
 // Returns a vector equivalent to a point at the given angle and distance.
 sf::Vector2f fromPolar(float length, float angle);
+
+// Returns string describing Box2D vector contents
+std::string vecInfo(b2Vec2);
+
+// Returns string describing SFML vector contents
+std::string vecInfo(sf::Vector2f);
+
+// Returns string describing Box2D transform contents
+std::string transformInfo(b2Transform);
+
+// Returns the identity transform
+b2Transform iform();
+
+// Converts SFML vector to Box2D vector
+b2Vec2 toB2Vec(sf::Vector2f);
+
+// Converts Box2D vector to SFML vector
+sf::Vector2f toSFVec(b2Vec2);
+
+// Draws a line in the window between the two points
+void drawDebugLine(sf::Vector2f p1, sf::Vector2f p2, sf::Color color, sf::RenderWindow *window);
 
 }
 

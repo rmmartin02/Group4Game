@@ -31,11 +31,6 @@ private:
     static const std::string CHAR_FILENAME;
 
     
-    // Represents the size of a tile, in pixels on the tileset file,
-    // and in SFML's drawing units. We may want to separate the two
-    // in the future.
-    static const int TILE_SIZE;
-    
     Logic* logic_;
     TextureManager texmgr;
     

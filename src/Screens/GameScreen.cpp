@@ -4,9 +4,11 @@
 
 
 const std::string GameScreen::TILESET_FILENAME = "../resource/maps/tiles.png";
+
 const std::string GameScreen::LASER_FILENAME = "../resource/laser.png";
 const std::string GameScreen::CHAR_FILENAME = "../resource/Entities/char_sprite.png";
 const int GameScreen::TILE_SIZE = 32;
+
 
 GameScreen::GameScreen(Logic* logic) {
     logic_ = logic;
@@ -15,6 +17,7 @@ GameScreen::GameScreen(Logic* logic) {
 }
 
 bool GameScreen::loadTextures() {
+
    // textures_["tileset"] = sf::Texture();
     texmgr.loadTexture("tileset",TILESET_FILENAME);
     texmgr.loadTexture("laser",LASER_FILENAME);
@@ -26,6 +29,7 @@ bool GameScreen::loadTextures() {
     texture_coords_[455] = std::make_pair(TILE_SIZE*6, TILE_SIZE*4);
     texture_coords_[211] = std::make_pair(TILE_SIZE*6, TILE_SIZE*5);
     texture_coords_[210] = std::make_pair(TILE_SIZE*7, TILE_SIZE*4);
+
     return true;
 }
 
@@ -53,9 +57,9 @@ void GameScreen::renderTiles(sf::RenderWindow *window) {
     sf::Vector2f viewport_bound = window->getView().getCenter()  - 
                                 (window->getView().getSize()/2.f); // view top left
     // determine viewport bounds so we can cull and not draw tiles that aren't visible
-    sf::Vector2f topleft = viewport_bound * (1.0f / TILE_SIZE);
+    sf::Vector2f topleft = viewport_bound * (1.0f / Logic::TILE_SIZE);
     viewport_bound += window->getView().getSize(); // view bottom right
-    sf::Vector2f topright = sf::Vector2f(1,1) + (viewport_bound * (1.0f / TILE_SIZE));
+    sf::Vector2f topright = sf::Vector2f(1,1) + (viewport_bound * (1.0f / Logic::TILE_SIZE));
     
     // clamp to fit in array indices
     sf::Vector2f clamp_min = vecutil::clampVec2(topleft, sf::Vector2f(0,0), sf::Vector2f(tile_rows, tile_cols));
@@ -73,28 +77,28 @@ void GameScreen::renderTiles(sf::RenderWindow *window) {
             
             // top left vert
             sf::Vertex v;
-            v.position = sf::Vector2f(r * TILE_SIZE,
-                                         c * TILE_SIZE);
+            v.position = sf::Vector2f(r * Logic::TILE_SIZE,
+                                         c * Logic::TILE_SIZE);
             v.texCoords = sf::Vector2f( coord_pair.first, 
                                            coord_pair.second );
             tile_vertices_.append(v);
             // top right vert
-            v.position = sf::Vector2f(r * TILE_SIZE + TILE_SIZE, 
-                                         c * TILE_SIZE);
-            v.texCoords = sf::Vector2f( coord_pair.first + TILE_SIZE,
+            v.position = sf::Vector2f(r * Logic::TILE_SIZE + Logic::TILE_SIZE, 
+                                         c * Logic::TILE_SIZE);
+            v.texCoords = sf::Vector2f( coord_pair.first + Logic::TILE_SIZE,
                                            coord_pair.second );
             tile_vertices_.append(v);
             // bottom right vert
-            v.position = sf::Vector2f(r * TILE_SIZE + TILE_SIZE, 
-                                         c * TILE_SIZE + TILE_SIZE);
-            v.texCoords = sf::Vector2f( coord_pair.first + TILE_SIZE,
-                                           coord_pair.second + TILE_SIZE );
+            v.position = sf::Vector2f(r * Logic::TILE_SIZE + Logic::TILE_SIZE, 
+                                         c * Logic::TILE_SIZE + Logic::TILE_SIZE);
+            v.texCoords = sf::Vector2f( coord_pair.first + Logic::TILE_SIZE,
+                                           coord_pair.second + Logic::TILE_SIZE );
             tile_vertices_.append(v);
             // bottom left vert
-            v.position = sf::Vector2f(r * TILE_SIZE, 
-                                         c * TILE_SIZE + TILE_SIZE);
+            v.position = sf::Vector2f(r * Logic::TILE_SIZE, 
+                                         c * Logic::TILE_SIZE + Logic::TILE_SIZE);
             v.texCoords = sf::Vector2f( coord_pair.first,
-                                           coord_pair.second + TILE_SIZE );
+                                           coord_pair.second + Logic::TILE_SIZE );
             tile_vertices_.append(v);
         }
     }
@@ -120,11 +124,22 @@ void GameScreen::renderEntities(sf::RenderWindow *window) {
         //pair.second->setSprite(l);
         pair.second->render(window);
     }
+
     std::cout << "render render\n";
+
 }
 
 void GameScreen::renderParticles(sf::RenderWindow *window) {
-    
+    // Debug line
+    sf::Vector2f org;
+    sf::Vector2f dir;
+    if (logic_->getDebugInfo(org, dir)) {
+        dir.x = dir.x * 100;
+        dir.y = dir.y * 100;
+        vecutil::drawDebugLine(org, dir, sf::Color::Red, window);
+        //std::cout << "Drew debug line " << vecutil::vecInfo(org) 
+         //                               << vecutil::vecInfo(dir) << std::endl;
+    }
 }
 
 

@@ -3,6 +3,8 @@
 #include <sstream>
 #include <fstream>
 
+#include "VecUtil.hpp"
+
 Logic::Logic() {
     
     time_left_ = 10 * 60;
@@ -35,21 +37,28 @@ Logic::Logic() {
 void Logic::update(float delta) {
     // update every entity.
     for ( auto& pair : getEntities() ) {
-        pair.second->move(pair.second->getVel());
-        if (pair.second->wallCollision()){            
+        Entity& e = *(pair.second.get());
+        if (e.wallCollision()){
+            b2Vec2 wall_touch;
+            b2Vec2 wall_norm;
+            if (checkWallCollision(e, wall_touch, wall_norm)){
+                //std::cout << "entity " << pair.first << " hitting wall" << std::endl;
+                // restrict velocity so we don't move into walls
+                // project velocity onto wall normal
+                float vrestrict = vecutil::clamp(vecutil::dotProd(e.getVel(),
+                                    vecutil::normalize(vecutil::toSFVec(wall_norm))),
+                                                 -vecutil::infinity(), 0);
+                // remove that component from the velocity
+                sf::Vector2f vadjusted = e.getVel() - vecutil::toSFVec(vrestrict * wall_norm);
+                e.setVel(vadjusted);
+            }
+            else {
+                std::cout << "no wall collision" << std::endl;
+            }
         }
+        e.move(e.getVel());
     }
     
-    // testing box2d integration
-   // b2Transform ctrans = getCharacter().getTransform();
-   // std::cout << "Transform: " << ctrans.p.x << ", " << ctrans.p.y << "." << std::endl;
-    if (checkWallCollision(getCharacter())){
-        std::cout << "Character hitting wall" << std::endl;
-    }
-    else{
-        std::cout << "no wall collision" << std::endl;
-    }
-
     // adjust the timer
     time_left_ -= delta;
     if (time_left_ < 0) {
@@ -115,6 +124,17 @@ void Logic::registerMoveInput(Logic::Direction dir){
 			return;
 	}
     getCharacter().setVel(getCharacter().getVel() + motion);
+}
+
+bool Logic::getDebugInfo(sf::Vector2f& p1, sf::Vector2f& p2) {
+    b2Vec2 wall_touch;
+    b2Vec2 wall_norm;
+    if (checkWallCollision(getCharacter(), wall_touch, wall_norm)){
+        p1 = vecutil::toSFVec(wall_touch);
+        p2 = vecutil::toSFVec(wall_norm);
+        return true;
+    }
+    return false;
 }
 
 float Logic::getTimeLeft(){
@@ -194,13 +214,23 @@ void Logic::buildWallShapes() {
                     wall_end = c+1;
             }
             if ( wall_end > 0 ) {
-                std::cout << "created wall from " << wall_start << " to " << (wall_end - 1) << std::endl;
-                b2PolygonShape* box = new b2PolygonShape();
-                box->SetAsBox((wall_end - wall_start)/(0.2f), 0.5f, b2Vec2(0,0), 0.0f);
-                // add a box2d shape of length size wall_end - wall_start
-                wall_shapes_.push_back(std::unique_ptr<b2PolygonShape>(box));
-                // TODO verify where box2d expects the origin point of its shapes to be
-                wall_transforms_.push_back(b2Transform(b2Vec2(wall_start,r), b2Rot()));
+                std::cout << r << ": created wall from " << wall_start << " to " << wall_end << std::endl;
+                b2PolygonShape* pshape = new b2PolygonShape();
+                
+                // center is the vector from 0,0 to the the middle of the shape
+                b2Vec2 center(r + 0.5f, wall_start + (wall_end - wall_start)/(2.0f));
+                center = TILE_SIZE * center;
+                
+                // hsize is half the size of the shape
+                b2Vec2 hsize(0.5f, (wall_end - wall_start)/(2.0f));
+                hsize = TILE_SIZE * hsize;
+                
+                std::cout << "center at " << vecutil::vecInfo(center) << std::endl;
+                std::cout << "half size is " << vecutil::vecInfo(hsize) << std::endl;
+                pshape->SetAsBox(hsize.x, hsize.y, // half width, half height
+                                 center,
+                                 0.0f); // rotation degrees
+                wall_shapes_.push_back(std::unique_ptr<b2PolygonShape>(pshape));
                 wall_start = -1;
                 wall_end = -1;
             }
@@ -210,31 +240,76 @@ void Logic::buildWallShapes() {
     std::cout << "Created " << wall_shapes_.size() << " Box2D shapes for the tiles." << std::endl;
     for (int i = 0; i < wall_shapes_.size(); i++) {
         std::cout << static_cast<int>(wall_shapes_[i]->m_type) << std::endl;
-        std::cout << static_cast<float>(wall_transforms_[i].p.x) << "," << static_cast<float>(wall_transforms_[i].p.y) << std::endl;
     }
 }
 
 bool Logic::tileIsWall(int tile) {
-    return tile == 455 || tile == 211 || tile == 210 || tile == -1;
+    return tile == 455 || tile == 211 || tile == -1;
 }
 
-bool Logic::checkWallCollision(Entity& e) {
-    if ( wall_shapes_.size() == 0 || wall_transforms_.size() == 0 ) {
+bool Logic::checkWallCollision(Entity& e, b2Vec2& collision_pt, b2Vec2& norm) {
+    if ( wall_shapes_.size() == 0 ) {
         std::cout << "Logic.cpp: tried to check collision without complete wall info" << std::endl;
-        return false;
+        return false;   
     }
-    if ( e.getShape() == nullptr ) {
+    if ( !e.getShape() ) {
         return false;
     }
 
-    std::cout << "Reached collision checks." << std::endl;
-
+    auto pt = e.getPos();
+        //std::cout << "---------Wall shape: " << wall_shapes_[i]->GetType() << std::endl;
+        //std::cout << vecutil::vecInfo(wall_transforms_[i].p) << std::endl;
+    
+    sf::Vector2f tpos = (1.0f/TILE_SIZE) * pt;
+    tpos.x = (int)tpos.x;
+    tpos.y = (int)tpos.y;
+    if (tpos.x >= 0 && tpos.y >= 0 && tpos.x < getMapSize().first && tpos.y < getMapSize().second) {
+        //std::cout << "tile is " << vecutil::vecInfo(tpos) << ":" << tiles_[(int)(pt.x / TILE_SIZE)][(int)(pt.y / TILE_SIZE)] << std::endl;
+    }
+    else {
+        //std::cout << "tile " << vecutil::vecInfo(tpos) << " out of bounds" << std::endl;
+    }
+    //std::cout << "Reached collision checks for " << vecutil::vecInfo(pt) << std::endl;
+    
+    
+    float closest = vecutil::infinity();
+    int num_collisions = 0;
+    collision_pt = b2Vec2(0,0);
+    norm = b2Vec2(0,0);
     for (int i = 0; i < wall_shapes_.size(); i++) {
-        auto part_collision = b2TestOverlap( e.getShape(), 0, wall_shapes_[i].get(), 0, 
-                e.getTransform(), wall_transforms_[i]);
+        bool part_collision = b2TestOverlap( e.getShape(), 0, wall_shapes_[i].get(), 0, 
+                e.getTransform(), vecutil::iform());
         if (part_collision) {
-            return true;
+            b2Manifold manifold;
+            b2CollidePolygonAndCircle(&manifold, 
+                                      static_cast<b2PolygonShape*>(wall_shapes_[i].get()), vecutil::iform(),
+                                      static_cast<b2CircleShape*>(e.getShape()), e.getTransform()
+                                     );
+            
+            b2WorldManifold worldManifold;
+            worldManifold.Initialize(&manifold, 
+                                     vecutil::iform(), wall_shapes_[i]->m_radius,
+                                     e.getTransform(), e.getShape()->m_radius
+                                    );
+            // circle-poly collisions generate only one manifold pt and normal
+            // if we collided at all
+            collision_pt += worldManifold.points[0];
+            norm += worldManifold.normal;
+            num_collisions ++;
+            if (worldManifold.separations[0] < closest) {
+                closest = worldManifold.separations[i];
+            }
         }
+    }
+    
+    std::cout << "Collided with " << num_collisions << " wall shapes" << std::endl;
+    
+    if (closest < vecutil::infinity()) {
+        //std::cout << "normal: " << vecutil::vecInfo(norm) << std::endl;
+        //std::cout << "cpoint: " << vecutil::vecInfo(collision_pt) << std::endl;
+        collision_pt = (1.0f / num_collisions) * collision_pt;
+        norm = (1.0f / num_collisions) * norm;
+        return true;
     }
     return false;
 }
