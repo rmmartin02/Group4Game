@@ -92,8 +92,14 @@ private:
     // (should block line of sight and movement), false otherwise
     bool tileIsWall(int tile);
     
+    // Checks if an entity is colliding with any wall shape and deals with effects
+    bool handleWallCollisions(Entity& e); 
+    
+    // Handle an entity's collision with a wall shape
+    void onWallCollision(Entity& e, b2Vec2 point, b2Vec2 normal);
+    
     // Returns true if the entity is colliding with any wall shape
-    bool checkWallCollision(Entity& e, b2Vec2& collision_pt, b2Vec2& norm);
+    //bool checkWallCollision(Entity& e, b2Vec2& collision_pt, b2Vec2& norm);
 };
 
 #endif // LOGIC_HPP

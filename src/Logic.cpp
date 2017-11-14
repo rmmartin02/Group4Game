@@ -30,25 +30,7 @@ void Logic::update(float delta) {
     for ( auto& pair : getEntities() ) {
         Entity& e = *(pair.second.get());
         if (e.wallCollision()){
-            b2Vec2 wall_touch;
-            b2Vec2 wall_norm;
-            if (checkWallCollision(e, wall_touch, wall_norm)){
-                //std::cout << "entity " << pair.first << " hitting wall" << std::endl;
-                
-                // TODO fix this so it doesn't cause occasional bouncing off walls
-                
-                // restrict velocity so we don't move into walls
-                // project velocity vector onto wall normal
-                float vrestrict = vecutil::clamp(vecutil::dotProd(e.getVel(),
-                                    vecutil::normalize(vecutil::toSFVec(wall_norm))),
-                                                 -vecutil::infinity(), 0);
-                // remove that component from the velocity
-                sf::Vector2f vadjusted = e.getVel() - vecutil::toSFVec(vrestrict * wall_norm);
-                e.setVel(vadjusted);
-            }
-            else {
-                //std::cout << "no wall collision" << std::endl;
-            }
+            handleWallCollisions(e);
         }
         e.move(e.getVel());
     }
@@ -123,11 +105,11 @@ void Logic::registerMoveInput(Logic::Direction dir){
 bool Logic::getDebugInfo(sf::Vector2f& p1, sf::Vector2f& p2) {
     b2Vec2 wall_touch;
     b2Vec2 wall_norm;
-    if (checkWallCollision(getCharacter(), wall_touch, wall_norm)){
-        p1 = vecutil::toSFVec(wall_touch);
-        p2 = vecutil::toSFVec(wall_norm);
-        return true;
-    }
+    //if (checkWallCollision(getCharacter(), wall_touch, wall_norm)){
+      //  p1 = vecutil::toSFVec(wall_touch);
+      //  p2 = vecutil::toSFVec(wall_norm);
+      //  return true;
+    //}
     return false;
 }
 
@@ -246,7 +228,8 @@ bool Logic::tileIsWall(int tile) {
     return tile == 455 || tile == 211 || tile == -1;
 }
 
-bool Logic::checkWallCollision(Entity& e, b2Vec2& collision_pt, b2Vec2& norm) {
+// Checks if an entity is colliding with any wall shape and deals with effects
+bool Logic::handleWallCollisions(Entity& e) {
     if ( wall_shapes_.size() == 0 ) {
         std::cout << "Logic.cpp: tried to check collision without complete wall info" << std::endl;
         return false;   
@@ -257,8 +240,8 @@ bool Logic::checkWallCollision(Entity& e, b2Vec2& collision_pt, b2Vec2& norm) {
 
     float closest = vecutil::infinity();
     int num_collisions = 0;
-    collision_pt = b2Vec2(0,0);
-    norm = b2Vec2(0,0);
+    b2Vec2 collision_pt = b2Vec2(0,0);
+    b2Vec2 norm = b2Vec2(0,0);
     for (int i = 0; i < wall_shapes_.size(); i++) {
         bool part_collision = b2TestOverlap( e.getShape(), 0, wall_shapes_[i].get(), 0, 
                 e.getTransform(), vecutil::iform());
@@ -270,32 +253,31 @@ bool Logic::checkWallCollision(Entity& e, b2Vec2& collision_pt, b2Vec2& norm) {
                                      );
             
             b2WorldManifold worldManifold;
-            worldManifold.Initialize(&manifold, 
+            worldManifold.Initialize(&manifold,
                                      vecutil::iform(), wall_shapes_[i]->m_radius,
                                      e.getTransform(), e.getShape()->m_radius
                                     );
             // circle-poly collisions generate only one manifold pt and normal
-            collision_pt += worldManifold.points[0];
-            // TODO figure out the best way to handle normal and location for multiple collisions
-            // we may need to restructure so collision with each block is resolved independently
-            // otherwise, if the character is colliding with two walls on opposite sides, they can cancel out due to the summation of normal vectors that is here for now
-            norm += worldManifold.normal;
+            collision_pt = worldManifold.points[0];
+            norm = worldManifold.normal;
+            norm.Normalize();
             num_collisions ++;
             if (worldManifold.separations[0] < closest) {
                 closest = worldManifold.separations[i];
             }
+            onWallCollision(e, collision_pt, norm);
         }
     }
     
-    //std::cout << "Collided with " << num_collisions << " wall shapes" << std::endl;
-    
-    if (closest < vecutil::infinity()) {
-        //std::cout << "normal: " << vecutil::vecInfo(norm) << std::endl;
-        //std::cout << "cpoint: " << vecutil::vecInfo(collision_pt) << std::endl;
-        collision_pt = (1.0f / num_collisions) * collision_pt;
-        norm.Normalize();
-        return true;
-    }
-    return false;
+    return closest < vecutil::infinity();
 }
 
+void Logic::onWallCollision(Entity& e, b2Vec2 point, b2Vec2 normal) {
+    //std::cout << "Wall collision handling" << std::endl;
+    float vrestrict = vecutil::clamp(vecutil::dotProd(e.getVel(),
+                        vecutil::normalize(vecutil::toSFVec(normal))),
+                                        -vecutil::infinity(), 0);
+    // remove that component from the velocity
+    sf::Vector2f vadjusted = e.getVel() - vecutil::toSFVec(vrestrict * normal);
+    e.setVel(vadjusted);
+}
