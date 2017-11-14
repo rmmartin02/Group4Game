@@ -3,7 +3,6 @@
 
 #include "Screens/Screen.hpp"
 #include "Logic.hpp"
-#include "TextureManager.hpp"
 
 class GameScreen : public Screen {
 
@@ -27,12 +26,8 @@ private:
 
     // Filename for the texture file containing tile sprites
     static const std::string TILESET_FILENAME;
-    static const std::string LASER_FILENAME;
-    static const std::string CHAR_FILENAME;
-
     
     Logic* logic_;
-    TextureManager texmgr;
     
     std::map<std::string, sf::Texture> textures_;
     std::map<int, std::pair<int, int>> texture_coords_;
