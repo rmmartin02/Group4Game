@@ -85,8 +85,4 @@ void Entity::onTouchWall() {
     return;
 }
 
-bool Entity::isCharacter() {
 
-	return isCharacter;
-
-}

@@ -55,9 +55,9 @@ public:
   // Called when this entity collides with a wall
   virtual void onTouchWall();
 
-  bool isCharacter;
 
-  bool isCharacter();
+
+
 
 protected:
   sf::Vector2f pos_;
