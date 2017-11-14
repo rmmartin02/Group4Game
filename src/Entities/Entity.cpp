@@ -1,7 +1,9 @@
 #include "Entities/Entity.hpp"
 
 #include "Logic.hpp"
-  
+
+bool isCharacter;
+
 Entity::Entity(){
 };
 
@@ -46,8 +48,20 @@ void Entity::setVel(sf::Vector2f vel){
 void Entity::setSprite(sf::Sprite sprite){
 	sprite_ = sprite;
 }
-void Entity::setTexture(const sf::Texture& tex){
+void Entity::setTexture(const sf::Texture& tex, int texCoordinates[]){
+
+	int l = texCoordinates[0];
+	int w = texCoordinates[1];
+	int h = texCoordinates[2];
+	int d = texCoordinates[3];
+
+	//sf::Sprite sprite(tex,sf::IntRect(l,w,h,d));
+
 	sprite_.setTexture(tex);
+
+
+
+	sprite_.setTextureRect(sf::IntRect(l,w,h,d));
 }
 
 void Entity::attachShape(b2Shape* shape){
@@ -71,3 +85,8 @@ void Entity::onTouchWall() {
     return;
 }
 
+bool Entity::isCharacter() {
+
+	return isCharacter;
+
+}

@@ -38,7 +38,7 @@ public:
   virtual void setVel(sf::Vector2f vel);
 
   void setSprite(sf::Sprite sprite);
-  void setTexture(const sf::Texture& tex);
+  void setTexture(const sf::Texture& tex, int texCoordinates[]);
     // Attach a Box2D shape to this object
   void attachShape(b2Shape* shape);
 
@@ -54,6 +54,10 @@ public:
 
   // Called when this entity collides with a wall
   virtual void onTouchWall();
+
+  bool isCharacter;
+
+  bool isCharacter();
 
 protected:
   sf::Vector2f pos_;

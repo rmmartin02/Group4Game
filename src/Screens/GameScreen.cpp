@@ -5,7 +5,7 @@
 
 const std::string GameScreen::TILESET_FILENAME = "../resource/maps/tiles.png";
 const std::string GameScreen::LASER_FILENAME = "../resource/laser.png";
-const std::string GameScreen::CHAR_FILENAME = "../resource/Entities/Character.png";
+const std::string GameScreen::CHAR_FILENAME = "../resource/Entities/char_sprite.png";
 const int GameScreen::TILE_SIZE = 32;
 
 GameScreen::GameScreen(Logic* logic) {
@@ -106,7 +106,16 @@ void GameScreen::renderEntities(sf::RenderWindow *window) {
 	//std::cout << "Render character " << logic_->getCharacter().getPos().x << "\n";
     for (auto& pair : logic_->getEntities()) {
         //sf::Sprite l;
-        pair.second->setTexture(texmgr.getRef("character"));
+
+        int coordinates[] = {0, 0, 32, 32};
+
+        //if (logic_->getCharacter().getVel().x < 0) {
+
+        //}
+
+        pair.second->setTexture(texmgr.getRef("character"), coordinates);
+
+        //logic_->getCharacter().isCharacter = true;
 
         //pair.second->setSprite(l);
         pair.second->render(window);

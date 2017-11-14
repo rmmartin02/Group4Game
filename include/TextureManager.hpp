@@ -5,7 +5,7 @@
 #ifndef TEXTUREMANAGER_HPP
 #define TEXTUREMANAGER_HPP
 
-#include "../../Group4Game-device/include/Global.hpp"
+#include "Global.hpp"
 #include <string>
 #include <map>
 
