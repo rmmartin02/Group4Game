@@ -102,10 +102,10 @@ MiniGameScreen MiniGameScreen::move (int row, int column, MiniGameScreen::Operat
 
         if (column == 3) {
             //OUT OF BOUNDS
-            return NULL;
+            return *this;
         } else if (MiniGameScreen().currentBoard[row][column + 1] != 0) {
             // DESTINATION NOT EMPTY
-            return NULL;
+            return *this;
         } else {
             // GENERATE NEW MiniGameScreen AND UPDATE VARIABLES
             MiniGameScreen newState;
@@ -124,10 +124,10 @@ MiniGameScreen MiniGameScreen::move (int row, int column, MiniGameScreen::Operat
     } else if (op == MiniGameScreen().MOVELEFT) {
         if (column == 0) {
             // OUT OF BOUNDS
-            return NULL;
+            return *this;
         } else if (currentBoard[row][column - 1] != 0) {
             // DESTINATION NOT EMPTY
-            return NULL;
+            return *this;
         } else {
 
             // GENERATE NEW MiniGameScreen AND UPDATE VARIABLES
@@ -148,10 +148,10 @@ MiniGameScreen MiniGameScreen::move (int row, int column, MiniGameScreen::Operat
 
         if (row == 3) {
             // OUT OF BOUNDS
-            return NULL;
+            return *this;
         } else if (currentBoard[row + 1][column] != 0) {
             // DESITNATION NOT EMPTY
-            return NULL;
+            return *this;
         } else {
             // Generate new PuzzleState and update variables
             MiniGameScreen newState;
@@ -171,10 +171,10 @@ MiniGameScreen MiniGameScreen::move (int row, int column, MiniGameScreen::Operat
 
         if (row == 0) {
             // OUT OF BOUNDS
-            return NULL;
+            return *this;
         } else if (currentBoard[row - 1][column] != 0) {
             // DESTINATION NOT EMPTY
-            return NULL;
+            return *this;
         } else {
             // Create new PuzzleState and update variables
             MiniGameScreen newState;
@@ -194,7 +194,7 @@ MiniGameScreen MiniGameScreen::move (int row, int column, MiniGameScreen::Operat
 
     } else {
         // Any other case
-        return NULL;
+        return *this;
     }
 }
 
@@ -218,7 +218,7 @@ MiniGameScreen MiniGameScreen::flip (int startRow, int startColumn, int endRow, 
             newState = move(startRow, startColumn, MiniGameScreen().MOVEUP);
             return newState;
         }
-        return NULL;
+        return *this;
     } else if (distance == 2) {
 
         if (startRow < endRow && startColumn < endColumn) {
@@ -258,31 +258,31 @@ MiniGameScreen MiniGameScreen::flip (int startRow, int startColumn, int endRow, 
                 newState = move(startRow, startColumn, MiniGameScreen().MOVERIGHT);
                 return newState.flip(startRow, startColumn + 1, endRow, endColumn);
             } else {
-                return NULL;
+                return *this;
             }
         } else if (startRow == endRow && startColumn > endColumn) {
             if (getValue(startRow, startColumn - 1) == 0) {
                 newState = move(startRow, startColumn, MiniGameScreen().MOVELEFT);
                 return newState.flip(startRow, startColumn - 1, endRow, endColumn);
             } else {
-                return NULL;
+                return *this;
             }
         } else if (startRow < endRow && startColumn == endColumn) {
             if (getValue(startRow + 1, startColumn) == 0) {
                 newState = move(startRow, startColumn, MiniGameScreen().MOVEDOWN);
                 return newState.flip(startRow + 1, startColumn, endRow, endColumn);
             } else {
-                return NULL;
+                return *this;
             }
         } else if (startRow > endRow && startColumn == endColumn) {
             if (getValue(startRow - 1, startColumn) == 0) {
                 newState = move(startRow, startColumn, MiniGameScreen().MOVEUP);
                 return newState.flip(startRow - 1, startColumn, endRow, endColumn);
             } else {
-                return NULL;
+                return *this;
             }
         } else {
-            return NULL;
+            return *this;
         }
 
     } else if (distance == 3) {
@@ -305,7 +305,7 @@ MiniGameScreen MiniGameScreen::flip (int startRow, int startColumn, int endRow, 
                     return newState.flip(startRow, startColumn + 1, endRow, endColumn);
                 }
             } else {
-                return NULL;
+                return *this;
             }
         } else if (std::abs(startColumn-endColumn) == 2 && startColumn > endColumn) {
             if (endRow < startRow) {
@@ -325,7 +325,7 @@ MiniGameScreen MiniGameScreen::flip (int startRow, int startColumn, int endRow, 
                     return newState.flip(startRow, startColumn - 1, endRow, endColumn);
                 }
             } else {
-                return NULL;
+                return *this;
             }
         } else if (std::abs(startRow-endRow) == 2 && startRow < endRow) {
             if (startColumn > endColumn) {
@@ -345,7 +345,7 @@ MiniGameScreen MiniGameScreen::flip (int startRow, int startColumn, int endRow, 
                     return newState.flip(startRow + 1, startColumn, endRow, endColumn);
                 }
             }else {
-                return NULL;
+                return *this;
             }
         } else if (std::abs(startRow-endRow) == 2 && startRow > endRow) {
             if (startColumn > endColumn) {
@@ -365,7 +365,7 @@ MiniGameScreen MiniGameScreen::flip (int startRow, int startColumn, int endRow, 
                     return newState.flip(startRow - 1, startColumn, endRow, endColumn);
                 }
             } else {
-                return NULL;
+                return *this;
             }
         } else if (startRow - endRow == 3) {
             newState = move(startRow, startColumn, MiniGameScreen().MOVEUP);
@@ -381,9 +381,9 @@ MiniGameScreen MiniGameScreen::flip (int startRow, int startColumn, int endRow, 
             return newState.flip(startRow, startColumn + 1, endRow, endColumn);
         }
     } else {
-        return NULL;
+        return *this;
     }
-    return NULL;
+    return *this;
 
 }
 
