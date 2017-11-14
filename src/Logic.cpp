@@ -184,7 +184,13 @@ void Logic::loadEntities(std::string filename) {
     //entities_["Character"] = Character();
     //entities_["Character"].setVel(sf::Vector2f(1,1));
     addEntity("Character", new Character());
+    //sf::Sprite charSprite;
+    //getCharacter().setSprite(charSprite);
     getCharacter().setVel(sf::Vector2f(1,1));
+
+    addEntity("Character2", new Character());
+    getEntity("Character2").setVel(sf::Vector2f(1,1));
+    std::cout<<"loadEntities\n";
 }
 
 void Logic::buildWallShapes() {
