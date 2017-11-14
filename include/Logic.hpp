@@ -21,7 +21,7 @@ public:
     // in the future.
     // This is used when loading tiles and building box2d shapes for them.
     static const int TILE_SIZE = 32;
-    
+
     enum Direction {
         NONE = 0,
         UP = 1,

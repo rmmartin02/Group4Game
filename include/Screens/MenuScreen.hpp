@@ -8,7 +8,7 @@ class MenuScreen : public Screen {
 public:
 	MenuScreen();
 	void render(sf::RenderWindow *window) override;
-	void interpretInput() override;
+	void interpretInput(sf::Event event) override;
 
 private:
 

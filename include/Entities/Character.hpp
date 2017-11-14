@@ -16,10 +16,10 @@ public:
 private:
     // The maximum speed at which the character can move.
     static const float MAX_SPEED;
-    
+
     // The radius of the character collision circle
     static const float COLLISION_SIZE;
-    
+
 };
 
 #endif // CHARACTER_HPP
