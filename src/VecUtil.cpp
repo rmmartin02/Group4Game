@@ -68,11 +68,11 @@ sf::Vector2f vecutil::toSFVec(b2Vec2 bv) {
     return sf::Vector2f(bv.x, bv.y);
 }
 
-void vecutil::drawDebugLine(sf::Vector2f src, sf::Vector2f offset, 
+void vecutil::drawDebugLine(sf::Vector2f p1, sf::Vector2f p2, 
                             sf::Color color, sf::RenderWindow *window) {
     sf::Vertex line[2];
-    line[0].position = src;
-    line[1].position = src + offset;
+    line[0].position = p1;
+    line[1].position = p2;
     line[0].color = color;
     line[1].color = color;
     window->draw(line, 2, sf::Lines);

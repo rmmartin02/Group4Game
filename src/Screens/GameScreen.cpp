@@ -110,7 +110,7 @@ void GameScreen::renderParticles(sf::RenderWindow *window) {
     if (logic_->getDebugInfo(org, dir)) {
         dir.x = dir.x * 100;
         dir.y = dir.y * 100;
-        vecutil::drawDebugLine(org, dir, sf::Color::Red, window);
+        vecutil::drawDebugLine(org, org + dir, sf::Color::Red, window);
         //std::cout << "Drew debug line " << vecutil::vecInfo(org) 
          //                               << vecutil::vecInfo(dir) << std::endl;
     }
