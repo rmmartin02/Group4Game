@@ -5,12 +5,12 @@
 #include "Entities/Character.hpp"
 
 const float Character::MAX_SPEED = 10.0f;
-const float Character::COLLISION_SIZE = 32.0f;
+const float Character::COLLISION_SIZE = 64.0f;
 
 Character::Character(){
 	sf::Texture texture;
 	//load texture and sprite
-	if (!texture.create(100, 100))
+	if (!texture.create(32, 32))
 	{
     // error...
 	}
@@ -29,8 +29,7 @@ Character::Character(){
 void Character::setVel(sf::Vector2f vel){
     // TODO: as it is now, moving diagonally can be faster than along the axes.
     // let's decide if we want that / refactor this soon
-    // TODO: this isn't polymorphing. We need to change our entity data structure.
-    std::cout << "set char vel " << std::endl;
+    //std::cout << "set char vel " << std::endl;
 	if (vel.y > MAX_SPEED)
 		vel.y = MAX_SPEED;
 	if (vel.x > MAX_SPEED)

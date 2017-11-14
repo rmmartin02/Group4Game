@@ -51,6 +51,15 @@ std::string transformInfo(b2Transform);
 // Returns the identity transform
 b2Transform iform();
 
+// Converts SFML vector to Box2D vector
+b2Vec2 toB2Vec(sf::Vector2f);
+
+// Converts Box2D vector to SFML vector
+sf::Vector2f toSFVec(b2Vec2);
+
+// Draws a line in the window between the two points
+void drawDebugLine(sf::Vector2f p1, sf::Vector2f p2, sf::Color color, sf::RenderWindow *window);
+
 }
 
 #endif // VECUTIL_H

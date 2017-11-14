@@ -59,6 +59,10 @@ public:
 
     // indicates characters needs to move up,down,left,right, or not move
     void registerMoveInput(Direction dir);
+    
+    // retreives debug information to be rendered in GameScreen
+    // returns true if valid info was retreived
+    bool getDebugInfo(sf::Vector2f& p1, sf::Vector2f& p2);
 
 private:
     float time_left_;
@@ -85,7 +89,7 @@ private:
     bool tileIsWall(int tile);
     
     // Returns true if the entity is colliding with any wall shape
-    bool checkWallCollision(Entity&);
+    bool checkWallCollision(Entity& e, b2Vec2& collision_pt, b2Vec2& norm);
 };
 
 #endif // LOGIC_HPP

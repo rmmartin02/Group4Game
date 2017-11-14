@@ -37,22 +37,28 @@ Logic::Logic() {
 void Logic::update(float delta) {
     // update every entity.
     for ( auto& pair : getEntities() ) {
-        pair.second->move(pair.second->getVel());
-        if (pair.second->wallCollision()){
-            
+        Entity& e = *(pair.second.get());
+        if (e.wallCollision()){
+            b2Vec2 wall_touch;
+            b2Vec2 wall_norm;
+            if (checkWallCollision(e, wall_touch, wall_norm)){
+                //std::cout << "entity " << pair.first << " hitting wall" << std::endl;
+                // restrict velocity so we don't move into walls
+                // project velocity onto wall normal
+                float vrestrict = vecutil::clamp(vecutil::dotProd(e.getVel(),
+                                    vecutil::normalize(vecutil::toSFVec(wall_norm))),
+                                                 -vecutil::infinity(), 0);
+                // remove that component from the velocity
+                sf::Vector2f vadjusted = e.getVel() - vecutil::toSFVec(vrestrict * wall_norm);
+                e.setVel(vadjusted);
+            }
+            else {
+                std::cout << "no wall collision" << std::endl;
+            }
         }
+        e.move(e.getVel());
     }
     
-    // testing box2d integration
-   // b2Transform ctrans = getCharacter().getTransform();
-   // std::cout << "Transform: " << ctrans.p.x << ", " << ctrans.p.y << "." << std::endl;
-    if (checkWallCollision(getCharacter())){
-        std::cout << "Character hitting wall" << std::endl;
-    }
-    else{
-        std::cout << "no wall collision" << std::endl;
-    }
-
     // adjust the timer
     time_left_ -= delta;
     if (time_left_ < 0) {
@@ -118,6 +124,17 @@ void Logic::registerMoveInput(Logic::Direction dir){
 			return;
 	}
     getCharacter().setVel(getCharacter().getVel() + motion);
+}
+
+bool Logic::getDebugInfo(sf::Vector2f& p1, sf::Vector2f& p2) {
+    b2Vec2 wall_touch;
+    b2Vec2 wall_norm;
+    if (checkWallCollision(getCharacter(), wall_touch, wall_norm)){
+        p1 = vecutil::toSFVec(wall_touch);
+        p2 = vecutil::toSFVec(wall_norm);
+        return true;
+    }
+    return false;
 }
 
 float Logic::getTimeLeft(){
@@ -224,7 +241,7 @@ bool Logic::tileIsWall(int tile) {
     return tile == 455 || tile == 211 || tile == -1;
 }
 
-bool Logic::checkWallCollision(Entity& e) {
+bool Logic::checkWallCollision(Entity& e, b2Vec2& collision_pt, b2Vec2& norm) {
     if ( wall_shapes_.size() == 0 ) {
         std::cout << "Logic.cpp: tried to check collision without complete wall info" << std::endl;
         return false;   
@@ -241,17 +258,18 @@ bool Logic::checkWallCollision(Entity& e) {
     tpos.x = (int)tpos.x;
     tpos.y = (int)tpos.y;
     if (tpos.x >= 0 && tpos.y >= 0 && tpos.x < getMapSize().first && tpos.y < getMapSize().second) {
-        std::cout << "tile is " << vecutil::vecInfo(tpos) << ":" << tiles_[(int)(pt.x / TILE_SIZE)][(int)(pt.y / TILE_SIZE)] << std::endl; 
+        //std::cout << "tile is " << vecutil::vecInfo(tpos) << ":" << tiles_[(int)(pt.x / TILE_SIZE)][(int)(pt.y / TILE_SIZE)] << std::endl;
     }
     else {
-        std::cout << "tile " << vecutil::vecInfo(tpos) << " out of bounds" << std::endl;
+        //std::cout << "tile " << vecutil::vecInfo(tpos) << " out of bounds" << std::endl;
     }
     //std::cout << "Reached collision checks for " << vecutil::vecInfo(pt) << std::endl;
     
     
     float closest = vecutil::infinity();
-    b2Vec2 c_point;
-    b2Vec2 normal;
+    int num_collisions = 0;
+    collision_pt = b2Vec2(0,0);
+    norm = b2Vec2(0,0);
     for (int i = 0; i < wall_shapes_.size(); i++) {
         bool part_collision = b2TestOverlap( e.getShape(), 0, wall_shapes_[i].get(), 0, 
                 e.getTransform(), vecutil::iform());
@@ -268,16 +286,23 @@ bool Logic::checkWallCollision(Entity& e) {
                                      e.getTransform(), e.getShape()->m_radius
                                     );
             // circle-poly collisions generate only one manifold pt and normal
+            // if we collided at all
+            collision_pt += worldManifold.points[0];
+            norm += worldManifold.normal;
+            num_collisions ++;
             if (worldManifold.separations[0] < closest) {
                 closest = worldManifold.separations[i];
-                c_point = worldManifold.points[0];
-                normal  = worldManifold.normal;
             }
         }
     }
+    
+    std::cout << "Collided with " << num_collisions << " wall shapes" << std::endl;
+    
     if (closest < vecutil::infinity()) {
-        std::cout << "normal: " << vecutil::vecInfo(normal) << std::endl;
-        std::cout << "cpoint: " << vecutil::vecInfo(c_point) << std::endl;
+        //std::cout << "normal: " << vecutil::vecInfo(norm) << std::endl;
+        //std::cout << "cpoint: " << vecutil::vecInfo(collision_pt) << std::endl;
+        collision_pt = (1.0f / num_collisions) * collision_pt;
+        norm = (1.0f / num_collisions) * norm;
         return true;
     }
     return false;

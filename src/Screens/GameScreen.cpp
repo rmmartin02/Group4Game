@@ -100,10 +100,20 @@ void GameScreen::renderEntities(sf::RenderWindow *window) {
     for (auto& pair : logic_->getEntities()) {
         pair.second->render(window);
     }
+    
 }
 
 void GameScreen::renderParticles(sf::RenderWindow *window) {
-    
+    // Debug line
+    sf::Vector2f org;
+    sf::Vector2f dir;
+    if (logic_->getDebugInfo(org, dir)) {
+        dir.x = dir.x * 100;
+        dir.y = dir.y * 100;
+        vecutil::drawDebugLine(org, dir, sf::Color::Red, window);
+        //std::cout << "Drew debug line " << vecutil::vecInfo(org) 
+         //                               << vecutil::vecInfo(dir) << std::endl;
+    }
 }
 
 

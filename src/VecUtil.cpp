@@ -59,3 +59,21 @@ b2Transform vecutil::iform() {
     t.SetIdentity();
     return t;
 }
+
+b2Vec2 vecutil::toB2Vec(sf::Vector2f sv) {
+    return b2Vec2(sv.x, sv.y);
+}
+
+sf::Vector2f vecutil::toSFVec(b2Vec2 bv) {
+    return sf::Vector2f(bv.x, bv.y);
+}
+
+void vecutil::drawDebugLine(sf::Vector2f src, sf::Vector2f offset, 
+                            sf::Color color, sf::RenderWindow *window) {
+    sf::Vertex line[2];
+    line[0].position = src;
+    line[1].position = src + offset;
+    line[0].color = color;
+    line[1].color = color;
+    window->draw(line, 2, sf::Lines);
+}
