@@ -22,14 +22,6 @@ public:
     // This is used when loading tiles and building box2d shapes for them.
     static const int TILE_SIZE = 32;
 
-    enum Direction {
-        NONE = 0,
-        UP = 1,
-        DOWN = 2,
-        LEFT = 3,
-        RIGHT = 4,
-    };
-    
     Logic();
     void update(float delta);
     
@@ -57,8 +49,8 @@ public:
     // Return the current value of the countdown timer
     float getTimeLeft();
 
-    // indicates characters needs to move up,down,left,right, or not move
-    void registerMoveInput(Direction dir);
+    // indicates character needs to move in the inputted direction
+    void registerMoveInput(sf::Vector2f direction);
     
     // retreives debug information to be rendered in GameScreen
     // returns true if valid info was retreived

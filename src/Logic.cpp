@@ -78,28 +78,20 @@ Character& Logic::getCharacter(){
     return static_cast<Character&>(getEntity("Character"));
 }
 
-void Logic::registerMoveInput(Logic::Direction dir){
-    sf::Vector2f motion(0,0);
-	switch (dir){
-        case Logic::Direction::UP:
-			motion = sf::Vector2f(0,-1);
-			break;
-        case Logic::Direction::DOWN:
-			motion = sf::Vector2f(0,1);
-			break;
-        case Logic::Direction::LEFT:
-			motion = sf::Vector2f(-1,0);
-			break;
-        case Logic::Direction::RIGHT:
-			motion = sf::Vector2f(1,0);
-			break;
-        case Logic::Direction::NONE:
-		default:
-            motion = sf::Vector2f(0,0);
-            getCharacter().setVel(motion);
-			return;
-	}
-    getCharacter().setVel(getCharacter().getVel() + motion);
+void Logic::registerMoveInput(sf::Vector2f dir){
+    if (vecutil::length(dir) == 0) {
+        getCharacter().setVel(dir);
+        return;
+    }
+    sf::Vector2f old_vel = getCharacter().getVel();
+    if (dir.x == 0) {
+        getCharacter().setVel(sf::Vector2f(0, old_vel.y));
+    }
+    if (dir.y == 0) {
+        getCharacter().setVel(sf::Vector2f(old_vel.x, 0));
+    }
+    sf::Vector2f dnorm = vecutil::normalize(dir);
+    getCharacter().setVel(getCharacter().getVel() + dnorm * Character::ACCELERATION);
 }
 
 bool Logic::getDebugInfo(sf::Vector2f& p1, sf::Vector2f& p2) {

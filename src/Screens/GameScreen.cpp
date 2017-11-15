@@ -128,29 +128,19 @@ void GameScreen::render(sf::RenderWindow *window) {
 }
 
 void GameScreen::interpretInput(std::vector<sf::Event>& events) {
-    sf::Vector2f cam_offset(0,0);
     bool key_pressed = false;
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)){
-        logic_->registerMoveInput(Logic::Direction::DOWN);
-        key_pressed = true;
-        //cam_offset.y -= CAMERA_SPEED * deltaTime;
+    sf::Vector2f input(0,0);
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
+        input.y += 1;
     }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)){
-        logic_->registerMoveInput(Logic::Direction::UP);
-        key_pressed = true;
-        //cam_offset.y += CAMERA_SPEED * deltaTime;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
+        input.y -= 1;
     }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)){
-        logic_->registerMoveInput(Logic::Direction::LEFT);
-        key_pressed = true;
-        //cam_offset.x += CAMERA_SPEED * deltaTime;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
+        input.x -= 1;
     }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)){
-        logic_->registerMoveInput(Logic::Direction::RIGHT);
-        key_pressed = true;
-        //cam_offset.x -= CAMERA_SPEED * deltaTime;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
+        input.x += 1;
     }
-    if ( !key_pressed ) {
-        logic_->registerMoveInput(Logic::Direction::NONE);
-    }
+    logic_->registerMoveInput(input);
 }

@@ -9,9 +9,14 @@
 
 class Character : public Entity{
 public:
-	Character();
+    // The rate at which the character accelerates
+    static const float ACCELERATION;
+    
+    Character();
 
 	void setVel(sf::Vector2f vel);
+    
+    
     
 private:
     // The maximum speed at which the character can move.

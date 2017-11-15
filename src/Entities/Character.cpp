@@ -5,6 +5,7 @@
 #include "Entities/Character.hpp"
 
 const float Character::MAX_SPEED = 10.0f;
+const float Character::ACCELERATION = 1.0f;
 const float Character::COLLISION_SIZE = 32.0f;
 
 Character::Character(){
