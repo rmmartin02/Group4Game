@@ -20,10 +20,10 @@ public:
     bool isOnGameScreen();
 
 private:
-    Screen *currentScreen;
-    MenuScreen *menuScreen;
-    GameScreen *gameScreen;
-    ControlsScreen *controlsScreen;
+    Screen *current_screen;
+    MenuScreen *menu_screen;
+    GameScreen *game_screen;
+    ControlsScreen *controls_screen;
     Logic* logic_;
 };
 

@@ -152,23 +152,6 @@ void GameScreen::interpretInput(sf::Event Event) {
     }
 }
 
-void GameScreen::rebindKey(Logic::Direction direction, sf::Keyboard::Key key){
-    switch (direction){
-        case Logic::Direction::UP:
-            keys[0] = key;
-            break;
-        case Logic::Direction::DOWN:
-            keys[1] = key;
-            break;
-        case Logic::Direction::LEFT:
-            keys[2] = key;
-            break;
-        case Logic::Direction::RIGHT:
-            keys[3] = key;
-            break;
-    }
-}
-
 bool GameScreen::loadKeys(){
     std::cout << "load keys\n";
     std::string line;

@@ -14,13 +14,15 @@ public:
 	void render(sf::RenderWindow *window) override;
 	void interpretInput(sf::Event event) override;
 
+	int getHighlighted();
+	void resetHighlighted();
 
     //loads current key bindings
-    bool loadKeys();
+	bool loadKeys();
 
 	bool saveKeys();
 
-	std::string keyStrings[103] = { 
+	std::string key_strings[103] = { 
   "Unknown","A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z",
   "Num0","Num1","Num2","Num3","Num4","Num5","Num6","Num7","Num8","Num9","Escape","LControl","LShift","LAlt",
   "LSystem","RControl","RShift","RAlt","RSystem","Menu","LBracket","RBracket","SemiColon","Comma","Period",
@@ -38,12 +40,12 @@ private:
 	sf::Text tagline;
 	sf::Text back;
 
-	sf::Text upText;
-	sf::Text downText;
-	sf::Text rightText;
-	sf::Text leftText;
+	sf::Text up_text;
+	sf::Text down_text;
+	sf::Text right_text;
+	sf::Text left_text;
 
-	sf::Text* controlOptions[4];
+	sf::Text* control_options[5];
 	int highlighted = 0;
 	int selected = -1;
 

@@ -27,9 +27,6 @@ public:
     //loads current key bindings
     bool loadKeys();
 
-    //rebinds direction to given key
-    void rebindKey(Logic::Direction direction, sf::Keyboard::Key key);
-
 private:
 
     // Filename for the texture file containing tile sprites
