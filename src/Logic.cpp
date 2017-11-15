@@ -280,4 +280,9 @@ void Logic::onWallCollision(Entity& e, b2Vec2 point, b2Vec2 normal) {
     // remove that component from the velocity
     sf::Vector2f vadjusted = e.getVel() - vecutil::toSFVec(vrestrict * normal);
     e.setVel(vadjusted);
+    
+    // reposition to no longer be inside the wall
+    // this may need tweaking; not sure if TILE_SIZE is the right value to downscale by
+    sf::Vector2f padjusted = (e.getPos() - vecutil::toSFVec(point)) / (1.0f * TILE_SIZE) + e.getPos();
+    e.setPos(padjusted);
 }
