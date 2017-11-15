@@ -220,7 +220,6 @@ bool Logic::tileIsWall(int tile) {
     return tile == 455 || tile == 211 || tile == -1;
 }
 
-// Checks if an entity is colliding with any wall shape and deals with effects
 bool Logic::handleWallCollisions(Entity& e) {
     if ( wall_shapes_.size() == 0 ) {
         std::cout << "Logic.cpp: tried to check collision without complete wall info" << std::endl;

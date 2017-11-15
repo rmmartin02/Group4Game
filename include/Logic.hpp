@@ -90,8 +90,6 @@ private:
     // Handle an entity's collision with a wall shape
     void onWallCollision(Entity& e, b2Vec2 point, b2Vec2 normal);
     
-    // Returns true if the entity is colliding with any wall shape
-    //bool checkWallCollision(Entity& e, b2Vec2& collision_pt, b2Vec2& norm);
 };
 
 #endif // LOGIC_HPP

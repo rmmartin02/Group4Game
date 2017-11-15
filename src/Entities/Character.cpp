@@ -4,6 +4,8 @@
 
 #include "Entities/Character.hpp"
 
+#include "VecUtil.hpp"
+
 const float Character::MAX_SPEED = 10.0f;
 const float Character::ACCELERATION = 1.0f;
 const float Character::COLLISION_SIZE = 32.0f;
@@ -28,16 +30,9 @@ Character::Character(){
 
 // Set the current velocity
 void Character::setVel(sf::Vector2f vel){
-    // TODO: as it is now, moving diagonally can be faster than along the axes.
-    // let's decide if we want that / refactor this soon
-    //std::cout << "set char vel " << std::endl;
-	if (vel.y > MAX_SPEED)
-		vel.y = MAX_SPEED;
-	if (vel.x > MAX_SPEED)
-		vel.x = MAX_SPEED;
-    if (vel.y < -MAX_SPEED)
-        vel.y = -MAX_SPEED;
-    if (vel.x < -MAX_SPEED)
-        vel.x = -MAX_SPEED;
+    float sqlen = vecutil::dotProd(vel, vel);
+    if (sqlen > (MAX_SPEED * MAX_SPEED)) {
+        vel = vecutil::normalize(vel) * MAX_SPEED;
+    }
 	vel_ = vel;
 }
