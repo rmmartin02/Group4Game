@@ -30,17 +30,17 @@ MenuScreen::MenuScreen(){
     tagline.setString("You Have 10 Minutes, Save the Earth.");
     tagline.setFillColor(sf::Color::White);
     tagline.setCharacterSize(36);
-    tagline.setPosition(sf::Vector2f(SCREEN_WIDTH/2 - tagline.getLocalBounds().width/2, SCREEN_HEIGHT/2.5));
+    tagline.setPosition(sf::Vector2f(SCREEN_WIDTH/2 - tagline.getLocalBounds().width/2, logo_sprite.getLocalBounds().height+logo_sprite.getPosition().y-50));
 
 
 
     //start
     start.setFont(textFont);
 
-    start.setString("Start [s]");
+    start.setString("Start");
     start.setFillColor(sf::Color::White);
-    start.setCharacterSize(30);
-    start.setPosition(sf::Vector2f(SCREEN_WIDTH/2 - start.getLocalBounds().width/2, SCREEN_HEIGHT/2));
+    start.setCharacterSize(40);
+    start.setPosition(sf::Vector2f(SCREEN_WIDTH/2 - start.getLocalBounds().width/2, SCREEN_HEIGHT/2+20));
     /*
     start.setSize(sf::Vector2f(200, 50));
     start.setOutlineColor(sf::Color::White);
@@ -49,6 +49,16 @@ MenuScreen::MenuScreen(){
     start.setPosition(SCREEN_WIDTH/2 - start.getLocalBounds().width/2, SCREEN_HEIGHT/2);
      */
 
+    options.setFont(textFont);
+
+    options.setString("Options");
+    options.setFillColor(sf::Color::White);
+    options.setCharacterSize(40);
+    options.setPosition(sf::Vector2f(SCREEN_WIDTH/2 - options.getLocalBounds().width/2, start.getLocalBounds().height+start.getPosition().y+20));
+
+    menu_options[0] = &start;
+    menu_options[1] = &options;
+    menu_options[highlighted]->setFillColor(sf::Color::Green);
 }
 
 void MenuScreen::render(sf::RenderWindow *window){
@@ -58,11 +68,32 @@ void MenuScreen::render(sf::RenderWindow *window){
     window->draw(logo_sprite);
     window->draw(tagline);
     window->draw(start);
+    window->draw(options);
     window->display();
 
 }
 
 void MenuScreen::interpretInput(sf::Event event){
-
+    if (event.type == sf::Event::KeyPressed){
+        std::cout<<highlighted<<"\n";
+        if (event.key.code == sf::Keyboard::Up){
+            menu_options[highlighted]->setFillColor(sf::Color::White);
+            //because c++ has a remainder operator NOT a modulus operator
+            if(highlighted==0)
+                highlighted = 1;
+            else
+                highlighted = (highlighted-1)%2;
+            menu_options[highlighted]->setFillColor(sf::Color::Green);
+        }
+        if (event.key.code == sf::Keyboard::Down){
+            menu_options[highlighted]->setFillColor(sf::Color::White);
+            highlighted = (highlighted+1)%2;
+            menu_options[highlighted]->setFillColor(sf::Color::Green);
+        }
+        std::cout<<highlighted<<"\n";
+    }
 }
 
+int MenuScreen::getHighlighted(){
+    return highlighted;
+}

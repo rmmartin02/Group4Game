@@ -5,6 +5,7 @@
 #include "Screens/GameScreen.hpp"
 #include "Screens/MenuScreen.hpp"
 #include "Screens/LoadingScreen.hpp"
+#include "Screens/ControlsScreen.hpp"
 
 class ScreenManager{
 
@@ -19,9 +20,10 @@ public:
     bool isOnGameScreen();
 
 private:
-    Screen *currentScreen;
-    MenuScreen *menuScreen;
-    GameScreen *gameScreen;
+    Screen *current_screen;
+    MenuScreen *menu_screen;
+    GameScreen *game_screen;
+    ControlsScreen *controls_screen;
     Logic* logic_;
 };
 
