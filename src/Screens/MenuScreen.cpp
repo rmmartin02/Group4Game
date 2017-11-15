@@ -62,7 +62,7 @@ void MenuScreen::render(sf::RenderWindow *window){
 
 }
 
-void MenuScreen::interpretInput(sf::Event event){
+void MenuScreen::interpretInput(std::vector<sf::Event>& events){
 
 }
 

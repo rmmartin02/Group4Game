@@ -127,7 +127,7 @@ void GameScreen::render(sf::RenderWindow *window) {
     window->display();
 }
 
-void GameScreen::interpretInput(sf::Event Event) {
+void GameScreen::interpretInput(std::vector<sf::Event>& events) {
     sf::Vector2f cam_offset(0,0);
     bool key_pressed = false;
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)){

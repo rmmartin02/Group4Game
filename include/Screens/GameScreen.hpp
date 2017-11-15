@@ -11,7 +11,7 @@ public:
     GameScreen(Logic *logic);
 
     void render(sf::RenderWindow *window);
-    void interpretInput(sf::Event event);
+    void interpretInput(std::vector<sf::Event>& events);
     
     // Return true if successfully loaded, false otherwise
     bool loadTextures();

@@ -29,7 +29,8 @@ void Game::Loop() {
         if (deltaTime >= 1.0f / 60.0f) {
             // process events
             sf::Event event;
-
+            
+            std::vector<sf::Event> events;
             while (window->pollEvent(event)) {
                 // Exit
                 if (event.type == sf::Event::Closed)
@@ -40,9 +41,13 @@ void Game::Loop() {
                         window->close();
                     }
                 }
-                //If not exiting pass to event to screen manager
-                screenManager->interpretInput(event);
+                
+                events.push_back(event);
             }
+            
+            // Pass events to screen manager
+            screenManager->interpretInput(events);
+            
             //Don't really like this
             if (screenManager->isOnGameScreen())
                 logic->update(deltaTime);
