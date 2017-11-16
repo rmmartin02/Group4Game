@@ -3,6 +3,8 @@
 
 #include "Screens/Screen.hpp"
 #include "Logic.hpp"
+#include <sstream>
+#include <fstream>
 
 class GameScreen : public Screen {
 
@@ -22,10 +24,15 @@ public:
     //Center view on Character
     void centerCameraOnCharacter(sf::RenderWindow*);
 
+    //loads current key bindings
+    bool loadKeys();
+
 private:
 
     // Filename for the texture file containing tile sprites
     static const std::string TILESET_FILENAME;
+    
+    sf::Keyboard::Key keys_[4];
     
     Logic* logic_;
     

@@ -8,6 +8,12 @@ const std::string GameScreen::TILESET_FILENAME = "../resource/maps/tiles.png";
 GameScreen::GameScreen(Logic* logic) {
     logic_ = logic;
     textures_ = std::map<std::string, sf::Texture>();
+    //load default keys in case custom binding fails to load
+    keys_[0] = sf::Keyboard::Up;
+    keys_[1] = sf::Keyboard::Down;
+    keys_[2] = sf::Keyboard::Left;
+    keys_[3] = sf::Keyboard::Right;
+    loadKeys();
 }
 
 bool GameScreen::loadTextures() {
@@ -130,22 +136,22 @@ void GameScreen::render(sf::RenderWindow *window) {
 void GameScreen::interpretInput(std::vector<sf::Event>& events) {
     sf::Vector2f cam_offset(0,0);
     bool key_pressed = false;
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)){
+    if (sf::Keyboard::isKeyPressed(keys_[1])){
         logic_->registerMoveInput(Logic::Direction::DOWN);
         key_pressed = true;
         //cam_offset.y -= CAMERA_SPEED * deltaTime;
     }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)){
+    if (sf::Keyboard::isKeyPressed(keys_[0])){
         logic_->registerMoveInput(Logic::Direction::UP);
         key_pressed = true;
         //cam_offset.y += CAMERA_SPEED * deltaTime;
     }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)){
+    if (sf::Keyboard::isKeyPressed(keys_[2])){
         logic_->registerMoveInput(Logic::Direction::LEFT);
         key_pressed = true;
         //cam_offset.x += CAMERA_SPEED * deltaTime;
     }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)){
+    if (sf::Keyboard::isKeyPressed(keys_[3])){
         logic_->registerMoveInput(Logic::Direction::RIGHT);
         key_pressed = true;
         //cam_offset.x -= CAMERA_SPEED * deltaTime;
@@ -154,3 +160,23 @@ void GameScreen::interpretInput(std::vector<sf::Event>& events) {
         logic_->registerMoveInput(Logic::Direction::NONE);
     }
 }
+
+bool GameScreen::loadKeys(){
+    std::cout << "load keys\n";
+    std::string line;
+    std::ifstream myfile("../resource/keyBindings.txt");
+    if ( !myfile.is_open() ) {
+        std::cout << "Failed to open keyBindings.txt" << std::endl;
+        return false;
+    }
+    int i = 0;
+    while ( getline (myfile,line) )
+    {
+      std::cout << line << '\n';
+      keys_[i] = sf::Keyboard::Key(std::stoi(line));
+      i += 1;
+    }
+    myfile.close();
+    return true;
+}
+
