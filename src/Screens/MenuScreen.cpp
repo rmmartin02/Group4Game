@@ -73,24 +73,26 @@ void MenuScreen::render(sf::RenderWindow *window){
 
 }
 
-void MenuScreen::interpretInput(sf::Event event){
-    if (event.type == sf::Event::KeyPressed){
-        std::cout<<highlighted<<"\n";
-        if (event.key.code == sf::Keyboard::Up){
-            menu_options[highlighted]->setFillColor(sf::Color::White);
-            //because c++ has a remainder operator NOT a modulus operator
-            if(highlighted==0)
-                highlighted = 1;
-            else
-                highlighted = (highlighted-1)%2;
-            menu_options[highlighted]->setFillColor(sf::Color::Green);
+void MenuScreen::interpretInput(std::vector<sf::Event>& events) {
+    for ( auto event : events ) {
+        if (event.type == sf::Event::KeyPressed){
+            std::cout<<highlighted<<"\n";
+            if (event.key.code == sf::Keyboard::Up){
+                menu_options[highlighted]->setFillColor(sf::Color::White);
+                //because c++ has a remainder operator NOT a modulus operator
+                if(highlighted==0)
+                    highlighted = 1;
+                else
+                    highlighted = (highlighted-1)%2;
+                menu_options[highlighted]->setFillColor(sf::Color::Green);
+            }
+            if (event.key.code == sf::Keyboard::Down){
+                menu_options[highlighted]->setFillColor(sf::Color::White);
+                highlighted = (highlighted+1)%2;
+                menu_options[highlighted]->setFillColor(sf::Color::Green);
+            }
+            std::cout<<highlighted<<"\n";
         }
-        if (event.key.code == sf::Keyboard::Down){
-            menu_options[highlighted]->setFillColor(sf::Color::White);
-            highlighted = (highlighted+1)%2;
-            menu_options[highlighted]->setFillColor(sf::Color::Green);
-        }
-        std::cout<<highlighted<<"\n";
     }
 }
 

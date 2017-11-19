@@ -14,7 +14,7 @@ public:
     ScreenManager(Logic *logic);
 
     void render(sf::RenderWindow *window);
-    void interpretInput(sf::Event event);
+    void interpretInput(std::vector<sf::Event>& events);
 
     bool loadTextures();
     bool isOnGameScreen();

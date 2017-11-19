@@ -12,7 +12,7 @@ class ControlsScreen : public Screen {
 public:
 	ControlsScreen();
 	void render(sf::RenderWindow *window) override;
-	void interpretInput(sf::Event event) override;
+	void interpretInput(std::vector<sf::Event>& events) override;
 
 	int getHighlighted();
 	void resetHighlighted();

@@ -13,7 +13,7 @@ public:
     GameScreen(Logic *logic);
 
     void render(sf::RenderWindow *window);
-    void interpretInput(sf::Event event);
+    void interpretInput(std::vector<sf::Event>& events);
     
     // Return true if successfully loaded, false otherwise
     bool loadTextures();
@@ -32,12 +32,7 @@ private:
     // Filename for the texture file containing tile sprites
     static const std::string TILESET_FILENAME;
     
-    // Represents the size of a tile, in pixels on the tileset file,
-    // and in SFML's drawing units. We may want to separate the two
-    // in the future.
-    static const int TILE_SIZE;
-
-    sf::Keyboard::Key keys[4];
+    sf::Keyboard::Key keys_[4];
     
     Logic* logic_;
     

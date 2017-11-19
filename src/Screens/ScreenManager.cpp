@@ -13,39 +13,44 @@ void ScreenManager::render(sf::RenderWindow *window){
 	current_screen->render(window);
 }
 
-void ScreenManager::interpretInput(sf::Event event){
-	//check for events that might change the screen
-	bool eventAccepted = false;
-	if(current_screen == menu_screen){
-		if (event.type == sf::Event::KeyPressed){
-        	if (event.key.code == sf::Keyboard::Return){
-        		std::cout<<menu_screen->getHighlighted()<<"\n";
-            	if(menu_screen->getHighlighted()==0){
-            		current_screen = game_screen;
-            	}
-            	else{
-            		current_screen = controls_screen;
-            	}
-            	eventAccepted = true;
-            }
-    	}
-	}
-	else if(current_screen == controls_screen){
-		if (event.type == sf::Event::KeyPressed){
-        	if (event.key.code == sf::Keyboard::Return){
-        		if(controls_screen->getHighlighted()==4){
-	        		controls_screen->saveKeys();
-	            	current_screen = menu_screen;
-	            	game_screen->loadKeys();
-	            	controls_screen->resetHighlighted();
-	            	eventAccepted = true;
-	            }
+void ScreenManager::interpretInput(std::vector<sf::Event>& events){
+    std::vector<sf::Event> screen_events;
+    for (auto it = events.begin(); it != events.end(); ++it) {
+        auto event = *it;
+        //check for events that might change the screen
+        bool eventAccepted = false;
+        if(current_screen == menu_screen){
+            if (event.type == sf::Event::KeyPressed){
+                if (event.key.code == sf::Keyboard::Return){
+                    std::cout<<menu_screen->getHighlighted()<<"\n";
+                    if(menu_screen->getHighlighted()==0){
+                        current_screen = game_screen;
+                    }
+                    else{
+                        current_screen = controls_screen;
+                    }
+                    eventAccepted = true;
+                }
             }
         }
-	}
-	//otherwise send event to appropriate screen to interpret
-	if(!eventAccepted)
-		current_screen->interpretInput(event);
+        else if(current_screen == controls_screen){
+            if (event.type == sf::Event::KeyPressed){
+                if (event.key.code == sf::Keyboard::Return){
+                    if(controls_screen->getHighlighted()==4){
+                        controls_screen->saveKeys();
+                        current_screen = menu_screen;
+                        game_screen->loadKeys();
+                        controls_screen->resetHighlighted();
+                        eventAccepted = true;
+                    }
+                }
+            }
+        }
+        //otherwise send event to appropriate screen to interpret
+        if(!eventAccepted)
+            screen_events.push_back(event);
+    }
+    current_screen->interpretInput(screen_events);
 }
 
 bool ScreenManager::loadTextures(){
@@ -55,3 +60,4 @@ bool ScreenManager::loadTextures(){
 bool ScreenManager::isOnGameScreen(){
 	return current_screen==game_screen;
 }
+

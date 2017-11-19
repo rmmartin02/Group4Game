@@ -95,61 +95,63 @@ void ControlsScreen::render(sf::RenderWindow *window){
 
 }
 
-void ControlsScreen::interpretInput(sf::Event event){
-    if (event.type == sf::Event::KeyPressed){
-        if(selected==-1){
-            if (event.key.code == sf::Keyboard::Up){
-                control_options[highlighted]->setFillColor(sf::Color::White);
-                //because c++ has a remainder operator NOT a modulus operator
-                if(highlighted==0)
-                    highlighted = 3;
-                else
-                    highlighted = (highlighted-1)%5;
-                control_options[highlighted]->setFillColor(sf::Color::Green);
+void ControlsScreen::interpretInput(std::vector<sf::Event>& events){
+    for (auto event : events) {
+        if (event.type == sf::Event::KeyPressed){
+            if(selected==-1){
+                if (event.key.code == sf::Keyboard::Up){
+                    control_options[highlighted]->setFillColor(sf::Color::White);
+                    //because c++ has a remainder operator NOT a modulus operator
+                    if(highlighted==0)
+                        highlighted = 3;
+                    else
+                        highlighted = (highlighted-1)%5;
+                    control_options[highlighted]->setFillColor(sf::Color::Green);
+                }
+                if (event.key.code == sf::Keyboard::Down){
+                    control_options[highlighted]->setFillColor(sf::Color::White);
+                    highlighted = (highlighted+1)%5;
+                    control_options[highlighted]->setFillColor(sf::Color::Green);
+                }
+                if (event.key.code == sf::Keyboard::Return){
+                    selected = highlighted;
+                    switch(selected){
+                    case 0:
+                        control_options[highlighted]->setString("Up: ");
+                        break;
+                    case 1:
+                        control_options[highlighted]->setString("Down: ");
+                        break;
+                    case 2:
+                        control_options[highlighted]->setString("Left: ");
+                        break;
+                    case 3:
+                        control_options[highlighted]->setString("Right: ");
+                        break;
+                    case 4:
+                        break;
+                }
+                }
             }
-            if (event.key.code == sf::Keyboard::Down){
-                control_options[highlighted]->setFillColor(sf::Color::White);
-                highlighted = (highlighted+1)%5;
-                control_options[highlighted]->setFillColor(sf::Color::Green);
-            }
-            if (event.key.code == sf::Keyboard::Return){
-                selected = highlighted;
+            else{
+                //change selected key to pressed key
+                keys[selected] = event.key.code;
                 switch(selected){
-                case 0:
-                    control_options[highlighted]->setString("Up: ");
-                    break;
-                case 1:
-                    control_options[highlighted]->setString("Down: ");
-                    break;
-                case 2:
-                    control_options[highlighted]->setString("Left: ");
-                    break;
-                case 3:
-                    control_options[highlighted]->setString("Right: ");
-                    break;
-                case 4:
-                    break;
+                    case 0:
+                        control_options[selected]->setString("Up: " + key_strings[keys[0]+1]);
+                        break;
+                    case 1:
+                        control_options[selected]->setString("Down: " + key_strings[keys[1]+1]);
+                        break;
+                    case 2:
+                        control_options[selected]->setString("Left: " + key_strings[keys[2]+1]);
+                        break;
+                    case 3:
+                        control_options[selected]->setString("Right: " + key_strings[keys[3]+1]);
+                        break;
+                }
+                selected = -1;
             }
-            }
-        }
-        else{
-            //change selected key to pressed key
-            keys[selected] = event.key.code;
-            switch(selected){
-                case 0:
-                    control_options[selected]->setString("Up: " + key_strings[keys[0]+1]);
-                    break;
-                case 1:
-                    control_options[selected]->setString("Down: " + key_strings[keys[1]+1]);
-                    break;
-                case 2:
-                    control_options[selected]->setString("Left: " + key_strings[keys[2]+1]);
-                    break;
-                case 3:
-                    control_options[selected]->setString("Right: " + key_strings[keys[3]+1]);
-                    break;
-            }
-            selected = -1;
         }
     }
 }

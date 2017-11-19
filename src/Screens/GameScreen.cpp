@@ -4,16 +4,15 @@
 
 
 const std::string GameScreen::TILESET_FILENAME = "../resource/maps/tiles.png";
-const int GameScreen::TILE_SIZE = 32;
 
 GameScreen::GameScreen(Logic* logic) {
     logic_ = logic;
     textures_ = std::map<std::string, sf::Texture>();
     //load default keys in case custom binding fails to load
-    keys[0] = sf::Keyboard::Up;
-    keys[1] = sf::Keyboard::Down;
-    keys[2] = sf::Keyboard::Left;
-    keys[3] = sf::Keyboard::Right;
+    keys_[0] = sf::Keyboard::Up;
+    keys_[1] = sf::Keyboard::Down;
+    keys_[2] = sf::Keyboard::Left;
+    keys_[3] = sf::Keyboard::Right;
     loadKeys();
 }
 
@@ -22,10 +21,10 @@ bool GameScreen::loadTextures() {
     if (!textures_["tileset"].loadFromFile(TILESET_FILENAME)){
         return false;
     }
-    texture_coords_[-1] = std::make_pair(0, TILE_SIZE*2);
-    texture_coords_[455] = std::make_pair(TILE_SIZE*6, TILE_SIZE*4);
-    texture_coords_[211] = std::make_pair(TILE_SIZE*6, TILE_SIZE*5);
-    texture_coords_[210] = std::make_pair(TILE_SIZE*7, TILE_SIZE*4);
+    texture_coords_[-1] = std::make_pair(0, Logic::TILE_SIZE*2);
+    texture_coords_[455] = std::make_pair(Logic::TILE_SIZE*6, Logic::TILE_SIZE*4);
+    texture_coords_[211] = std::make_pair(Logic::TILE_SIZE*6, Logic::TILE_SIZE*5);
+    texture_coords_[210] = std::make_pair(Logic::TILE_SIZE*7, Logic::TILE_SIZE*4);
     return true;
 }
 
@@ -53,9 +52,9 @@ void GameScreen::renderTiles(sf::RenderWindow *window) {
     sf::Vector2f viewport_bound = window->getView().getCenter()  - 
                                 (window->getView().getSize()/2.f); // view top left
     // determine viewport bounds so we can cull and not draw tiles that aren't visible
-    sf::Vector2f topleft = viewport_bound * (1.0f / TILE_SIZE);
+    sf::Vector2f topleft = viewport_bound * (1.0f / Logic::TILE_SIZE);
     viewport_bound += window->getView().getSize(); // view bottom right
-    sf::Vector2f topright = sf::Vector2f(1,1) + (viewport_bound * (1.0f / TILE_SIZE));
+    sf::Vector2f topright = sf::Vector2f(1,1) + (viewport_bound * (1.0f / Logic::TILE_SIZE));
     
     // clamp to fit in array indices
     sf::Vector2f clamp_min = vecutil::clampVec2(topleft, sf::Vector2f(0,0), sf::Vector2f(tile_rows, tile_cols));
@@ -73,28 +72,28 @@ void GameScreen::renderTiles(sf::RenderWindow *window) {
             
             // top left vert
             sf::Vertex v;
-            v.position = sf::Vector2f(r * TILE_SIZE,
-                                         c * TILE_SIZE);
+            v.position = sf::Vector2f(r * Logic::TILE_SIZE,
+                                         c * Logic::TILE_SIZE);
             v.texCoords = sf::Vector2f( coord_pair.first, 
                                            coord_pair.second );
             tile_vertices_.append(v);
             // top right vert
-            v.position = sf::Vector2f(r * TILE_SIZE + TILE_SIZE, 
-                                         c * TILE_SIZE);
-            v.texCoords = sf::Vector2f( coord_pair.first + TILE_SIZE,
+            v.position = sf::Vector2f(r * Logic::TILE_SIZE + Logic::TILE_SIZE, 
+                                         c * Logic::TILE_SIZE);
+            v.texCoords = sf::Vector2f( coord_pair.first + Logic::TILE_SIZE,
                                            coord_pair.second );
             tile_vertices_.append(v);
             // bottom right vert
-            v.position = sf::Vector2f(r * TILE_SIZE + TILE_SIZE, 
-                                         c * TILE_SIZE + TILE_SIZE);
-            v.texCoords = sf::Vector2f( coord_pair.first + TILE_SIZE,
-                                           coord_pair.second + TILE_SIZE );
+            v.position = sf::Vector2f(r * Logic::TILE_SIZE + Logic::TILE_SIZE, 
+                                         c * Logic::TILE_SIZE + Logic::TILE_SIZE);
+            v.texCoords = sf::Vector2f( coord_pair.first + Logic::TILE_SIZE,
+                                           coord_pair.second + Logic::TILE_SIZE );
             tile_vertices_.append(v);
             // bottom left vert
-            v.position = sf::Vector2f(r * TILE_SIZE, 
-                                         c * TILE_SIZE + TILE_SIZE);
+            v.position = sf::Vector2f(r * Logic::TILE_SIZE, 
+                                         c * Logic::TILE_SIZE + Logic::TILE_SIZE);
             v.texCoords = sf::Vector2f( coord_pair.first,
-                                           coord_pair.second + TILE_SIZE );
+                                           coord_pair.second + Logic::TILE_SIZE );
             tile_vertices_.append(v);
         }
     }
@@ -104,13 +103,23 @@ void GameScreen::renderTiles(sf::RenderWindow *window) {
 void GameScreen::renderEntities(sf::RenderWindow *window) {
 	//logic_->getCharacter().render(window);
 	//std::cout << "Render character " << logic_->getCharacter().getPos().x << "\n";
-    for (auto pair : logic_->getEntities()) {
-        pair.second.render(window);
+    for (auto& pair : logic_->getEntities()) {
+        pair.second->render(window);
     }
+    
 }
 
 void GameScreen::renderParticles(sf::RenderWindow *window) {
-    
+    // Debug line
+    sf::Vector2f org;
+    sf::Vector2f dir;
+    if (logic_->getDebugInfo(org, dir)) {
+        dir.x = dir.x * 100;
+        dir.y = dir.y * 100;
+        vecutil::drawDebugLine(org, org + dir, sf::Color::Red, window);
+        //std::cout << "Drew debug line " << vecutil::vecInfo(org) 
+         //                               << vecutil::vecInfo(dir) << std::endl;
+    }
 }
 
 
@@ -124,25 +133,25 @@ void GameScreen::render(sf::RenderWindow *window) {
     window->display();
 }
 
-void GameScreen::interpretInput(sf::Event Event) {
+void GameScreen::interpretInput(std::vector<sf::Event>& events) {
     sf::Vector2f cam_offset(0,0);
     bool key_pressed = false;
-    if (sf::Keyboard::isKeyPressed(keys[1])){
+    if (sf::Keyboard::isKeyPressed(keys_[1])){
         logic_->registerMoveInput(Logic::Direction::DOWN);
         key_pressed = true;
         //cam_offset.y -= CAMERA_SPEED * deltaTime;
     }
-    if (sf::Keyboard::isKeyPressed(keys[0])){
+    if (sf::Keyboard::isKeyPressed(keys_[0])){
         logic_->registerMoveInput(Logic::Direction::UP);
         key_pressed = true;
         //cam_offset.y += CAMERA_SPEED * deltaTime;
     }
-    if (sf::Keyboard::isKeyPressed(keys[2])){
+    if (sf::Keyboard::isKeyPressed(keys_[2])){
         logic_->registerMoveInput(Logic::Direction::LEFT);
         key_pressed = true;
         //cam_offset.x += CAMERA_SPEED * deltaTime;
     }
-    if (sf::Keyboard::isKeyPressed(keys[3])){
+    if (sf::Keyboard::isKeyPressed(keys_[3])){
         logic_->registerMoveInput(Logic::Direction::RIGHT);
         key_pressed = true;
         //cam_offset.x -= CAMERA_SPEED * deltaTime;
@@ -164,9 +173,10 @@ bool GameScreen::loadKeys(){
     while ( getline (myfile,line) )
     {
       std::cout << line << '\n';
-      keys[i] = sf::Keyboard::Key(std::stoi(line));
+      keys_[i] = sf::Keyboard::Key(std::stoi(line));
       i += 1;
     }
     myfile.close();
     return true;
 }
+
