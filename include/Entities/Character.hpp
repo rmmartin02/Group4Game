@@ -13,6 +13,9 @@ public:
 
 	void setVel(sf::Vector2f vel);
     
+    // Handle this character's collision with a wall shape
+    void onWallCollision(b2Vec2 point, b2Vec2 normal) override;
+    
 private:
     // The maximum speed at which the character can move.
     static const float MAX_SPEED;

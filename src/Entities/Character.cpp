@@ -4,6 +4,8 @@
 
 #include "Entities/Character.hpp"
 
+#include "VecUtil.hpp"
+
 const float Character::MAX_SPEED = 10.0f;
 const float Character::COLLISION_SIZE = 32.0f;
 
@@ -39,4 +41,19 @@ void Character::setVel(sf::Vector2f vel){
     if (vel.x < -MAX_SPEED)
         vel.x = -MAX_SPEED;
 	vel_ = vel;
+}
+
+void Character::onWallCollision(b2Vec2 point, b2Vec2 normal) {
+    float vrestrict = vecutil::clamp(vecutil::dotProd(getVel(),
+                                     vecutil::normalize(vecutil::toSFVec(normal))),
+                                     -vecutil::infinity(), 0);
+    // remove from the velocity its component along the collision normal
+    sf::Vector2f vadjusted = getVel() - vecutil::toSFVec(vrestrict * normal);
+    setVel(vadjusted);
+    
+    // reposition to no longer be inside the wall
+    // this may need tweaking; not sure what is the right value to downscale by
+    float downscale = 32.0f;
+    sf::Vector2f padjusted = (getPos() - vecutil::toSFVec(point)) / (downscale) + getPos();
+    setPos(padjusted);
 }

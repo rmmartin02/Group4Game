@@ -29,7 +29,7 @@ void Logic::update(float delta) {
     // update every entity.
     for ( auto& pair : getEntities() ) {
         Entity& e = *(pair.second.get());
-        if (e.wallCollision()){
+        if (e.canWallCollide()){
             handleWallCollisions(e);
         }
         e.move(e.getVel());
@@ -265,24 +265,9 @@ bool Logic::handleWallCollisions(Entity& e) {
             if (worldManifold.separations[0] < closest) {
                 closest = worldManifold.separations[i];
             }
-            onWallCollision(e, collision_pt, norm);
+            e.onWallCollision(collision_pt, norm);
         }
     }
     
     return closest < vecutil::infinity();
-}
-
-void Logic::onWallCollision(Entity& e, b2Vec2 point, b2Vec2 normal) {
-    //std::cout << "Wall collision handling" << std::endl;
-    float vrestrict = vecutil::clamp(vecutil::dotProd(e.getVel(),
-                        vecutil::normalize(vecutil::toSFVec(normal))),
-                                        -vecutil::infinity(), 0);
-    // remove that component from the velocity
-    sf::Vector2f vadjusted = e.getVel() - vecutil::toSFVec(vrestrict * normal);
-    e.setVel(vadjusted);
-    
-    // reposition to no longer be inside the wall
-    // this may need tweaking; not sure if TILE_SIZE is the right value to downscale by
-    sf::Vector2f padjusted = (e.getPos() - vecutil::toSFVec(point)) / (1.0f * TILE_SIZE) + e.getPos();
-    e.setPos(padjusted);
 }

@@ -50,10 +50,11 @@ public:
 
   // Returns true if this entity should be prevented from passing through
   // walls; false if it can ignore walls (and not trigger onWallTouch)
-  bool wallCollision();
+  virtual bool canWallCollide();
 
   // Called when this entity collides with a wall
-  virtual void onTouchWall();
+  // (potentially several times with different parameters, if wall shapes overlap)
+  virtual void onWallCollision(b2Vec2 point, b2Vec2 normal);
 
 protected:
   sf::Vector2f pos_;
