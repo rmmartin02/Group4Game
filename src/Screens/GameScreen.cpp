@@ -8,6 +8,12 @@ const std::string GameScreen::TILESET_FILENAME = "../resource/maps/tiles.png";
 GameScreen::GameScreen(Logic* logic) {
     logic_ = logic;
     textures_ = std::map<std::string, sf::Texture>();
+    //load default keys in case custom binding fails to load
+    keys_[0] = sf::Keyboard::Up;
+    keys_[1] = sf::Keyboard::Down;
+    keys_[2] = sf::Keyboard::Left;
+    keys_[3] = sf::Keyboard::Right;
+    loadKeys();
 }
 
 bool GameScreen::loadTextures() {
@@ -128,7 +134,6 @@ void GameScreen::render(sf::RenderWindow *window) {
 }
 
 void GameScreen::interpretInput(std::vector<sf::Event>& events) {
-    bool key_pressed = false;
     sf::Vector2f input(0,0);
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
         input.y += 1;
@@ -144,3 +149,23 @@ void GameScreen::interpretInput(std::vector<sf::Event>& events) {
     }
     logic_->registerMoveInput(input);
 }
+
+bool GameScreen::loadKeys(){
+    std::cout << "load keys\n";
+    std::string line;
+    std::ifstream myfile("../resource/keyBindings.txt");
+    if ( !myfile.is_open() ) {
+        std::cout << "Failed to open keyBindings.txt" << std::endl;
+        return false;
+    }
+    int i = 0;
+    while ( getline (myfile,line) )
+    {
+      std::cout << line << '\n';
+      keys_[i] = sf::Keyboard::Key(std::stoi(line));
+      i += 1;
+    }
+    myfile.close();
+    return true;
+}
+

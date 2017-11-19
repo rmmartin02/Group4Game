@@ -10,6 +10,8 @@ public:
 	void render(sf::RenderWindow *window) override;
 	void interpretInput(std::vector<sf::Event>& events) override;
 
+	int getHighlighted();
+
 private:
 
 	void startGame();
@@ -22,6 +24,10 @@ private:
 	sf::Font textFont;
 	sf::Text tagline;
 	sf::Text start;
+	sf::Text options;
+
+	sf::Text* menu_options[2];
+	int highlighted = 0;
 	//sf::RectangleShape start;
 };
 
