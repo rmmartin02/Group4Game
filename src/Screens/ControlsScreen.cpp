@@ -81,7 +81,6 @@ ControlsScreen::ControlsScreen(){
 }
 
 void ControlsScreen::render(sf::RenderWindow *window){
-    //std::cout <<"render Menu Screen\n";
     window->clear();
     window->draw(bg);
     window->draw(logo_sprite);
@@ -166,22 +165,22 @@ bool ControlsScreen::saveKeys(){
         myfile.close();
         return true;
     }
-    else std::cout << "Unable to open file";
+    else std::cout << "ControlsScreen: Unable to save to keybindings file";
     return false;
 }
 
 bool ControlsScreen::loadKeys(){
-    std::cout << "load keys\n";
+    //std::cout << "ControlsScreen: loading keys\n";
     std::string line;
     std::ifstream myfile("../resource/keyBindings.txt");
     if ( !myfile.is_open() ) {
-        std::cout << "Failed to open keyBindings.txt" << std::endl;
+        std::cout << "ControlsScreen: Failed to open keyBindings.txt" << std::endl;
         return false;
     }
     int i = 0;
     while ( getline (myfile,line) )
     {
-      std::cout << line << '\n';
+      //std::cout << line << '\n';
       keys[i] = sf::Keyboard::Key(std::stoi(line));
       i += 1;
     }
