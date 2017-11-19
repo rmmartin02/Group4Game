@@ -14,9 +14,8 @@ public:
     
     Character();
 
-	void setVel(sf::Vector2f vel);
-    
-    
+    // Change the velocity according to an inputted movement direction
+    void onMoveInput(sf::Vector2f);
     
 private:
     // The maximum speed at which the character can move.

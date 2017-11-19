@@ -78,20 +78,8 @@ Character& Logic::getCharacter(){
     return static_cast<Character&>(getEntity("Character"));
 }
 
-void Logic::registerMoveInput(sf::Vector2f dir){
-    if (vecutil::length(dir) == 0) {
-        getCharacter().setVel(dir);
-        return;
-    }
-    sf::Vector2f old_vel = getCharacter().getVel();
-    if (dir.x == 0) {
-        getCharacter().setVel(sf::Vector2f(0, old_vel.y));
-    }
-    if (dir.y == 0) {
-        getCharacter().setVel(sf::Vector2f(old_vel.x, 0));
-    }
-    sf::Vector2f dnorm = vecutil::normalize(dir);
-    getCharacter().setVel(getCharacter().getVel() + dnorm * Character::ACCELERATION);
+void Logic::registerMoveInput(sf::Vector2f dir) {
+    getCharacter().onMoveInput(dir);
 }
 
 bool Logic::getDebugInfo(sf::Vector2f& p1, sf::Vector2f& p2) {
