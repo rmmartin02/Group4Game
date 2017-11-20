@@ -159,6 +159,27 @@ void GameScreen::interpretInput(std::vector<sf::Event>& events) {
     if ( !key_pressed ) {
         logic_->registerMoveInput(Logic::Direction::NONE);
     }
+    
+    // for sight obstruction testing, check mouse position
+    for (auto event : events) {
+        if (event.type == sf::Event::MouseButtonPressed) {
+            sf::Vector2f mousePos(event.mouseButton.x, event.mouseButton.y);
+            sf::Vector2f charPos = logic_->getCharacter().getPos();
+            mousePos = mousePos + sf::Vector2f(-400, -300) + charPos;
+            std::cout << "GameScreen.cpp: mouse pos " << vecutil::vecInfo(mousePos) << std::endl; 
+            std::cout << "GameScreen.cpp: char pos  " << vecutil::vecInfo(logic_->getCharacter().getPos()) << std::endl;
+            
+            sf::Vector2f wall_hit;
+            if (logic_->sightObstructed(logic_->getCharacter().getPos(),
+                                        mousePos,
+                                        wall_hit)) {
+                std::cout << "GameScreen.cpp: sight blocked at " << vecutil::vecInfo(wall_hit) << std::endl;
+            }
+            else {
+                std::cout << "GameScreen.cpp: sight unobstructed" << std::endl;
+            }
+        }
+    }
 }
 
 bool GameScreen::loadKeys(){

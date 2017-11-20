@@ -265,9 +265,32 @@ bool Logic::handleWallCollisions(Entity& e) {
             if (worldManifold.separations[0] < closest) {
                 closest = worldManifold.separations[i];
             }
-            e.onWallCollision(collision_pt, norm);
+            e.onWallCollision(vecutil::toSFVec(collision_pt), vecutil::toSFVec(norm));
         }
     }
     
     return closest < vecutil::infinity();
+}
+
+bool Logic::sightObstructed(sf::Vector2f src, sf::Vector2f target, 
+                              sf::Vector2f& hit) {
+    int hit_shape = -1;
+    float min_frac = vecutil::infinity();
+    b2Transform itransform = vecutil::iform();
+    b2RayCastOutput ray_output;
+    b2RayCastInput ray_input;
+    ray_input.p1 = vecutil::toB2Vec(src);
+    ray_input.p2 = vecutil::toB2Vec(target);
+    ray_input.maxFraction = 1.0f;
+    int child;
+    for (int i = 0; i < wall_shapes_.size(); i++) {
+        bool rayhit = wall_shapes_[i]->RayCast(&ray_output, ray_input, itransform, child);
+        if (rayhit && ray_output.fraction < min_frac) {
+            min_frac = ray_output.fraction;
+            hit_shape = i;
+            hit = vecutil::toSFVec(ray_input.p1 + 
+                                   ray_output.fraction * (ray_input.p2 - ray_input.p1));
+        }
+    }
+    return hit_shape >= 0;
 }

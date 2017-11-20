@@ -43,17 +43,19 @@ void Character::setVel(sf::Vector2f vel){
 	vel_ = vel;
 }
 
-void Character::onWallCollision(b2Vec2 point, b2Vec2 normal) {
+void Character::onWallCollision(sf::Vector2f point, sf::Vector2f normal) {
     float vrestrict = vecutil::clamp(vecutil::dotProd(getVel(),
-                                     vecutil::normalize(vecutil::toSFVec(normal))),
+                                     vecutil::normalize(normal)),
                                      -vecutil::infinity(), 0);
     // remove from the velocity its component along the collision normal
-    sf::Vector2f vadjusted = getVel() - vecutil::toSFVec(vrestrict * normal);
+    sf::Vector2f vadjusted = getVel() - normal * vrestrict;
     setVel(vadjusted);
     
     // reposition to no longer be inside the wall
     // this may need tweaking; not sure what is the right value to downscale by
     float downscale = 32.0f;
-    sf::Vector2f padjusted = (getPos() - vecutil::toSFVec(point)) / (downscale) + getPos();
+    sf::Vector2f padjusted = (getPos() - point) / (downscale) + getPos();
     setPos(padjusted);
 }
+
+

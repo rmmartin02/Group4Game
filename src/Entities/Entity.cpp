@@ -61,7 +61,7 @@ bool Entity::canWallCollide() {
     return true;
 }
 
-void Entity::onWallCollision(b2Vec2 point, b2Vec2 normal) {
+void Entity::onWallCollision(sf::Vector2f point, sf::Vector2f normal) {
     return;
 }
 

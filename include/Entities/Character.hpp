@@ -14,7 +14,7 @@ public:
 	void setVel(sf::Vector2f vel);
     
     // Handle this character's collision with a wall shape
-    void onWallCollision(b2Vec2 point, b2Vec2 normal) override;
+    void onWallCollision(sf::Vector2f point, sf::Vector2f normal) override;
     
 private:
     // The maximum speed at which the character can move.

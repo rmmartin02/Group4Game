@@ -54,7 +54,7 @@ public:
 
   // Called when this entity collides with a wall
   // (potentially several times with different parameters, if wall shapes overlap)
-  virtual void onWallCollision(b2Vec2 point, b2Vec2 normal);
+  virtual void onWallCollision(sf::Vector2f point, sf::Vector2f normal);
 
 protected:
   sf::Vector2f pos_;
