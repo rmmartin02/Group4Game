@@ -15,14 +15,14 @@ void ScreenManager::render(sf::RenderWindow *window){
 
 void ScreenManager::interpretInput(std::vector<sf::Event>& events){
     std::vector<sf::Event> screen_events;
-    for (auto it = events.begin(); it != events.end(); ++it) {
-        auto event = *it;
+    for (auto event : events) {
         //check for events that might change the screen
         bool eventAccepted = false;
         if(current_screen == menu_screen){
             if (event.type == sf::Event::KeyPressed){
                 if (event.key.code == sf::Keyboard::Return){
-                    std::cout<<menu_screen->getHighlighted()<<"\n";
+                    std::cout << "ScreenManager: menu screen has highlighted " 
+                              << menu_screen->getHighlighted() << std::endl;
                     if(menu_screen->getHighlighted()==0){
                         current_screen = game_screen;
                     }

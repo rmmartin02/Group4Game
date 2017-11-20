@@ -9,9 +9,13 @@
 
 class Character : public Entity{
 public:
-	Character();
+    // The rate at which the character accelerates
+    static const float ACCELERATION;
+    
+    Character();
 
-	void setVel(sf::Vector2f vel);
+    // Change the velocity according to an inputted movement direction
+    void onMoveInput(sf::Vector2f);
     
     // Handle this character's collision with a wall shape
     void onWallCollision(sf::Vector2f point, sf::Vector2f normal) override;

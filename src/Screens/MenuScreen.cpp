@@ -62,7 +62,6 @@ MenuScreen::MenuScreen(){
 }
 
 void MenuScreen::render(sf::RenderWindow *window){
-    //std::cout <<"render Menu Screen\n";
     window->clear();
     window->draw(bg);
     window->draw(logo_sprite);
@@ -76,7 +75,7 @@ void MenuScreen::render(sf::RenderWindow *window){
 void MenuScreen::interpretInput(std::vector<sf::Event>& events) {
     for ( auto event : events ) {
         if (event.type == sf::Event::KeyPressed){
-            std::cout<<highlighted<<"\n";
+            //std::cout << "MenuScreen: selected menu item " << highlighted << std::endl;
             if (event.key.code == sf::Keyboard::Up){
                 menu_options[highlighted]->setFillColor(sf::Color::White);
                 //because c++ has a remainder operator NOT a modulus operator
@@ -91,7 +90,6 @@ void MenuScreen::interpretInput(std::vector<sf::Event>& events) {
                 highlighted = (highlighted+1)%2;
                 menu_options[highlighted]->setFillColor(sf::Color::Green);
             }
-            std::cout<<highlighted<<"\n";
         }
     }
 }

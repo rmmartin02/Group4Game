@@ -102,7 +102,6 @@ void GameScreen::renderTiles(sf::RenderWindow *window) {
 
 void GameScreen::renderEntities(sf::RenderWindow *window) {
 	//logic_->getCharacter().render(window);
-	//std::cout << "Render character " << logic_->getCharacter().getPos().x << "\n";
     for (auto& pair : logic_->getEntities()) {
         pair.second->render(window);
     }
@@ -124,7 +123,6 @@ void GameScreen::renderParticles(sf::RenderWindow *window) {
 
 
 void GameScreen::render(sf::RenderWindow *window) {
-	//std::cout <<"render Game Screen\n";
     window->clear();
     renderTiles(window);
     renderEntities(window);
@@ -134,32 +132,20 @@ void GameScreen::render(sf::RenderWindow *window) {
 }
 
 void GameScreen::interpretInput(std::vector<sf::Event>& events) {
-    sf::Vector2f cam_offset(0,0);
-    bool key_pressed = false;
-    if (sf::Keyboard::isKeyPressed(keys_[1])){
-        logic_->registerMoveInput(Logic::Direction::DOWN);
-        key_pressed = true;
-        //cam_offset.y -= CAMERA_SPEED * deltaTime;
+    sf::Vector2f input(0,0);
+    if (sf::Keyboard::isKeyPressed(keys_[1])) {
+        input.y += 1;
     }
-    if (sf::Keyboard::isKeyPressed(keys_[0])){
-        logic_->registerMoveInput(Logic::Direction::UP);
-        key_pressed = true;
-        //cam_offset.y += CAMERA_SPEED * deltaTime;
+    if (sf::Keyboard::isKeyPressed(keys_[0])) {
+        input.y -= 1;
     }
-    if (sf::Keyboard::isKeyPressed(keys_[2])){
-        logic_->registerMoveInput(Logic::Direction::LEFT);
-        key_pressed = true;
-        //cam_offset.x += CAMERA_SPEED * deltaTime;
+    if (sf::Keyboard::isKeyPressed(keys_[2])) {
+        input.x -= 1;
     }
-    if (sf::Keyboard::isKeyPressed(keys_[3])){
-        logic_->registerMoveInput(Logic::Direction::RIGHT);
-        key_pressed = true;
-        //cam_offset.x -= CAMERA_SPEED * deltaTime;
+    if (sf::Keyboard::isKeyPressed(keys_[3])) {
+        input.x += 1;
     }
-    if ( !key_pressed ) {
-        logic_->registerMoveInput(Logic::Direction::NONE);
-    }
-    
+
     // for sight obstruction testing, check mouse position
     for (auto event : events) {
         if (event.type == sf::Event::MouseButtonPressed) {
@@ -170,6 +156,7 @@ void GameScreen::interpretInput(std::vector<sf::Event>& events) {
             std::cout << "GameScreen.cpp: char pos  " << vecutil::vecInfo(logic_->getCharacter().getPos()) << std::endl;
             
             sf::Vector2f wall_hit;
+            // Check if there is an obstruction between where is clicked and the center of the character.
             if (logic_->sightObstructed(logic_->getCharacter().getPos(),
                                         mousePos,
                                         wall_hit)) {
@@ -180,20 +167,22 @@ void GameScreen::interpretInput(std::vector<sf::Event>& events) {
             }
         }
     }
+    
+    logic_->registerMoveInput(input);
 }
 
 bool GameScreen::loadKeys(){
-    std::cout << "load keys\n";
+    std::cout << "GameScreen: loading keys\n";
     std::string line;
     std::ifstream myfile("../resource/keyBindings.txt");
     if ( !myfile.is_open() ) {
-        std::cout << "Failed to open keyBindings.txt" << std::endl;
+        std::cout << "GameScreen: Failed to open keyBindings.txt" << std::endl;
         return false;
     }
     int i = 0;
     while ( getline (myfile,line) )
     {
-      std::cout << line << '\n';
+      //std::cout << line << '\n';
       keys_[i] = sf::Keyboard::Key(std::stoi(line));
       i += 1;
     }

@@ -78,28 +78,8 @@ Character& Logic::getCharacter(){
     return static_cast<Character&>(getEntity("Character"));
 }
 
-void Logic::registerMoveInput(Logic::Direction dir){
-    sf::Vector2f motion(0,0);
-	switch (dir){
-        case Logic::Direction::UP:
-			motion = sf::Vector2f(0,-1);
-			break;
-        case Logic::Direction::DOWN:
-			motion = sf::Vector2f(0,1);
-			break;
-        case Logic::Direction::LEFT:
-			motion = sf::Vector2f(-1,0);
-			break;
-        case Logic::Direction::RIGHT:
-			motion = sf::Vector2f(1,0);
-			break;
-        case Logic::Direction::NONE:
-		default:
-            motion = sf::Vector2f(0,0);
-            getCharacter().setVel(motion);
-			return;
-	}
-    getCharacter().setVel(getCharacter().getVel() + motion);
+void Logic::registerMoveInput(sf::Vector2f dir) {
+    getCharacter().onMoveInput(dir);
 }
 
 bool Logic::getDebugInfo(sf::Vector2f& p1, sf::Vector2f& p2) {
@@ -228,7 +208,6 @@ bool Logic::tileIsWall(int tile) {
     return tile == 455 || tile == 211 || tile == -1;
 }
 
-// Checks if an entity is colliding with any wall shape and deals with effects
 bool Logic::handleWallCollisions(Entity& e) {
     if ( wall_shapes_.size() == 0 ) {
         std::cout << "Logic.cpp: tried to check collision without complete wall info" << std::endl;
