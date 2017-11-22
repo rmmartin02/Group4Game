@@ -35,7 +35,7 @@ public:
   sf::Vector2f getVel();
 
   // Set the current velocity
-  virtual void setVel(sf::Vector2f vel);
+  void setVel(sf::Vector2f vel);
 
   void setSprite(sf::Sprite sprite);
 
