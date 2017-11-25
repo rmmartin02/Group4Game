@@ -2,25 +2,29 @@
 // Created by Ruoying Hao on 10/17/17.
 //
 
-#ifndef CSCI437_GAME_HPP
-#define CSCI437_GAME_HPP
+#ifndef GAME_HPP
+#define GAME_HPP
 
 #include "Global.hpp"
-#include "Screens/MenuScreen.hpp"
+#include "Logic.hpp"
+#include "Screens/ScreenManager.hpp"
 
 class Game
 {
 public:
     Game();
     ~Game();
+    
+    void initialize();
 
     void Loop();
 
+
 private:
     sf::RenderWindow *window;
-    MenuScreen menuScreen;
-
+    Logic *logic;
+    ScreenManager *screenManager;
 };
 
-#endif // CSCI437_GAME_HPP
+#endif // GAME_HPP
 

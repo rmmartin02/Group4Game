@@ -7,7 +7,7 @@ int main(int argc, char** argv)
 
   // create main window
     Game game;
-
+    game.initialize();
     game.Loop();
 
     return 0;

@@ -8,7 +8,9 @@ class MenuScreen : public Screen {
 public:
 	MenuScreen();
 	void render(sf::RenderWindow *window) override;
-	void interpretInput() override;
+	void interpretInput(std::vector<sf::Event>& events) override;
+
+	int getHighlighted();
 
 private:
 
@@ -19,9 +21,14 @@ private:
 	sf::Sprite bg;
 	sf::Sprite logo_sprite;
 	sf::Texture logo;
-	sf::Font taglineFont;
+	sf::Font textFont;
 	sf::Text tagline;
-	sf::RectangleShape start;
+	sf::Text start;
+	sf::Text options;
+
+	sf::Text* menu_options[2];
+	int highlighted = 0;
+	//sf::RectangleShape start;
 };
 
 #endif // MENUSCREEN_HPP

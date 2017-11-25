@@ -2,7 +2,28 @@
 // Created by Ruoying Hao on 10/12/17.
 //
 
-#ifndef CSCI437_CHARACTER_HPP
-#define CSCI437_CHARACTER_HPP
+#ifndef CHARACTER_HPP
+#define CHARACTER_HPP
 
-#endif //CSCI437_CHARACTER_HPP
+#include "Entities/Entity.hpp"
+
+class Character : public Entity{
+public:
+    // The rate at which the character accelerates
+    static const float ACCELERATION;
+    
+    Character();
+
+    // Change the velocity according to an inputted movement direction
+    void onMoveInput(sf::Vector2f);
+    
+private:
+    // The maximum speed at which the character can move.
+    static const float MAX_SPEED;
+
+    // The radius of the character collision circle
+    static const float COLLISION_SIZE;
+
+};
+
+#endif // CHARACTER_HPP
