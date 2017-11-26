@@ -55,12 +55,6 @@ public:
   // Called when this entity collides with a wall
   virtual void onTouchWall();
 
-  //virtuals overriden in enemy
-  virtual void setStartPos(sf::Vector2f pos);
-    virtual void setDestPos(sf::Vector2f pos);
-    virtual sf::Vector2f getStartPos();
-    virtual sf::Vector2f getDestPos();
-
 protected:
   sf::Vector2f pos_;
   sf::Vector2f vel_;

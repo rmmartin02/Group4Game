@@ -6,9 +6,9 @@
 #define ENEMY1_HPP
 #include "Entities/Entity.hpp"
 
-class Enemy1 : public Entity{
+class Enemy : public Entity{
 public:
-    Enemy1();
+    Enemy();
     bool isHacked();
     void setStartPos(sf::Vector2f pos);
     void setDestPos(sf::Vector2f pos);
@@ -19,7 +19,7 @@ public:
     static const float COLLISION_SIZE;
 
 private:
-    bool hacked;
+    bool hacked_;
     sf::Vector2f start_pos_;
     sf::Vector2f dest_pos_;
     static const float MOVE_SPEED;

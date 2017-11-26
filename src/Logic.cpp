@@ -155,17 +155,18 @@ void Logic::loadEntities(std::string filename) {
         int level,start_x, start_y,dest_x,dest_y;
         iss >> level >> start_x>> start_y >> dest_x >> dest_y;
 
-        addEntity("Enemy"+std::to_string(counter),new Enemy1());
+        addEntity("Enemy"+std::to_string(counter),new Enemy());
 
-        getEntity("Enemy"+std::to_string(counter)).setStartPos(sf::Vector2f(start_x,start_y));
-        getEntity("Enemy"+std::to_string(counter)).setPos(sf::Vector2f(start_x,start_y));
-
-        getEntity("Enemy"+std::to_string(counter)).setStartPos(sf::Vector2f(dest_x,dest_y));
+        Enemy& e=(Enemy&)getEntity("Enemy"+std::to_string(counter));
+        e.setStartPos(sf::Vector2f(start_x,start_y));
+        e.setPos(sf::Vector2f(start_x,start_y));
+        e.setStartPos(sf::Vector2f(dest_x,dest_y));
 
         counter=counter+1;
 
     }
 
+    //testing
     std::cout<<getEntity("Enemy3").getPos().x<<" "<<getEntity("Enemy3").getPos().y<<"\n";
 
 }

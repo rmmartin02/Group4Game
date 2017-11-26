@@ -2,10 +2,10 @@
 // Created by Ruoying Hao on 11/25/17.
 //
 
-#include "Entities/Enemy1.hpp"
+#include "Entities/Enemy.hpp"
 #include "VecUtil.hpp"
-const float Enemy1::COLLISION_SIZE = 32.0f;
-Enemy1::Enemy1(){
+const float Enemy::COLLISION_SIZE = 32.0f;
+Enemy::Enemy(){
     sf::Texture texture;
     if (!texture.create(32, 32))
     {
@@ -21,32 +21,32 @@ Enemy1::Enemy1(){
     collider->m_radius = COLLISION_SIZE;
     this->attachShape(collider);
 
-    hacked=false;
+    hacked_=false;
 
 }
 
-bool Enemy1::isHacked(){
-    return hacked;
+bool Enemy::isHacked(){
+    return hacked_;
 }
 
-void Enemy1::setStartPos(sf::Vector2f pos){
+void Enemy::setStartPos(sf::Vector2f pos){
     start_pos_=pos;
 
 }
 
-void Enemy1::setDestPos(sf::Vector2f pos){
+void Enemy::setDestPos(sf::Vector2f pos){
     dest_pos_=pos;
 
 }
 
-sf::Vector2f Enemy1::getStartPos(){
+sf::Vector2f Enemy::getStartPos(){
     return start_pos_;
 }
 
-sf::Vector2f Enemy1::getDestPos(){
+sf::Vector2f Enemy::getDestPos(){
     return dest_pos_;
 }
 
-sf::Vector2f getNextPos(){
+sf::Vector2f Enemy::getNextPos(){
 
 }

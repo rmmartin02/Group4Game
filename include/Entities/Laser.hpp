@@ -5,13 +5,13 @@
 #ifndef LASER_HPP
 #define LASER_HPP
 
-#include "Global.hpp"
+#include "Entities/Entity.hpp"
 
-class Laser {
+class Laser : public Entity{
 
 protected:
     sf::Vector2f pos_;
-    bool hacked;
+    bool hacked_;
     sf::Sprite sprite_;
     int dir_;
     float startRotate_;
@@ -22,20 +22,10 @@ protected:
 public:
     Laser();
 
-    //update
-    virtual void update(float delta, int &logic);
-
-    //Renders the device on window using sprite_
-    void render (sf::RenderWindow *window);
-
-    // Return the current position
-    sf::Vector2f getPos();
 
     //return direction: 0,1,2,3 -> NORTH,EAST,SOUTH,WEST
     int getDirection();
 
-    // Place the device at a new position
-    void setPos(sf::Vector2f pos);
 
     void setRotate(float startRotate, float endRotate);
 
@@ -52,9 +42,6 @@ public:
 
     //check if the device is hacked by the player
     bool isHacked();
-
-    void setTexture(sf::Texture tex);
-    void setSprite(sf::Sprite sprite);
 };
 
 #endif //LASER_HPP
