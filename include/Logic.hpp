@@ -26,7 +26,7 @@ public:
     void update(float delta);
     
     // Loads a level from a file
-    void load(std::string filename);
+    void load(std::string mapfilename,std::string enemyfilename);
     
     // Return the numbers of rows and columns in the loaded tile map
     std::pair<int, int> getMapSize();

@@ -42,10 +42,10 @@ void Logic::update(float delta) {
     }
 }
 
-void Logic::load(std::string filename) {
+void Logic::load(std::string mapfilename,std::string enemyfilename) {
     clearLevel();
-    loadTiles(filename);
-    loadEntities(filename);
+    loadTiles(mapfilename);
+    loadEntities(enemyfilename);
     std::cout << "Map size: " << getMapSize().first 
               << "," << getMapSize().second << std::endl;
 }
@@ -141,6 +141,19 @@ void Logic::loadEntities(std::string filename) {
     //entities_["Character"].setVel(sf::Vector2f(1,1));
     addEntity("Character", new Character());
     getCharacter().setVel(sf::Vector2f(1,1));
+    std::ifstream file(filename);
+    std::string str;
+    int counter=1;
+    while (std::getline(file, str))
+    {
+        // for each line in the file:
+        // n start_pos.x start_pos.y dest_pos.x dest_pos.y
+        // n is the class of enemy, determine which class of enemy to be created
+        //start_pos and dest_pos are starting and destination, must not be on the wall
+        std::cout<<str<<"\n";
+
+    }
+
 }
 
 void Logic::buildWallShapes() {
