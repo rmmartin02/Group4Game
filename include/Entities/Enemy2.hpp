@@ -7,8 +7,8 @@
 #include "Entities/Entity.hpp"
 class Enemy2 : public Entity{
 public:
-    enemy2();
-    isHacked();
+    Enemy2();
+    bool isHacked();
     sf::Vector2f getStartPos();
     sf::Vector2f getDestination();
 

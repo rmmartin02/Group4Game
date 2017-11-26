@@ -10,6 +10,8 @@
 
 #include "Entities/Entity.hpp"
 #include "Entities/Character.hpp"
+#include "Entities/Enemy1.hpp"
+#include "Entities/Enemy2.hpp"
 
 #include "Box2D/Box2D.h"
 

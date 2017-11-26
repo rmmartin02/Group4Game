@@ -144,15 +144,29 @@ void Logic::loadEntities(std::string filename) {
     std::ifstream file(filename);
     std::string str;
     int counter=1;
+
     while (std::getline(file, str))
     {
         // for each line in the file:
         // n start_pos.x start_pos.y dest_pos.x dest_pos.y
         // n is the class of enemy, determine which class of enemy to be created
         //start_pos and dest_pos are starting and destination, must not be on the wall
-        std::cout<<str<<"\n";
+        std::istringstream iss(str);
+        int level,start_x, start_y,dest_x,dest_y;
+        iss >> level >> start_x>> start_y >> dest_x >> dest_y;
+
+        addEntity("Enemy"+std::to_string(counter),new Enemy1());
+
+        getEntity("Enemy"+std::to_string(counter)).setStartPos(sf::Vector2f(start_x,start_y));
+        getEntity("Enemy"+std::to_string(counter)).setPos(sf::Vector2f(start_x,start_y));
+
+        getEntity("Enemy"+std::to_string(counter)).setStartPos(sf::Vector2f(dest_x,dest_y));
+
+        counter=counter+1;
 
     }
+
+    std::cout<<getEntity("Enemy3").getPos().x<<" "<<getEntity("Enemy3").getPos().y<<"\n";
 
 }
 

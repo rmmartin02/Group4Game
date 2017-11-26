@@ -8,17 +8,20 @@
 
 class Enemy1 : public Entity{
 public:
-    enemy1();
-    isHacked();
+    Enemy1();
+    bool isHacked();
+    void setStartPos(sf::Vector2f pos);
+    void setDestPos(sf::Vector2f pos);
     sf::Vector2f getStartPos();
-    sf::Vector2f getDestination();
+    sf::Vector2f getDestPos();
     //part of path finding, find the next position that the entity should go to
     sf::Vector2f getNextPos();
+    static const float COLLISION_SIZE;
 
 private:
     bool hacked;
-    sf::Vector2f start_pos;
-    sf::Vector2f dest_pos;
+    sf::Vector2f start_pos_;
+    sf::Vector2f dest_pos_;
     static const float MOVE_SPEED;
 
 };

@@ -5,6 +5,10 @@
 Entity::Entity(){};
 
 void Entity::update(float delta, int &logic){};
+void Entity::setStartPos(sf::Vector2f pos){};
+void Entity::setDestPos(sf::Vector2f pos){};
+sf::Vector2f Entity::getStartPos(){};
+sf::Vector2f Entity::getDestPos(){};
 
   //Renders entity on window using sprite
 void Entity::render (sf::RenderWindow *window) {
