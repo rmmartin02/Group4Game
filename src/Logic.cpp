@@ -205,7 +205,7 @@ int Logic::buildAxisWalls(bool vertical) {
 }
 
 bool Logic::tileIsWall(int tile) {
-    return tile == 455 || tile == 211 || tile == -1;
+    return tile != 4 && tile!=5;
 }
 
 bool Logic::handleWallCollisions(Entity& e) {
