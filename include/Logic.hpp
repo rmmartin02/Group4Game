@@ -11,6 +11,7 @@
 #include "Entities/Entity.hpp"
 #include "Entities/Character.hpp"
 #include "Entities/Enemy.hpp"
+#include "Entities/Laser.hpp"
 
 #include "Box2D/Box2D.h"
 

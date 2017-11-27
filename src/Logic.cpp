@@ -148,19 +148,50 @@ void Logic::loadEntities(std::string filename) {
     while (std::getline(file, str))
     {
         // for each line in the file:
-        // n start_pos.x start_pos.y dest_pos.x dest_pos.y
-        // n is the class of enemy, determine which class of enemy to be created
+        // n=1: basic enemy; n=2: advanced enemy; n=0 laser
+        // n start_pos.x start_pos.y dest_pos.x dest_pos.y, for n=1,2
+        // n pos.x pos.y start_direction end_direction, for n=0
+        // n is the class of enemy/laser, determine which class of enemy to be created
+
         //start_pos and dest_pos are starting and destination, must not be on the wall
         std::istringstream iss(str);
-        int level,start_x, start_y,dest_x,dest_y;
+        int level;
+        float start_x, start_y,dest_x,dest_y;
         iss >> level >> start_x>> start_y >> dest_x >> dest_y;
 
-        addEntity("Enemy"+std::to_string(counter),new Enemy());
 
-        Enemy& e=(Enemy&)getEntity("Enemy"+std::to_string(counter));
-        e.setStartPos(sf::Vector2f(start_x,start_y));
-        e.setPos(sf::Vector2f(start_x,start_y));
-        e.setStartPos(sf::Vector2f(dest_x,dest_y));
+
+        if(level==1){
+            addEntity("Enemy"+std::to_string(counter),new Enemy());
+
+            Enemy& e=static_cast<Enemy&>(getEntity("Enemy"+std::to_string(counter)));
+            e.setStartPos(sf::Vector2f(start_x,start_y));
+            e.setPos(sf::Vector2f(start_x,start_y));
+            e.setDestPos(sf::Vector2f(dest_x,dest_y));
+            //set additional enemy 1 var here
+
+        }
+        else if(level==2){
+            addEntity("Enemy"+std::to_string(counter),new Enemy());
+
+            Enemy& e=static_cast<Enemy&>(getEntity("Enemy"+std::to_string(counter)));
+            e.setStartPos(sf::Vector2f(start_x,start_y));
+            e.setPos(sf::Vector2f(start_x,start_y));
+            e.setDestPos(sf::Vector2f(dest_x,dest_y));
+            //set additional enemy 2 var here
+
+        }
+        else if(level==0){
+            addEntity("Laser"+std::to_string(counter),new Laser());
+            Laser& l=static_cast<Laser&>(getEntity("Laser"+std::to_string(counter)));
+            l.setPos(sf::Vector2f(start_x,start_y));
+            l.setDirection(dest_x);
+            l.setRotate(dest_x,dest_y);
+
+
+        }
+
+
 
         counter=counter+1;
 

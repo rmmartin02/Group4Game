@@ -13,7 +13,7 @@ protected:
     sf::Vector2f pos_;
     bool hacked_;
     sf::Sprite sprite_;
-    int dir_;
+    float dir_;
     float startRotate_;
     float endRotate_;
     float shootTime_;
@@ -33,7 +33,7 @@ public:
 
     void setStopTime(float stopTime);
 
-    void setDirection(int dir);
+    void setDirection(float dir);
 
     //rotate the device
     void rotate(float angle);
@@ -42,6 +42,7 @@ public:
 
     //check if the device is hacked by the player
     bool isHacked();
+    static const float COLLISION_SIZE;
 };
 
 #endif //LASER_HPP
