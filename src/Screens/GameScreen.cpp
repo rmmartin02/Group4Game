@@ -90,7 +90,7 @@ void GameScreen::renderTiles(sf::RenderWindow *window) {
         for (int c = static_cast<int>(clamp_min.y); c < static_cast<int>(clamp_max.y); c++) {
             //std::cout << "Tile at " << r << ", " << c << " is " << tiles[r][c] << std::endl;
             
-            auto coord_pair = texture_coords_[tiles[r][c]];
+            auto coord_pair = texture_coords_[tiles[c][r]];
             //std::cout << "coord " << coord_pair.first << "," << coord_pair.second << ".\n";
             
             // top left vert
