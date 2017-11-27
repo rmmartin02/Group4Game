@@ -21,33 +21,12 @@ bool GameScreen::loadTextures() {
     if (!textures_["tileset"].loadFromFile(TILESET_FILENAME)){
         return false;
     }
-    /*
     for (int i = 0; i<4;i++){
         for (int j = 0; j<4;j++){
             std::cout << i*4+j << " " << j << " " << i << "\n";
-            texture_coords_[i*4+j] = std::make_pair(Logic::TILE_SIZE*i, Logic::TILE_SIZE*j);
+            texture_coords_[i*4+j] = std::make_pair(Logic::TILE_SIZE*j, Logic::TILE_SIZE*i);
         }
     }
-    */
-    texture_coords_[0] = std::make_pair(Logic::TILE_SIZE*0, Logic::TILE_SIZE*0);
-    texture_coords_[1] = std::make_pair(Logic::TILE_SIZE*1, Logic::TILE_SIZE*0);
-    texture_coords_[2] = std::make_pair(Logic::TILE_SIZE*2, Logic::TILE_SIZE*0);
-    texture_coords_[3] = std::make_pair(Logic::TILE_SIZE*3, Logic::TILE_SIZE*0);
-
-    texture_coords_[4] = std::make_pair(Logic::TILE_SIZE*0, Logic::TILE_SIZE*1);
-    texture_coords_[5] = std::make_pair(Logic::TILE_SIZE*1, Logic::TILE_SIZE*1);
-    texture_coords_[6] = std::make_pair(Logic::TILE_SIZE*2, Logic::TILE_SIZE*1);
-    texture_coords_[7] = std::make_pair(Logic::TILE_SIZE*3, Logic::TILE_SIZE*1);
-
-    texture_coords_[8] = std::make_pair(Logic::TILE_SIZE*0, Logic::TILE_SIZE*2);
-    texture_coords_[9] = std::make_pair(Logic::TILE_SIZE*1, Logic::TILE_SIZE*2);
-    texture_coords_[10] = std::make_pair(Logic::TILE_SIZE*2, Logic::TILE_SIZE*2);
-    texture_coords_[11] = std::make_pair(Logic::TILE_SIZE*3, Logic::TILE_SIZE*2);
-
-    texture_coords_[12] = std::make_pair(Logic::TILE_SIZE*0, Logic::TILE_SIZE*3);
-    texture_coords_[13] = std::make_pair(Logic::TILE_SIZE*1, Logic::TILE_SIZE*3);
-    texture_coords_[14] = std::make_pair(Logic::TILE_SIZE*2, Logic::TILE_SIZE*3);
-    texture_coords_[15] = std::make_pair(Logic::TILE_SIZE*3, Logic::TILE_SIZE*3);
     return true;
 }
 
