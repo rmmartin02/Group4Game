@@ -161,7 +161,7 @@ int Logic::buildAxisWalls(bool vertical) {
     
     for (int outer = 0; outer < outer_limit; outer++) {
         for (int inner = 0; inner < inner_limit; inner++) {
-            int tile = vertical ? tiles_[outer][inner] : tiles_[inner][outer];
+            int tile = vertical ? tiles_[inner][outer] : tiles_[outer][inner];
             if ( wall_start < 0 ) {
                 if ( tileIsWall(tile) )
                     wall_start = inner;
