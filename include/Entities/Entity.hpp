@@ -37,6 +37,10 @@ public:
   // Set the current velocity
   void setVel(sf::Vector2f vel);
 
+  // Get the direction angle (in degrees, 0 is directly right, increases going clockwise)
+  // Entity direction is determined by the most recent non-zero velocity.
+  float getDirection();
+
   void setSprite(sf::Sprite sprite);
 
   // Attach a Box2D shape to this object
@@ -58,6 +62,8 @@ public:
 protected:
   sf::Vector2f pos_;
   sf::Vector2f vel_;
+  float dir_;
+
   sf::Sprite sprite_;
 
   // Box2D shape object used for collision calculations  

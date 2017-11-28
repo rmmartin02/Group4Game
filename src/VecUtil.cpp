@@ -21,9 +21,17 @@ float vecutil::dotProd(sf::Vector2f a, sf::Vector2f b) {
     return a.x * b.x + a.y * b.y;
 }
 
+bool vecutil::nonZero(sf::Vector2f v) {
+    return v.x != 0 || v.y != 0;
+}
+
 float vecutil::length(sf::Vector2f vec) { return sqrt(dotProd(vec, vec)); }
 
 float vecutil::angle(sf::Vector2f vec) { return atan2(vec.y, vec.x); }
+
+float vecutil::radToDeg(float rad) { return rad * 180.0f / pi(); }
+
+float vecutil::pi() { return 4 * atan(1); }
 
 sf::Vector2f vecutil::normalize(sf::Vector2f vec) {
     if (vec.x == 0 && vec.y == 0) {

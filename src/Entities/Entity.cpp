@@ -1,6 +1,6 @@
 #include "Entities/Entity.hpp"
 
-#include "Logic.hpp"
+#include "VecUtil.hpp"
   
 Entity::Entity(){};
 
@@ -40,6 +40,13 @@ sf::Vector2f Entity::getVel(){
 // Set the current velocity
 void Entity::setVel(sf::Vector2f vel){
 	vel_ = vel;
+    if ( vecutil::nonZero(vel) != 0 ) {
+        dir_ = vecutil::radToDeg(vecutil::angle(vel));
+    }
+}
+
+float Entity::getDirection() {
+    return dir_;
 }
 
 void Entity::setSprite(sf::Sprite sprite){

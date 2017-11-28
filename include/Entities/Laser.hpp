@@ -10,10 +10,9 @@
 class Laser : public Entity{
 
 protected:
-    sf::Vector2f pos_;
     bool hacked_;
     sf::Sprite sprite_;
-    float dir_;
+
     float startRotate_;
     float endRotate_;
     float shootTime_;
@@ -22,18 +21,15 @@ protected:
 public:
     Laser();
 
+    // Set this laser's angle, in degrees (0 is right, increases clockwise)
+    void setDirection(float angle);
 
-    //return direction: 0,1,2,3 -> NORTH,EAST,SOUTH,WEST
-    int getDirection();
-
-
+    // Set the bounding angles for this laser's rotation
     void setRotate(float startRotate, float endRotate);
 
     void setShootTime(float shootTime);
 
     void setStopTime(float stopTime);
-
-    void setDirection(float dir);
 
     //rotate the device
     void rotate(float angle);
