@@ -104,6 +104,7 @@ void GameScreen::renderEntities(sf::RenderWindow *window) {
 	//logic_->getCharacter().render(window);
     for (auto& pair : logic_->getEntities()) {
         pair.second->render(window);
+
     }
     
 }
