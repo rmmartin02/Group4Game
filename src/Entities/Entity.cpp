@@ -44,6 +44,8 @@ void Entity::setVel(sf::Vector2f vel){
 
 void Entity::setSprite(sf::Sprite sprite){
 	sprite_ = sprite;
+    sprite_.setOrigin(sprite_.getGlobalBounds().width / 2.0f,
+                      sprite_.getGlobalBounds().height / 2.0f);
 }
 
 void Entity::attachShape(b2Shape* shape){
