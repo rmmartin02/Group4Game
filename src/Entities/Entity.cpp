@@ -6,6 +6,7 @@ Entity::Entity(){};
 
 void Entity::update(float delta, int &logic){};
 
+
   //Renders entity on window using sprite
 void Entity::render (sf::RenderWindow *window) {
 	//std::cout << sprite_.getPosition().x << "\n";
