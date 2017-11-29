@@ -38,7 +38,7 @@ void Logic::update(float delta) {
     // adjust the timer
     time_left_ -= delta;
     if (time_left_ < 0) {
-        std::cout << "Ran out of time!" << std::endl;
+        std::cout << "Logic.cpp: Ran out of time!" << std::endl;
     }
 }
 
@@ -46,7 +46,7 @@ void Logic::load(std::string mapfilename,std::string enemyfilename) {
     clearLevel();
     loadTiles(mapfilename);
     loadEntities(enemyfilename);
-    std::cout << "Map size: " << getMapSize().first 
+    std::cout << "Logic.cpp: Map size: " << getMapSize().first 
               << "," << getMapSize().second << std::endl;
 }
 
@@ -108,7 +108,7 @@ void Logic::loadTiles(std::string filename) {
     wall_shapes_.clear();
     std::ifstream file_in(filename);
     if ( !file_in.is_open() ) {
-        std::cout << "failed to open level file " << filename << std::endl;
+        std::cout << "Logic.cpp: failed to open level file " << filename << std::endl;
         return;
     }
     std::string line_str;
@@ -126,7 +126,7 @@ void Logic::loadTiles(std::string filename) {
                 row.push_back(std::stoi(sub));
             }
             catch ( const std::logic_error& e ){
-                std::cout << "could not parse value " << sub
+                std::cout << "Logic.cpp: could not parse value " << sub
                           << " in tile csv " << filename << std::endl;
             }
         }
@@ -198,7 +198,7 @@ void Logic::loadEntities(std::string filename) {
     }
 
     //testing
-    std::cout<<getEntity("Enemy3").getPos().x<<" "<<getEntity("Enemy3").getPos().y<<"\n";
+    std::cout << "Logic.cpp: checking enemy info (enemy 3's position) " << vecutil::vecInfo(getEntity("Enemy3").getPos()) << std::endl;
 
 }
 
@@ -206,7 +206,7 @@ void Logic::buildWallShapes() {
     wall_shapes_.clear();
     buildAxisWalls(true);
     buildAxisWalls(false);
-    std::cout << "Created " << wall_shapes_.size() << " Box2D shapes for the tiles." << std::endl;
+    std::cout << "Logic.cpp: Created " << wall_shapes_.size() << " Box2D shapes for the tiles." << std::endl;
 }
 
 int Logic::buildAxisWalls(bool vertical) {

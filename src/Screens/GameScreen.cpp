@@ -23,7 +23,8 @@ bool GameScreen::loadTextures() {
     }
     for (int i = 0; i<4;i++){
         for (int j = 0; j<4;j++){
-            std::cout << i*4+j << " " << j << " " << i << "\n";
+            std::cout << "GameScreen.cpp: loading tile texture coordinates: "
+                      << i*4+j << " " << j << " " << i << "\n";
             texture_coords_[i*4+j] = std::make_pair(Logic::TILE_SIZE*j, Logic::TILE_SIZE*i);
         }
     }
