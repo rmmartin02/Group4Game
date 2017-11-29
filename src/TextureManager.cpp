@@ -4,6 +4,10 @@
 
 #include "TextureManager.hpp"
 
+TextureManager::TextureManager() {
+    
+}
+
 bool TextureManager::loadTexture(std::string name, std::string filename){
     sf::Texture tex;
     if (tex.loadFromFile(filename)) {

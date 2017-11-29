@@ -5,9 +5,6 @@
 #ifndef TEXTUREMANAGER_HPP
 #define TEXTUREMANAGER_HPP
 
-#include <string>
-#include <map>
-
 #include "Global.hpp"
 
 class TextureManager {

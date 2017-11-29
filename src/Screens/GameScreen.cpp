@@ -2,12 +2,11 @@
 
 #include "VecUtil.hpp"
 
-
 const std::string GameScreen::TILESET_FILENAME = "../resource/maps/map_tiles.png";
+const std::string GameScreen::TILESET_TEX_NAME = "tileset";
 
 GameScreen::GameScreen(Logic* logic) {
     logic_ = logic;
-    textures_ = std::map<std::string, sf::Texture>();
     //load default keys in case custom binding fails to load
     keys_[0] = sf::Keyboard::Up;
     keys_[1] = sf::Keyboard::Down;
@@ -17,10 +16,10 @@ GameScreen::GameScreen(Logic* logic) {
 }
 
 bool GameScreen::loadTextures() {
-    textures_["tileset"] = sf::Texture();
-    if (!textures_["tileset"].loadFromFile(TILESET_FILENAME)){
+    if (!tex_manager_.loadTexture(TILESET_TEX_NAME, TILESET_FILENAME)) {
         return false;
     }
+    
     for (int i = 0; i<4;i++){
         for (int j = 0; j<4;j++){
             std::cout << "GameScreen.cpp: loading tile texture coordinates: "
@@ -100,7 +99,7 @@ void GameScreen::renderTiles(sf::RenderWindow *window) {
             tile_vertices_.append(v);
         }
     }
-    window->draw(tile_vertices_, &textures_["tileset"]);
+    window->draw(tile_vertices_, &(tex_manager_.getRef(TILESET_TEX_NAME)));
 }
 
 void GameScreen::renderEntities(sf::RenderWindow *window) {

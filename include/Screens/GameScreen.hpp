@@ -1,10 +1,12 @@
 #ifndef GAMESCREEN_HPP
 #define GAMESCREEN_HPP
 
-#include "Screens/Screen.hpp"
-#include "Logic.hpp"
 #include <sstream>
 #include <fstream>
+
+#include "Logic.hpp"
+#include "TextureManager.hpp"
+#include "Screens/Screen.hpp"
 
 class GameScreen : public Screen {
 
@@ -31,12 +33,14 @@ private:
 
     // Filename for the texture file containing tile sprites
     static const std::string TILESET_FILENAME;
+
+    static const std::string TILESET_TEX_NAME;
     
     sf::Keyboard::Key keys_[4];
     
     Logic* logic_;
     
-    std::map<std::string, sf::Texture> textures_;
+    TextureManager tex_manager_;
     std::map<int, std::pair<int, int>> texture_coords_;
     
     sf::VertexArray tile_vertices_;
