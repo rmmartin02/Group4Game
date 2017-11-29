@@ -3,7 +3,7 @@
 #include "VecUtil.hpp"
 
 
-const std::string GameScreen::TILESET_FILENAME = "../resource/maps/tiles.png";
+const std::string GameScreen::TILESET_FILENAME = "../resource/maps/map_tiles.png";
 
 GameScreen::GameScreen(Logic* logic) {
     logic_ = logic;
@@ -21,10 +21,13 @@ bool GameScreen::loadTextures() {
     if (!textures_["tileset"].loadFromFile(TILESET_FILENAME)){
         return false;
     }
-    texture_coords_[-1] = std::make_pair(0, Logic::TILE_SIZE*2);
-    texture_coords_[455] = std::make_pair(Logic::TILE_SIZE*6, Logic::TILE_SIZE*4);
-    texture_coords_[211] = std::make_pair(Logic::TILE_SIZE*6, Logic::TILE_SIZE*5);
-    texture_coords_[210] = std::make_pair(Logic::TILE_SIZE*7, Logic::TILE_SIZE*4);
+    for (int i = 0; i<4;i++){
+        for (int j = 0; j<4;j++){
+            std::cout << "GameScreen.cpp: loading tile texture coordinates: "
+                      << i*4+j << " " << j << " " << i << "\n";
+            texture_coords_[i*4+j] = std::make_pair(Logic::TILE_SIZE*j, Logic::TILE_SIZE*i);
+        }
+    }
     return true;
 }
 
@@ -67,7 +70,7 @@ void GameScreen::renderTiles(sf::RenderWindow *window) {
         for (int c = static_cast<int>(clamp_min.y); c < static_cast<int>(clamp_max.y); c++) {
             //std::cout << "Tile at " << r << ", " << c << " is " << tiles[r][c] << std::endl;
             
-            auto coord_pair = texture_coords_[tiles[r][c]];
+            auto coord_pair = texture_coords_[tiles[c][r]];
             //std::cout << "coord " << coord_pair.first << "," << coord_pair.second << ".\n";
             
             // top left vert

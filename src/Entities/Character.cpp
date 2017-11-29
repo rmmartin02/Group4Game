@@ -8,7 +8,7 @@
 
 const float Character::MAX_SPEED = 10.0f;
 const float Character::ACCELERATION = 0.4f;
-const float Character::COLLISION_SIZE = 32.0f;
+const float Character::COLLISION_SIZE = 16.0f;
 
 Character::Character(){
 	sf::Texture texture;
