@@ -29,7 +29,7 @@ void Logic::update(float delta) {
     // update every entity.
     for ( auto& pair : getEntities() ) {
         Entity& e = *(pair.second.get());
-        if (e.wallCollision()){
+        if (e.canWallCollide()){
             handleWallCollisions(e);
         }
         e.move(e.getVel());
@@ -303,24 +303,32 @@ bool Logic::handleWallCollisions(Entity& e) {
             if (worldManifold.separations[0] < closest) {
                 closest = worldManifold.separations[i];
             }
-            onWallCollision(e, collision_pt, norm);
+            e.onWallCollision(vecutil::toSFVec(collision_pt), vecutil::toSFVec(norm));
         }
     }
     
     return closest < vecutil::infinity();
 }
 
-void Logic::onWallCollision(Entity& e, b2Vec2 point, b2Vec2 normal) {
-    //std::cout << "Wall collision handling" << std::endl;
-    float vrestrict = vecutil::clamp(vecutil::dotProd(e.getVel(),
-                        vecutil::normalize(vecutil::toSFVec(normal))),
-                                        -vecutil::infinity(), 0);
-    // remove that component from the velocity
-    sf::Vector2f vadjusted = e.getVel() - vecutil::toSFVec(vrestrict * normal);
-    e.setVel(vadjusted);
-    
-    // reposition to no longer be inside the wall
-    // this may need tweaking; not sure if TILE_SIZE is the right value to downscale by
-    sf::Vector2f padjusted = (e.getPos() - vecutil::toSFVec(point)) / (1.0f * TILE_SIZE) + e.getPos();
-    e.setPos(padjusted);
+bool Logic::sightObstructed(sf::Vector2f src, sf::Vector2f target, 
+                              sf::Vector2f& hit) {
+    int hit_shape = -1;
+    float min_frac = vecutil::infinity();
+    b2Transform itransform = vecutil::iform();
+    b2RayCastOutput ray_output;
+    b2RayCastInput ray_input;
+    ray_input.p1 = vecutil::toB2Vec(src);
+    ray_input.p2 = vecutil::toB2Vec(target);
+    ray_input.maxFraction = 1.0f;
+    int child;
+    for (int i = 0; i < wall_shapes_.size(); i++) {
+        bool rayhit = wall_shapes_[i]->RayCast(&ray_output, ray_input, itransform, child);
+        if (rayhit && ray_output.fraction < min_frac) {
+            min_frac = ray_output.fraction;
+            hit_shape = i;
+            hit = vecutil::toSFVec(ray_input.p1 + 
+                                   ray_output.fraction * (ray_input.p2 - ray_input.p1));
+        }
+    }
+    return hit_shape >= 0;
 }
