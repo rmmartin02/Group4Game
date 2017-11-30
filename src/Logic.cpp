@@ -34,18 +34,25 @@ void Logic::update(float delta) {
         }
         e.move(e.getVel());
     }
+
+
     
     // adjust the timer
     time_left_ -= delta;
     if (time_left_ < 0) {
         std::cout << "Logic.cpp: Ran out of time!" << std::endl;
     }
+
+
+
 }
 
 void Logic::load(std::string mapfilename,std::string enemyfilename) {
     clearLevel();
     loadTiles(mapfilename);
     loadEntities(enemyfilename);
+    pathFinder(sf::Vector2f(1,1),sf::Vector2f(1,1));
+    std::cout<<"character pos"<<getCharacter().getPos().x<<" "<<getCharacter().getPos().y<<"\n";
     std::cout << "Logic.cpp: Map size: " << getMapSize().first 
               << "," << getMapSize().second << std::endl;
 }
@@ -323,4 +330,35 @@ void Logic::onWallCollision(Entity& e, b2Vec2 point, b2Vec2 normal) {
     // this may need tweaking; not sure if TILE_SIZE is the right value to downscale by
     sf::Vector2f padjusted = (e.getPos() - vecutil::toSFVec(point)) / (1.0f * TILE_SIZE) + e.getPos();
     e.setPos(padjusted);
+}
+
+void Logic::pathFinder(sf::Vector2f startPos, sf::Vector2f endPos){
+
+    std::vector<std::vector<int>>& v=getTiles();
+
+    if(startPos.x>=0 && startPos.y>=0){
+        int i= (startPos.y-1)/32;
+        int j=(startPos.x-1)/32;
+    }
+    //reset distance calculation map
+    tileStartDelta_.clear();
+    tileDestDelta_.clear();
+    std::vector<int> xxx;
+    for(int i=0;i<v.size();i++){
+
+        for(int j=0;j<v[i].size();j++){
+            xxx.push_back(0);
+        }
+        tileStartDelta_.push_back(xxx);
+        tileDestDelta_.push_back(xxx);
+        xxx.clear();
+    }
+
+    for(int i=0;i<tileStartDelta_.size();i++){
+        for(int j=0;j<tileStartDelta_[i].size();j++){
+            std::cout<<tileStartDelta_[i][j];
+        }
+        std::cout<<"\n";
+    }
+    
 }

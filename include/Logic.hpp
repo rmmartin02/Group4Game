@@ -18,6 +18,12 @@
 
 class Logic {
 public:
+
+    struct node{
+        int g;
+        int h;
+        node* parent;
+    };
     // Represents the size of a tile, in pixels on the tileset file,
     // and in SFML's drawing units. We may want to separate the two
     // in the future.
@@ -62,6 +68,7 @@ private:
     float time_left_;
     
     std::vector<std::vector<int>> tiles_;
+
     ENTITY_DATA entities_;
     
     std::vector<std::unique_ptr<b2Shape>> wall_shapes_;
@@ -91,6 +98,14 @@ private:
     
     // Handle an entity's collision with a wall shape
     void onWallCollision(Entity& e, b2Vec2 point, b2Vec2 normal);
+
+    //pathfinding var and methods
+    void pathFinder(sf::Vector2f startPos, sf::Vector2f destPos);
+    std::vector<std::vector<int>> tileStartDelta_;
+    std::vector<std::vector<int>> tileDestDelta_;
+    std::vector<std::vector<int>>& getTileStartDelta();
+    std::vector<std::vector<int>>& getTileDestDelta();
+
     
 };
 
