@@ -33,6 +33,16 @@ void Logic::update(float delta) {
             handleWallCollisions(e);
         }
         e.move(e.getVel());
+
+        //check if character is in enemies line of sight
+        if (Enemy* enemy = dynamic_cast<Enemy*>(&e)){
+            if(enemy->canSeePlayer(getCharacter().getPos())){
+                sf::Vector2f hit;
+                if(!sightObstructed(enemy->getPos(), getCharacter().getPos(), hit)){
+                    std::cout<<"In line of sight";
+                }
+            }
+        }
     }
     
     // adjust the timer

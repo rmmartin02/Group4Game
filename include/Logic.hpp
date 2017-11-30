@@ -25,7 +25,7 @@ public:
     static const int TILE_SIZE = 32;
 
     Logic();
-    void update(float delta);
+    void update(float delta);;
     
     // Loads a level from a file
     void load(std::string mapfilename,std::string enemyfilename);

@@ -25,6 +25,10 @@ Enemy::Enemy(){
 
 }
 
+void Enemy::update(float delta, int &logic){
+
+}
+
 bool Enemy::isHacked(){
     return hacked_;
 }
@@ -49,4 +53,21 @@ sf::Vector2f Enemy::getDestPos(){
 
 sf::Vector2f Enemy::getNextPos(){
 
+}
+
+bool Enemy::canSeePlayer(sf::Vector2f character){
+    float dist = sqrt(pow(pos_.x-character.x,2)+pow(pos_.y-character.y,2));
+    if(dist<=sight_distance_){
+        float x3 = pos_.x+vel_.x;
+        float y3 = pos_.y+vel_.y;
+        float a = pow(pos_.x-character.x,2)+pow(pos_.y-character.y,2);
+        float b = pow(pos_.x-x3,2)+pow(pos_.y-y3,2);
+        float c = pow(x3-character.x,2)+pow(y3-character.x,2);
+        float angle = acos((a+b-c)/sqrt(4*a*b));
+        if(angle<=sight_angle_){
+            //still need to write a check for walls here
+            return true;
+        }
+    }
+    return false;
 }
