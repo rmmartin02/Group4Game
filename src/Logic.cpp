@@ -39,7 +39,7 @@ void Logic::update(float delta) {
             if(enemy->canSeePlayer(getCharacter().getPos())){
                 sf::Vector2f hit;
                 if(!sightObstructed(enemy->getPos(), getCharacter().getPos(), hit)){
-                    std::cout<<"In line of sight";
+                    std::cout<<"Logic: Charcter in line of sight\n";
                 }
             }
         }

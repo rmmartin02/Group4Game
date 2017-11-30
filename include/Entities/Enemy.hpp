@@ -27,7 +27,7 @@ private:
     sf::Vector2f dest_pos_;
     static const float MOVE_SPEED;
     //change based on level?
-    float sight_distance_ = 5;
+    float sight_distance_ = 100;
     float sight_angle_ = 30;
 };
 #endif // ENEMY_HPP
