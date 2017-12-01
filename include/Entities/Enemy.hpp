@@ -9,8 +9,8 @@
 class Enemy : public Entity{
 public:
     Enemy();
-    void update(float delta, int &logic);
     bool isHacked();
+    bool isAlerted();
     void setStartPos(sf::Vector2f pos);
     void setDestPos(sf::Vector2f pos);
     sf::Vector2f getStartPos();
@@ -20,14 +20,20 @@ public:
     static const float COLLISION_SIZE;
 
     bool canSeePlayer(sf::Vector2f character);
+    void alert();
+    void setTimer(float deltaTime);
 
 private:
     bool hacked_;
+    bool alerted_;
     sf::Vector2f start_pos_;
     sf::Vector2f dest_pos_;
     static const float MOVE_SPEED;
-    //change based on level?
-    float sight_distance_ = 100;
-    float sight_angle_ = 30;
+    
+    float sight_distance_;
+    float sight_angle_;
+    float alert_time_;
+    float alert_time_left_ ;
+    float alert_radius_;
 };
 #endif // ENEMY_HPP

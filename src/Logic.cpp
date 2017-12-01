@@ -36,11 +36,22 @@ void Logic::update(float delta) {
 
         //check if character is in enemies line of sight
         if (Enemy* enemy = dynamic_cast<Enemy*>(&e)){
-            if(enemy->canSeePlayer(getCharacter().getPos())){
-                sf::Vector2f hit;
-                if(!sightObstructed(enemy->getPos(), getCharacter().getPos(), hit)){
-                    std::cout<<"Logic: Charcter in line of sight\n";
+            sf::Vector2f hit;
+            if(enemy->canSeePlayer(getCharacter().getPos()) && !sightObstructed(enemy->getPos(), getCharacter().getPos(), hit)){
+                std::cout<<"Logic: Charcter in line of sight\n";
+                //chase player, send out signal
+                enemy.alert();
+                enemy.signal(getEntities());
+            }
+            else{
+                //cant see player but is alerted
+                if(enemy.isAlerted(){
+                    //start timer,chase player?
+                    enemy.timer(delta);
                 }
+            }
+            if(enemy.isAlerted()){
+                //chase player
             }
         }
     }

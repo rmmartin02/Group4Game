@@ -22,15 +22,21 @@ Enemy::Enemy(){
     this->attachShape(collider);
 
     hacked_=false;
-
-}
-
-void Enemy::update(float delta, int &logic){
-
+    alerted_ = false;
+    //change based on level?
+    sight_distance_ = 100;
+    sight_angle_ = 30;
+    alert_time_ = 10;
+    alert_time_left_ = 10;
+    alert_radius = 100;
 }
 
 bool Enemy::isHacked(){
     return hacked_;
+}
+
+bool Enemy::isAlerted(){
+    return alerted_;
 }
 
 void Enemy::setStartPos(sf::Vector2f pos){
@@ -72,4 +78,30 @@ bool Enemy::canSeePlayer(sf::Vector2f character){
         }
     }
     return false;
+}
+
+void Enemy::alert(){
+    //if enemy is hacked it can't alert/be alerted?
+    alerted_ = true;
+    alert_time_left_ = alert_time_;
+}
+
+void Enemy::signal(ENTITY_DATA& entities){
+    //alert enemies within radius
+    for ( auto& pair : entities ) {
+        Entity& e = *(pair.second.get());
+        if (Enemy* enemy = dynamic_cast<Enemy*>(&e)){
+            float dist = sqrt(pow(pos_.x-enemy.getPos().x,2)+pow(pos_.y-enemy.getPos().y,2));
+            if (dist<alert_radius){
+                enemy.alert();
+            }
+        }
+    }
+}
+
+void Enemy::timer(float deltaTime){
+    alert_time_left_-=delaTime;
+    if(alert_time_left_<=0){
+        alerted_ = false;
+    }
 }
