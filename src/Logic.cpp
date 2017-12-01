@@ -50,7 +50,13 @@ void Logic::update(float delta) {
                 }
             }
             if(enemy.isAlerted()){
-                //chase player
+                float dist = sqrt(pow(enemy.getPos().x-getCharacter().getPosition().x,2)+pow(enemy.getPos().y-getCharacter().getPos().y,2));
+                if(dist<enemy.getAttackRadius()){
+                    enemy.attack();
+                }
+                else{
+                    //chase character
+                }
             }
             else{
                 //patrol route

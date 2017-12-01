@@ -28,7 +28,7 @@ Enemy::Enemy(){
     sight_angle_ = 30;
     alert_time_ = 10;
     alert_time_left_ = 10;
-    alert_radius = 100;
+    alert_radius_ = 100;
 }
 
 bool Enemy::isHacked(){
@@ -47,6 +47,10 @@ void Enemy::setStartPos(sf::Vector2f pos){
 void Enemy::setDestPos(sf::Vector2f pos){
     dest_pos_=pos;
 
+}
+
+float Enemy::getAttackRadius(){
+    return attack_radius_;
 }
 
 sf::Vector2f Enemy::getStartPos(){
@@ -97,6 +101,13 @@ void Enemy::signal(ENTITY_DATA& entities){
             }
         }
     }
+}
+
+void Enemy::attack(){
+//switch to minigame screen
+
+//if player fails minigame, damage?
+//else player wins minigame, enemy hacked
 }
 
 void Enemy::timer(float deltaTime){

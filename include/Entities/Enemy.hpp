@@ -22,6 +22,8 @@ public:
     bool canSeePlayer(sf::Vector2f character);
     void alert();
     void setTimer(float deltaTime);
+    float getAttackRadius();
+    void attack();
 
 private:
     bool hacked_;
@@ -35,5 +37,6 @@ private:
     float alert_time_;
     float alert_time_left_ ;
     float alert_radius_;
+    float attack_radius_;
 };
 #endif // ENEMY_HPP
