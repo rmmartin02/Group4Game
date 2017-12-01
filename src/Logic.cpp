@@ -45,13 +45,15 @@ void Logic::update(float delta) {
             }
             else{
                 //cant see player but is alerted
-                if(enemy.isAlerted(){
-                    //start timer,chase player?
+                if(enemy.isAlerted()){
                     enemy.timer(delta);
                 }
             }
             if(enemy.isAlerted()){
                 //chase player
+            }
+            else{
+                //patrol route
             }
         }
     }
