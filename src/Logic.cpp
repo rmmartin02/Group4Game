@@ -37,11 +37,13 @@ void Logic::update(float delta) {
         //check if character is in enemies line of sight
         if (Enemy* enemy = dynamic_cast<Enemy*>(&e)){
             sf::Vector2f hit;
+            sf::Vector2f last_seen_character_pos_;
             if(enemy->canSeePlayer(getCharacter().getPos()) && !sightObstructed(enemy->getPos(), getCharacter().getPos(), hit)){
                 std::cout<<"Logic: Charcter in line of sight\n";
                 //chase player, send out signal
                 enemy.alert();
                 enemy.signal(getEntities());
+                last_seen_character_pos_ = getCharacter().getPos();
             }
             else{
                 //cant see player but is alerted
@@ -55,7 +57,8 @@ void Logic::update(float delta) {
                     enemy.attack();
                 }
                 else{
-                    //chase character
+                    //chase character (maybe have it go to last seen position?)
+                    enemy.setDestPos(last_seen_character_pos_);
                 }
             }
             else{
