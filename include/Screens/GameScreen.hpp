@@ -1,6 +1,7 @@
 #ifndef GAMESCREEN_HPP
 #define GAMESCREEN_HPP
 
+#include "Global.hpp"
 #include "Screens/Screen.hpp"
 #include "Logic.hpp"
 #include <sstream>
@@ -40,7 +41,10 @@ private:
     std::map<int, std::pair<int, int>> texture_coords_;
     
     sf::VertexArray tile_vertices_;
-    
+
+    sf::Font text_font;
+    sf::Text time_left_text;
+    sf::RectangleShape time_left_background;
 
     // Rendering order is tiles -> entities -> particles
     // If we find exceptions to this, we can restructure how this class orders
@@ -48,6 +52,7 @@ private:
     void renderTiles(sf::RenderWindow *window);
     void renderEntities(sf::RenderWindow *window);
     void renderParticles(sf::RenderWindow *window);
+    void renderTimeLeft(sf::RenderWindow *window);
 
 };
 
