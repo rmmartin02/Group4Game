@@ -2,6 +2,7 @@
 
 #include <sstream>
 #include <fstream>
+#include <cmath>
 
 #include "VecUtil.hpp"
 
@@ -51,7 +52,7 @@ void Logic::load(std::string mapfilename,std::string enemyfilename) {
     clearLevel();
     loadTiles(mapfilename);
     loadEntities(enemyfilename);
-    pathFinder(sf::Vector2f(1,1),sf::Vector2f(1,1));
+    pathFinder(sf::Vector2f(0,100),sf::Vector2f(1,1));
     std::cout<<"character pos"<<getCharacter().getPos().x<<" "<<getCharacter().getPos().y<<"\n";
     std::cout << "Logic.cpp: Map size: " << getMapSize().first 
               << "," << getMapSize().second << std::endl;
@@ -334,31 +335,151 @@ void Logic::onWallCollision(Entity& e, b2Vec2 point, b2Vec2 normal) {
 
 void Logic::pathFinder(sf::Vector2f startPos, sf::Vector2f endPos){
 
+    openSet.clear();
+    closedSet.clear();
+    surroundSet.clear();
+
+    int startRow;
+    int startCol;
+
+    int endRow;
+    int endCol;
+
+    int curNodeRow;
+    int curNodeCol;
     std::vector<std::vector<int>>& v=getTiles();
 
     if(startPos.x>=0 && startPos.y>=0){
-        int i= (startPos.y-1)/32;
-        int j=(startPos.x-1)/32;
+        startRow= (startPos.y-1)/32;
+        startCol=(startPos.x-1)/32;
     }
+    //add current tile to closedSet
+    closedSet.insert(std::make_pair(startRow,startCol));
+
+    endRow=(endPos.y-1)/32;
+    endCol=(endPos.x-1)/32;
+
     //reset distance calculation map
     tileStartDelta_.clear();
     tileDestDelta_.clear();
+    tileTotalDelta_.clear();
+
+    std::vector<Node> xxx;
+    Node& curNode;
+    Node n;
+    n.g=99;
+    n.h=0;
+    n.f=n.g+n.h;
+    n.parent->NULL;
     std::vector<int> xxx;
     for(int i=0;i<v.size();i++){
 
         for(int j=0;j<v[i].size();j++){
-            xxx.push_back(0);
+            //xxx.push_back(0);
+            xxx.push_back(n);
+           // openSet.insert(std::make_pair( i, j ));
         }
-        tileStartDelta_.push_back(xxx);
-        tileDestDelta_.push_back(xxx);
+        tileNodeMap_.push_back(xxx);
+        //tileStartDelta_.push_back(xxx);
+        //tileDestDelta_.push_back(xxx);
+        //tileTotalDelta_.push_back(xxx);
         xxx.clear();
     }
+    //openSet.erase(std::make_pair(startRow,startCol));
+    curNode=tileNodeMap_[startRow][startCol];
+    curNodeRow=startRow;
+    curNodeCol=startCol;
 
-    for(int i=0;i<tileStartDelta_.size();i++){
-        for(int j=0;j<tileStartDelta_[i].size();j++){
-            std::cout<<tileStartDelta_[i][j];
+
+//    //test erase
+//    for (std::pair<int,int> const& paring : openSet)
+//    {
+//        std::cout << paring.first << ' '<<paring.second<<"\n";
+//    }
+//
+//    //test push back
+//    for(int i=0;i<tileStartDelta_.size();i++){
+//        for(int j=0;j<tileStartDelta_[i].size();j++){
+//            std::cout<<tileStartDelta_[i][j];
+//        }
+//        std::cout<<"\n";
+//    }
+
+    do{
+        //generate surrounding set
+        surroundSet.clear();
+        if(startRow>=1){
+            surroundSet.insert(std::make_pair(startRow-1,startCol));
         }
-        std::cout<<"\n";
+        if(startCol>=1){
+            surroundSet.insert(std::make_pair(startRow,startCol-1));
+        }
+        if(startRow<v.size()-1){
+            surroundSet.insert(std::make_pair(startRow+1,startCol));
+        }
+        if(startCol<v[0].size()-1){
+            surroundSet.insert(std::make_pair(startRow,startCol+1));
+        }
+
+        //iterate surroundingset
+        for(auto elem : surroundSet){
+            if (!closedSet.count(elem)){
+                continue;
+            }
+            else if(openSet.count(elem)){
+                int curG=computeG(std::make_pair(startRow,startCol),elem);
+                if (curG < elem.g){
+                    elem.parent->curNode;
+                    elem.g=curG;
+                    elem.f=elem.g+elem.h;
+                }
+
+            }else{ //elem not in openset
+                elem.parent->curNode;
+                elem.g=computeG(std::make_pair(startRow,startCol),elem);
+                elem.h=computeH(elem,std::make_pair(endRow,endCol));
+                elem.f=elem.g+elem.h;
+                openSet.insert(elem);
+            }
+        }
+
+        if(openSet.empty()){
+            break;
+        }
+
+        //find node with minimum f
+        int minF=99;
+        std::pair<int,int> minPair;
+        for(auto target : openSet){//target is a int pair
+            if(target.f<minF){
+                minPair=std::make_pair(target.first,target.second);
+                minF=tileNodeMap_[target.first][target.second].f;
+
+            }
+        }
+        curNode=tileNodeMap_[minPair.first][minPair.second];
+        curNodeRow=minPair.first;
+        curNodeCol=minPair.second;
+        openSet.erase(minPair);
+        closedSet.insert(minPair);
+
+
     }
+    while(curNodeRow==endRow && curNodeCol==endCol);
+
     
+}
+
+int Logic::computeG(std::pair<int,int> startPair, std::pair<int,int> curPair){
+    if(tileNodeMap_[curPair.first][curPair.second]->parent!=NULL){
+        return tileNodeMap_[curPair.first][curPair.second]->parent.g+1;
+
+    }else{
+        return std::abs(curPair.first-startPair.first)+std::abs(curPair.second-startPair.second);
+    }
+
+}
+
+int Logic::computeH(std::pair<int,int> curPair,std::pair<int,int> goalPair){
+    return std::abs(curPair.first-goalPair.first)+std::abs(curPair.second-goalPair.second);
 }
