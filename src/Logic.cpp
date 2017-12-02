@@ -365,13 +365,13 @@ void Logic::pathFinder(sf::Vector2f startPos, sf::Vector2f endPos){
     tileTotalDelta_.clear();
 
     std::vector<Node> xxx;
-    Node& curNode;
+
     Node n;
     n.g=99;
     n.h=0;
     n.f=n.g+n.h;
-    n.parent->NULL;
-    std::vector<int> xxx;
+    //n.parent=NULL;
+
     for(int i=0;i<v.size();i++){
 
         for(int j=0;j<v[i].size();j++){
@@ -386,7 +386,7 @@ void Logic::pathFinder(sf::Vector2f startPos, sf::Vector2f endPos){
         xxx.clear();
     }
     //openSet.erase(std::make_pair(startRow,startCol));
-    curNode=tileNodeMap_[startRow][startCol];
+    Node curNode=tileNodeMap_[startRow][startCol];
     curNodeRow=startRow;
     curNodeCol=startCol;
 
@@ -428,17 +428,19 @@ void Logic::pathFinder(sf::Vector2f startPos, sf::Vector2f endPos){
             }
             else if(openSet.count(elem)){
                 int curG=computeG(std::make_pair(startRow,startCol),elem);
-                if (curG < elem.g){
-                    elem.parent->curNode;
-                    elem.g=curG;
-                    elem.f=elem.g+elem.h;
+                if (curG < tileNodeMap_[elem.first][elem.second].g){
+                    tileNodeMap_[elem.first][elem.second].parent=&curNode;
+                    tileNodeMap_[elem.first][elem.second].g=curG;
+                    tileNodeMap_[elem.first][elem.second].f=
+                            tileNodeMap_[elem.first][elem.second].g+tileNodeMap_[elem.first][elem.second].h;
                 }
 
             }else{ //elem not in openset
-                elem.parent->curNode;
-                elem.g=computeG(std::make_pair(startRow,startCol),elem);
-                elem.h=computeH(elem,std::make_pair(endRow,endCol));
-                elem.f=elem.g+elem.h;
+                tileNodeMap_[elem.first][elem.second].parent=&curNode;
+                tileNodeMap_[elem.first][elem.second].g=computeG(std::make_pair(startRow,startCol),elem);
+                tileNodeMap_[elem.first][elem.second].h=computeH(elem,std::make_pair(endRow,endCol));
+                tileNodeMap_[elem.first][elem.second].f=
+                        tileNodeMap_[elem.first][elem.second].g+tileNodeMap_[elem.first][elem.second].h;
                 openSet.insert(elem);
             }
         }
@@ -451,7 +453,7 @@ void Logic::pathFinder(sf::Vector2f startPos, sf::Vector2f endPos){
         int minF=99;
         std::pair<int,int> minPair;
         for(auto target : openSet){//target is a int pair
-            if(target.f<minF){
+            if(tileNodeMap_[target.first][target.second].f<minF){
                 minPair=std::make_pair(target.first,target.second);
                 minF=tileNodeMap_[target.first][target.second].f;
 
@@ -471,12 +473,9 @@ void Logic::pathFinder(sf::Vector2f startPos, sf::Vector2f endPos){
 }
 
 int Logic::computeG(std::pair<int,int> startPair, std::pair<int,int> curPair){
-    if(tileNodeMap_[curPair.first][curPair.second]->parent!=NULL){
-        return tileNodeMap_[curPair.first][curPair.second]->parent.g+1;
 
-    }else{
-        return std::abs(curPair.first-startPair.first)+std::abs(curPair.second-startPair.second);
-    }
+    return tileNodeMap_[curPair.first][curPair.second].parent->g+1;
+
 
 }
 

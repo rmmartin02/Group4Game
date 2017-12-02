@@ -14,17 +14,17 @@
 #include "Entities/Laser.hpp"
 
 #include "Box2D/Box2D.h"
-
+struct Node{
+    int g;
+    int h;
+    int f;
+    Node* parent;
+};
 
 class Logic {
 public:
 
-    struct Node{
-        int g;
-        int h;
-        int f;
-        Node& parent;
-    };
+
     // Represents the size of a tile, in pixels on the tileset file,
     // and in SFML's drawing units. We may want to separate the two
     // in the future.
@@ -115,7 +115,7 @@ private:
     std::set< std::pair<int,int>> openSet;
     std::set<std::pair<int,int>> surroundSet;
     int computeG(std::pair<int,int> startPair, std::pair<int,int> curPair);
-    int computeH(std::pair<int,int> curPair,std::pair<int,int> goalPair)
+    int computeH(std::pair<int,int> curPair,std::pair<int,int> goalPair);
 
 
     
