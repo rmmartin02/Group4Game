@@ -367,7 +367,7 @@ void Logic::pathFinder(sf::Vector2f startPos, sf::Vector2f endPos){
     n.g=0;
     n.h=0;
     n.f=n.g+n.h;
-  
+
     for(int i=0;i<v.size();i++){
 
         for(int j=0;j<v[i].size();j++){
@@ -383,24 +383,7 @@ void Logic::pathFinder(sf::Vector2f startPos, sf::Vector2f endPos){
     }
 
     Node curNode=tileNodeMap_[startRow][startCol];
-    curNode.row=startRow;
-    curNode.col=startCol;
 
-
-
-//    //test erase
-//    for (std::pair<int,int> const& paring : openSet)
-//    {
-//        std::cout << paring.first << ' '<<paring.second<<"\n";
-//    }
-//
-//    //test push back
-//    for(int i=0;i<tileStartDelta_.size();i++){
-//        for(int j=0;j<tileStartDelta_[i].size();j++){
-//            std::cout<<tileStartDelta_[i][j];
-//        }
-//        std::cout<<"\n";
-//    }
 
     do{
         //generate surrounding set
@@ -427,14 +410,11 @@ void Logic::pathFinder(sf::Vector2f startPos, sf::Vector2f endPos){
                 int curG=computeG(elem);
                 if (curG < tileNodeMap_[elem.first][elem.second].g){
 
-
                     tileNodeMap_[elem.first][elem.second].parent = &curNode;
-
                     tileNodeMap_[elem.first][elem.second].g=curG;
                     tileNodeMap_[elem.first][elem.second].f=
                             tileNodeMap_[elem.first][elem.second].g+tileNodeMap_[elem.first][elem.second].h;
                 }
-
 
             }else{ //elem not in openset
 
@@ -443,7 +423,6 @@ void Logic::pathFinder(sf::Vector2f startPos, sf::Vector2f endPos){
                     tileNodeMap_[elem.first][elem.second].h=computeH(elem,std::make_pair(endRow,endCol));
                     tileNodeMap_[elem.first][elem.second].f=
                             tileNodeMap_[elem.first][elem.second].g+tileNodeMap_[elem.first][elem.second].h;
-
                     openSet.insert(elem);
 
             }
@@ -467,29 +446,32 @@ void Logic::pathFinder(sf::Vector2f startPos, sf::Vector2f endPos){
             }
         }
 
-
-
-        std::cout<<"MINPAIR1:inspect ["<<minPair.first<<","<<minPair.second<<"] parent"<<tileNodeMap_[minPair.first][minPair.second].parent->row
-                 <<" "<<tileNodeMap_[minPair.first][minPair.second].parent->col
-                 <<"\n";
+        Node *parentRef = tileNodeMap_[minPair.first][minPair.second].parent;
 
 
 
+            std::cout << "MINPAIR1:inspect [" << minPair.first << "," << minPair.second << "] parent"
+                      << tileNodeMap_[minPair.first][minPair.second].parent->row
+                      << " " << tileNodeMap_[minPair.first][minPair.second].parent->col
+                      << "\n";
 
+            std::cout << "check parent row " << parentRef->row << " check parent col " << parentRef->col << "\n";
+            std::cout << "check parent g " << parentRef->g << " check parent h " << parentRef->h << "\n";
 
         curNode=tileNodeMap_[minPair.first][minPair.second];
-        //curNode.parent=tileNodeMap_[minPair.first][minPair.second].parent;
-
-            std::cout<<"MINPAIR1:inspect ["<<minPair.first<<","<<minPair.second<<"] parent"<<tileNodeMap_[minPair.first][minPair.second].parent->row
-                     <<" "<<tileNodeMap_[minPair.first][minPair.second].parent->col
-                     <<"\n";
-
-
-
-
-        closedSet.insert(minPair);
 
         openSet.erase(minPair);
+        closedSet.insert(minPair);
+
+
+            std::cout << "MINPAIR2:inspect [" << minPair.first << "," << minPair.second << "] parent"
+                      << tileNodeMap_[minPair.first][minPair.second].parent->row
+                      << " " << tileNodeMap_[minPair.first][minPair.second].parent->col
+                      << "\n";
+        std::cout << "check parent row " << parentRef->row << " check parent col " << parentRef->col << "\n";
+            std::cout << "check parent g " << parentRef->g << " check parent h " << parentRef->h << "\n";
+
+
 
     }
     while(curNode.row!=endRow || curNode.col!=endCol);
