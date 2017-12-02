@@ -15,6 +15,8 @@
 
 #include "Box2D/Box2D.h"
 struct Node{
+    int row;
+    int col;
     int g;
     int h;
     int f;
@@ -103,22 +105,13 @@ private:
     //pathfinding var and methods
     void pathFinder(sf::Vector2f startPos, sf::Vector2f destPos);
     std::vector<std::vector<Node>> tileNodeMap_;
-    std::vector<std::vector<int>> tileStartDelta_;
-
-    std::vector<std::vector<int>> tileDestDelta_;
-    std::vector<std::vector<int>> tileTotalDelta_;
-    std::vector<std::vector<int>>& getTileStartDelta();
-    std::vector<std::vector<int>>& getTileDestDelta();
-    std::vector<std::vector<int>>& getTileTotalDelta();
 
     std::set< std::pair<int,int>> closedSet;
     std::set< std::pair<int,int>> openSet;
     std::set<std::pair<int,int>> surroundSet;
-    int computeG(std::pair<int,int> startPair, std::pair<int,int> curPair);
+    int computeG(std::pair<int,int> curPair);
     int computeH(std::pair<int,int> curPair,std::pair<int,int> goalPair);
 
-
-    
 };
 
 #endif // LOGIC_HPP

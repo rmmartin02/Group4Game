@@ -3,6 +3,7 @@
 #include <sstream>
 #include <fstream>
 #include <cmath>
+#include <deque>
 
 #include "VecUtil.hpp"
 
@@ -338,6 +339,7 @@ void Logic::pathFinder(sf::Vector2f startPos, sf::Vector2f endPos){
     openSet.clear();
     closedSet.clear();
     surroundSet.clear();
+    std::pair<int,int> minPair;
 
     int startRow;
     int startCol;
@@ -345,8 +347,6 @@ void Logic::pathFinder(sf::Vector2f startPos, sf::Vector2f endPos){
     int endRow;
     int endCol;
 
-    int curNodeRow;
-    int curNodeCol;
     std::vector<std::vector<int>>& v=getTiles();
 
     if(startPos.x>=0 && startPos.y>=0){
@@ -359,36 +359,33 @@ void Logic::pathFinder(sf::Vector2f startPos, sf::Vector2f endPos){
     endRow=(endPos.y-1)/32;
     endCol=(endPos.x-1)/32;
 
-    //reset distance calculation map
-    tileStartDelta_.clear();
-    tileDestDelta_.clear();
-    tileTotalDelta_.clear();
-
     std::vector<Node> xxx;
 
     Node n;
-    n.g=99;
+    n.row=-1;
+    n.col=-1;
+    n.g=0;
     n.h=0;
     n.f=n.g+n.h;
-    //n.parent=NULL;
-
+  
     for(int i=0;i<v.size();i++){
 
         for(int j=0;j<v[i].size();j++){
             //xxx.push_back(0);
+            n.row=i;
+            n.col=j;
             xxx.push_back(n);
-           // openSet.insert(std::make_pair( i, j ));
+
         }
         tileNodeMap_.push_back(xxx);
-        //tileStartDelta_.push_back(xxx);
-        //tileDestDelta_.push_back(xxx);
-        //tileTotalDelta_.push_back(xxx);
+
         xxx.clear();
     }
-    //openSet.erase(std::make_pair(startRow,startCol));
+
     Node curNode=tileNodeMap_[startRow][startCol];
-    curNodeRow=startRow;
-    curNodeCol=startCol;
+    curNode.row=startRow;
+    curNode.col=startCol;
+
 
 
 //    //test erase
@@ -408,71 +405,117 @@ void Logic::pathFinder(sf::Vector2f startPos, sf::Vector2f endPos){
     do{
         //generate surrounding set
         surroundSet.clear();
-        if(startRow>=1){
-            surroundSet.insert(std::make_pair(startRow-1,startCol));
+        if(curNode.row>=1){
+            surroundSet.insert(std::make_pair(curNode.row-1,curNode.col));
         }
-        if(startCol>=1){
-            surroundSet.insert(std::make_pair(startRow,startCol-1));
+        if(curNode.col>=1){
+            surroundSet.insert(std::make_pair(curNode.row,curNode.col-1));
         }
-        if(startRow<v.size()-1){
-            surroundSet.insert(std::make_pair(startRow+1,startCol));
+        if(curNode.row<v.size()-1){
+            surroundSet.insert(std::make_pair(curNode.row+1,curNode.col));
         }
-        if(startCol<v[0].size()-1){
-            surroundSet.insert(std::make_pair(startRow,startCol+1));
+        if(curNode.col<v[0].size()-1){
+            surroundSet.insert(std::make_pair(curNode.row,curNode.col+1));
         }
 
         //iterate surroundingset
         for(auto elem : surroundSet){
-            if (!closedSet.count(elem)){
+            if (closedSet.count(elem)){//if elem is in closed set(count returns not 0), skip
                 continue;
             }
             else if(openSet.count(elem)){
-                int curG=computeG(std::make_pair(startRow,startCol),elem);
+                int curG=computeG(elem);
                 if (curG < tileNodeMap_[elem.first][elem.second].g){
-                    tileNodeMap_[elem.first][elem.second].parent=&curNode;
+
+
+                    tileNodeMap_[elem.first][elem.second].parent = &curNode;
+
                     tileNodeMap_[elem.first][elem.second].g=curG;
                     tileNodeMap_[elem.first][elem.second].f=
                             tileNodeMap_[elem.first][elem.second].g+tileNodeMap_[elem.first][elem.second].h;
                 }
 
+
             }else{ //elem not in openset
-                tileNodeMap_[elem.first][elem.second].parent=&curNode;
-                tileNodeMap_[elem.first][elem.second].g=computeG(std::make_pair(startRow,startCol),elem);
-                tileNodeMap_[elem.first][elem.second].h=computeH(elem,std::make_pair(endRow,endCol));
-                tileNodeMap_[elem.first][elem.second].f=
-                        tileNodeMap_[elem.first][elem.second].g+tileNodeMap_[elem.first][elem.second].h;
-                openSet.insert(elem);
+
+                 tileNodeMap_[elem.first][elem.second].parent = &curNode;
+                    tileNodeMap_[elem.first][elem.second].g=computeG(elem);
+                    tileNodeMap_[elem.first][elem.second].h=computeH(elem,std::make_pair(endRow,endCol));
+                    tileNodeMap_[elem.first][elem.second].f=
+                            tileNodeMap_[elem.first][elem.second].g+tileNodeMap_[elem.first][elem.second].h;
+
+                    openSet.insert(elem);
+
             }
         }
 
         if(openSet.empty()){
+
             break;
         }
 
         //find node with minimum f
+
         int minF=99;
-        std::pair<int,int> minPair;
+
         for(auto target : openSet){//target is a int pair
+
             if(tileNodeMap_[target.first][target.second].f<minF){
                 minPair=std::make_pair(target.first,target.second);
                 minF=tileNodeMap_[target.first][target.second].f;
 
             }
         }
+
+
+
+        std::cout<<"MINPAIR1:inspect ["<<minPair.first<<","<<minPair.second<<"] parent"<<tileNodeMap_[minPair.first][minPair.second].parent->row
+                 <<" "<<tileNodeMap_[minPair.first][minPair.second].parent->col
+                 <<"\n";
+
+
+
+
+
         curNode=tileNodeMap_[minPair.first][minPair.second];
-        curNodeRow=minPair.first;
-        curNodeCol=minPair.second;
-        openSet.erase(minPair);
+        //curNode.parent=tileNodeMap_[minPair.first][minPair.second].parent;
+
+            std::cout<<"MINPAIR1:inspect ["<<minPair.first<<","<<minPair.second<<"] parent"<<tileNodeMap_[minPair.first][minPair.second].parent->row
+                     <<" "<<tileNodeMap_[minPair.first][minPair.second].parent->col
+                     <<"\n";
+
+
+
+
         closedSet.insert(minPair);
 
+        openSet.erase(minPair);
 
     }
-    while(curNodeRow==endRow && curNodeCol==endCol);
+    while(curNode.row!=endRow || curNode.col!=endCol);
+
+    //create a deque of Nodes,represented by int pairs, from start to finish
+
+    std::deque<std::pair<int,int>> path;
+    int counter=10;
+
+    while(counter>0){
+
+        counter=counter-1;
+        path.push_front(std::make_pair(curNode.row,curNode.col));
+
+        curNode=*(tileNodeMap_[curNode.row][curNode.col].parent);
+
+    }
+
+    for (int i=0;i<path.size();i++) {
+        std::cout<<"inspect path" << path[i].first<<" "<<path[i].second <<  "\n";
+    }
 
     
 }
 
-int Logic::computeG(std::pair<int,int> startPair, std::pair<int,int> curPair){
+int Logic::computeG(std::pair<int,int> curPair){
 
     return tileNodeMap_[curPair.first][curPair.second].parent->g+1;
 
