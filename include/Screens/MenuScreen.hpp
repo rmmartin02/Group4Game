@@ -22,6 +22,7 @@ private:
 	sf::Font textFont;
 	sf::Text tagline;
 	sf::Text start;
+	sf::Text miniGame;
 	//sf::RectangleShape start;
 };
 

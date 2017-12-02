@@ -9,8 +9,11 @@ Game::Game(){
     menuScreen = new MenuScreen();
     logic = new Logic();
     gameScreen = new GameScreen(logic);
+    miniGameScreen = new MiniGameScreen();
+
 
     gameScreen->loadTextures();
+
     currentScreen = menuScreen;
 }
 
@@ -35,7 +38,7 @@ void Game::Loop() {
 
                 if (Event.type == sf::Event::KeyPressed){
                     if (Event.key.code == sf::Keyboard::Escape){
-                        window->close();
+
                     }
                     
                     if (currentScreen == menuScreen){
@@ -43,7 +46,10 @@ void Game::Loop() {
                             currentScreen = gameScreen;
                     }
 
-                    
+                    if (currentScreen == menuScreen){
+                        if (Event.key.code == sf::Keyboard::M)
+                            currentScreen = miniGameScreen;
+                    }
                 }
             }
             
@@ -64,7 +70,12 @@ void Game::Loop() {
                 gameScreen->panCamera(window, cam_offset);
                 logic->update(deltaTime);
             }
-        
+
+            if (currentScreen == miniGameScreen){
+                if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+                    miniGameScreen->moveOnClick(miniGameScreen->shuffledPuzzle, sf::Vector2f(sf::Mouse::getPosition(*window)), window);
+            }
+
             currentScreen->render(window);
             //window->display();
 

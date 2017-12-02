@@ -1,63 +1,66 @@
 //
-// Created by Arman Franco on 10/27/17.
-// Refactored from [INSERT]
+// Created by Arman Franco on 11/25/17.
 //
 
-#ifndef MINIGAMESCREEN_HPP
-#define MINIGAMESCREEN_HPP
+#ifndef CSCI437_MINIGAMESCREEN_HPP
+#define CSCI437_MINIGAMESCREEN_HPP
 
-#include <vector>
+#include "Screens/Screen.hpp"
+#include "Logic.hpp"
+#include "../src/MiniGame/MiniGameBackend.hpp"
 
-
-class MiniGameScreen{
+class MiniGameScreen : public Screen {
 
 public:
 
-    std::vector<std::vector<int>> currentBoard;
-
-    int boardSize;
-
-    int pathLength;
-
-    MiniGameScreen* parentBoard;
 
     MiniGameScreen();
 
-    // NEW
+    bool shuffled = false;
 
-    std::vector<std::vector<int>> setCurrentBoard (int size);
+    bool spriteBoardCreated = false;
+
+    bool tilesOrdered= false;
+
+    std::vector<sf::Sprite> tiles;
+
+    std::vector<sf::Sprite> orderedTiles;
+
+    MiniGameScreenBackend shufflePuzzle (MiniGameScreenBackend unshuffledPuzzle, int pathLenth);
+
+    void moveOnClick(MiniGameScreenBackend puzzle, sf::Vector2<float> coordinates, sf::RenderWindow* window);
+
+    MiniGameScreenBackend puzzle;
+
+    MiniGameScreenBackend shuffledPuzzle;
+
+    sf::Texture background;
+
+    sf::Texture two_sheet;
+
+    sf::Sprite bg;
+
+    int difficulty;
+
+    void setPuzzle(int size, int numberOfEmptySlots);
+
+    void interpretInput() override;
+
+    std::vector<sf::Sprite> createSpriteBoard(int difficulty);
+
+    std::vector<sf::Sprite> orderSpriteBoard(std::vector<sf::Sprite> spriteBoard);
+
+    void render(sf::RenderWindow *window);
 
 
-    // INHERITED
 
-    enum Operation {MOVERIGHT, MOVELEFT, MOVEUP, MOVEDOWN};
+private:
 
-    Operation boardOperation;
-
-    void setToInitialState(int numberOfEmptySlots);
-
-    int getValue(int row, int column);
-
-    MiniGameScreen* getParent();
-
-    Operation getOperation();
-
-    int getPathLength();
-
-    MiniGameScreen move(int row, int column, Operation op);
-
-    MiniGameScreen flip(int startRow, int startColumn, int endRow, int endColumn);
-
-    MiniGameScreen* shuffleBoard(int pathLength);
-
-    bool isEmpty(int row, int column);
-
-    MiniGameScreen* getStateWithShortestPath();
+    Logic* logic_;
 
 
-    int getRandom(int array[]);
 
 };
 
 
-#endif //MINIGAMESCREEN_HPP
+#endif //CSCI437_MINIGAMESCREEN_HPP

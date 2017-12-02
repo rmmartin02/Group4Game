@@ -9,6 +9,7 @@
 #include "Logic.hpp"
 #include "Screens/MenuScreen.hpp"
 #include "Screens/GameScreen.hpp"
+#include "Screens/MiniGameScreen.hpp"
 
 class Game
 {
@@ -25,6 +26,7 @@ private:
     Screen *currentScreen;
     MenuScreen *menuScreen;
     GameScreen *gameScreen;
+    MiniGameScreen *miniGameScreen;
 };
 
 #endif // GAME_HPP

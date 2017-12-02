@@ -49,6 +49,14 @@ MenuScreen::MenuScreen(){
     start.setPosition(SCREEN_WIDTH/2 - start.getLocalBounds().width/2, SCREEN_HEIGHT/2);
      */
 
+    //start
+    miniGame.setFont(textFont);
+
+    miniGame.setString("Mini-Game [m]");
+    miniGame.setFillColor(sf::Color::White);
+    miniGame.setCharacterSize(30);
+    miniGame.setPosition(sf::Vector2f(SCREEN_WIDTH/2 - miniGame.getLocalBounds().width/2, SCREEN_HEIGHT/1.5));
+
 }
 
 void MenuScreen::render(sf::RenderWindow *window){
@@ -58,6 +66,7 @@ void MenuScreen::render(sf::RenderWindow *window){
     window->draw(logo_sprite);
     window->draw(tagline);
     window->draw(start);
+    window->draw(miniGame);
     window->display();
 
 }
