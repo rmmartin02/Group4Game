@@ -108,9 +108,8 @@ private:
     //pathFinder:
     //param: startPos: starting position of the entity or, current position of entity(when chasing)
     //param: destPos: destination of entity, or character position(when chasing)
-    //return: a deque of vector2f(location) from the start to the destination position,
+    //return: a DEQUE of vector2f(location) from the start to the destination position,
     //          the Vector2f location is the CENTER of the tile
-    //in Enemy.setPatrolPath or similar function, the deque of location is could be deep copy into a vector of location
     std::deque<sf::Vector2f> pathFinder(sf::Vector2f startPos, sf::Vector2f destPos);
     std::vector<std::vector<Node>> tileNodeMap_;
 

@@ -201,7 +201,7 @@ void Logic::loadEntities(std::string filename) {
     }
 
     //testing
-    std::vector<sf::Vector2f> enemy1path=static_cast<Enemy&> (getEntity("Enemy1")).getPatrolPath();
+    std::deque<sf::Vector2f> enemy1path=static_cast<Enemy&> (getEntity("Enemy2")).getPatrolPath();
     for (int i=0;i< enemy1path.size();i++) {
         std::cout<<"logic.cpp::inspect enemyPath" << enemy1path[i].x<<" "<<enemy1path[i].y <<  "\n";
         //std::cout<<"inspect tile path"<<path_[i].first<<" "<<path_[i].second<<"\n";
