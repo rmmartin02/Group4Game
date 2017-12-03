@@ -45,6 +45,7 @@ private:
     sf::Font text_font;
     sf::Text time_left_text;
     sf::RectangleShape time_left_background;
+    float time_left_width;
 
     // Rendering order is tiles -> entities -> particles
     // If we find exceptions to this, we can restructure how this class orders
