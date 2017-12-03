@@ -18,9 +18,9 @@ TimeoutScreen::TimeoutScreen(){
     tagline.setFont(textFont);
 
     tagline.setString("You ran out of time..");
-    tagline.setFillColor(sf::Color::White);
-    tagline.setCharacterSize(36);
-    tagline.setPosition(sf::Vector2f(SCREEN_WIDTH/2 - tagline.getLocalBounds().width/2, 200));
+    tagline.setFillColor(sf::Color::Red);
+    tagline.setCharacterSize(50);
+    tagline.setPosition(sf::Vector2f(SCREEN_WIDTH/2 - tagline.getLocalBounds().width/2, SCREEN_HEIGHT/2- tagline.getLocalBounds().height/2));
 
 
 }
