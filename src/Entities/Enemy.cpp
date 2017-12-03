@@ -66,13 +66,13 @@ sf::Vector2f Enemy::getNextPos(){
 }
 
 bool Enemy::canSeePlayer(sf::Vector2f character){
-    float dist = sqrt(pow(pos_.x-character.x,2)+pow(pos_.y-character.y,2));
+    float dist = sqrt(pow(getPos().x-character.x,2)+pow(getPos().y-character.y,2));
     if(dist<=sight_distance_){
         std::cout << "LOS: In distance\n";
-        float x3 = pos_.x+vel_.x;
-        float y3 = pos_.y+vel_.y;
-        float a = pow(pos_.x-character.x,2)+pow(pos_.y-character.y,2);
-        float b = pow(pos_.x-x3,2)+pow(pos_.y-y3,2);
+        float x3 = getPos().x+vel_.x;
+        float y3 = getPos().y+vel_.y;
+        float a = pow(getPos().x-character.x,2)+pow(getPos().y-character.y,2);
+        float b = pow(getPos().x-x3,2)+pow(getPos().y-y3,2);
         float c = pow(x3-character.x,2)+pow(y3-character.x,2);
         float angle = acos((a+b-c)/sqrt(4*a*b));
         if(angle<=sight_angle_){
