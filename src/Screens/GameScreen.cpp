@@ -14,6 +14,22 @@ GameScreen::GameScreen(Logic* logic) {
     keys_[2] = sf::Keyboard::Left;
     keys_[3] = sf::Keyboard::Right;
     loadKeys();
+
+    if (!text_font.loadFromFile("../resource/fonts/Adventure.otf"))
+    {
+        // error...
+    }
+    time_left_text.setFont(text_font);
+
+    time_left_text.setString("Time Left: 10:00");
+    time_left_text.setFillColor(sf::Color::White);
+    time_left_text.setCharacterSize(36);
+
+    time_left_background = sf::RectangleShape (sf::Vector2f(time_left_text.getLocalBounds().width, time_left_text.getLocalBounds().height+12));
+    time_left_background.setFillColor(sf::Color(66, 217, 244, 200));
+    time_left_background.setOutlineThickness(5);
+    time_left_background.setOutlineColor(sf::Color(128,128,128,200));
+    time_left_width = time_left_text.getLocalBounds().width;
 }
 
 bool GameScreen::loadTextures() {
@@ -127,6 +143,17 @@ void GameScreen::renderParticles(sf::RenderWindow *window) {
     }
 }
 
+void GameScreen::renderTimeLeft(sf::RenderWindow *window){
+    int time = static_cast<int>(logic_->getTimeLeft());
+    int minutes = time/60;
+    int seconds = time%60;
+    time_left_text.setString("Time Left: " + std::to_string(minutes) + ":" + (seconds>=10 ? std::to_string(seconds) : "0" + std::to_string(seconds)));
+    time_left_text.setPosition(sf::Vector2f(window->getView().getCenter().x - time_left_width/2, 
+        window->getView().getCenter().y-window->getView().getSize().y/2+10));
+    window->draw(time_left_background, time_left_text.getTransform());
+    window->draw(time_left_text);
+}
+
 
 void GameScreen::render(sf::RenderWindow *window) {
     window->clear();
@@ -134,6 +161,7 @@ void GameScreen::render(sf::RenderWindow *window) {
     renderEntities(window);
     renderParticles(window);
     centerCameraOnCharacter(window);
+    renderTimeLeft(window);
     window->display();
 }
 

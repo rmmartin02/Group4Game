@@ -6,6 +6,7 @@ ScreenManager::ScreenManager(Logic *logic){
 	game_screen = new GameScreen(logic);
 	menu_screen = new MenuScreen();
 	controls_screen = new ControlsScreen();
+    timeout_screen = new TimeoutScreen();
 	current_screen = menu_screen;
 }
 
@@ -24,7 +25,7 @@ void ScreenManager::interpretInput(std::vector<sf::Event>& events){
                     std::cout << "ScreenManager: menu screen has highlighted " 
                               << menu_screen->getHighlighted() << std::endl;
                     if(menu_screen->getHighlighted()==0){
-                        current_screen = game_screen;
+                        current_screen = timeout_screen;
                     }
                     else{
                         current_screen = controls_screen;
