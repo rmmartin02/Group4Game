@@ -37,6 +37,10 @@ public:
   // Set the current velocity
   void setVel(sf::Vector2f vel);
 
+  // Get the direction angle (in degrees, 0 is directly right, increases going clockwise)
+  // Entity direction is determined by the most recent non-zero velocity.
+  float getDirection();
+
   void setSprite(sf::Sprite sprite);
 
   // Attach a Box2D shape to this object
@@ -50,14 +54,17 @@ public:
 
   // Returns true if this entity should be prevented from passing through
   // walls; false if it can ignore walls (and not trigger onWallTouch)
-  bool wallCollision();
+  virtual bool canWallCollide();
 
   // Called when this entity collides with a wall
-  virtual void onTouchWall();
+  // (potentially several times with different parameters, if wall shapes overlap)
+  virtual void onWallCollision(sf::Vector2f point, sf::Vector2f normal);
 
 protected:
   sf::Vector2f pos_;
   sf::Vector2f vel_;
+  float dir_;
+
   sf::Sprite sprite_;
 
   // Box2D shape object used for collision calculations  

@@ -103,7 +103,9 @@ void GameScreen::renderTiles(sf::RenderWindow *window) {
 }
 
 void GameScreen::renderEntities(sf::RenderWindow *window) {
-	//logic_->getCharacter().render(window);
+	// debug message to test that direction private variable works
+    std::cout << "GameScreen.cpp: character dir: " << logic_->getCharacter().getDirection() << std::endl;
+
     for (auto& pair : logic_->getEntities()) {
         pair.second->render(window);
 
@@ -148,6 +150,29 @@ void GameScreen::interpretInput(std::vector<sf::Event>& events) {
     if (sf::Keyboard::isKeyPressed(keys_[3])) {
         input.x += 1;
     }
+
+    // for sight obstruction testing, check mouse position
+    for (auto event : events) {
+        if (event.type == sf::Event::MouseButtonPressed) {
+            sf::Vector2f mousePos(event.mouseButton.x, event.mouseButton.y);
+            sf::Vector2f charPos = logic_->getCharacter().getPos();
+            mousePos = mousePos + sf::Vector2f(-400, -300) + charPos;
+            std::cout << "GameScreen.cpp: mouse pos " << vecutil::vecInfo(mousePos) << std::endl; 
+            std::cout << "GameScreen.cpp: char pos  " << vecutil::vecInfo(logic_->getCharacter().getPos()) << std::endl;
+            
+            sf::Vector2f wall_hit;
+            // Check if there is an obstruction between where is clicked and the center of the character.
+            if (logic_->sightObstructed(logic_->getCharacter().getPos(),
+                                        mousePos,
+                                        wall_hit)) {
+                std::cout << "GameScreen.cpp: sight blocked at " << vecutil::vecInfo(wall_hit) << std::endl;
+            }
+            else {
+                std::cout << "GameScreen.cpp: sight unobstructed" << std::endl;
+            }
+        }
+    }
+    
     logic_->registerMoveInput(input);
 }
 

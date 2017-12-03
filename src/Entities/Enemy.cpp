@@ -50,3 +50,16 @@ sf::Vector2f Enemy::getDestPos(){
 sf::Vector2f Enemy::getNextPos(){
 
 }
+void Enemy::setPatrolPath(std::deque<sf::Vector2f> path){
+//    patrolPath_.clear();
+
+    patrolPath_=path;
+
+}
+std::deque<sf::Vector2f> Enemy::getPatrolPath(){
+    for(int i=0;i<patrolPath_.size();i++){
+        std::cout<<"Enemy.cpp:enemy path: "<<patrolPath_[i].x<<" "<<patrolPath_[i].y<<"\n";
+    }
+    std::cout<<"Enemy.cpp:enemy path inspect complete\n";
+    return patrolPath_;
+}

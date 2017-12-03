@@ -29,23 +29,30 @@ void Logic::update(float delta) {
     // update every entity.
     for ( auto& pair : getEntities() ) {
         Entity& e = *(pair.second.get());
-        if (e.wallCollision()){
+        if (e.canWallCollide()){
             handleWallCollisions(e);
         }
         e.move(e.getVel());
     }
+
+
     
     // adjust the timer
     time_left_ -= delta;
     if (time_left_ < 0) {
         std::cout << "Logic.cpp: Ran out of time!" << std::endl;
     }
+
+
+
 }
 
 void Logic::load(std::string mapfilename,std::string enemyfilename) {
     clearLevel();
     loadTiles(mapfilename);
     loadEntities(enemyfilename);
+    //pathFinder(sf::Vector2f(40,160),sf::Vector2f(200,160));//40 160 200 160
+    std::cout<<"character pos"<<getCharacter().getPos().x<<" "<<getCharacter().getPos().y<<"\n";
     std::cout << "Logic.cpp: Map size: " << getMapSize().first 
               << "," << getMapSize().second << std::endl;
 }
@@ -136,9 +143,6 @@ void Logic::loadTiles(std::string filename) {
 }
 
 void Logic::loadEntities(std::string filename) {
-    // dummy behavior, creating the character entity
-    //entities_["Character"] = Character();
-    //entities_["Character"].setVel(sf::Vector2f(1,1));
     addEntity("Character", new Character());
     getCharacter().setVel(sf::Vector2f(1,1));
     std::ifstream file(filename);
@@ -159,8 +163,6 @@ void Logic::loadEntities(std::string filename) {
         float start_x, start_y,dest_x,dest_y;
         iss >> level >> start_x>> start_y >> dest_x >> dest_y;
 
-
-
         if(level==1){
             addEntity("Enemy"+std::to_string(counter),new Enemy());
 
@@ -168,6 +170,8 @@ void Logic::loadEntities(std::string filename) {
             e.setStartPos(sf::Vector2f(start_x,start_y));
             e.setPos(sf::Vector2f(start_x,start_y));
             e.setDestPos(sf::Vector2f(dest_x,dest_y));
+
+            e.setPatrolPath(pathFinder(sf::Vector2f(start_x,start_y),sf::Vector2f(dest_x,dest_y)));
             //set additional enemy 1 var here
 
         }
@@ -178,6 +182,8 @@ void Logic::loadEntities(std::string filename) {
             e.setStartPos(sf::Vector2f(start_x,start_y));
             e.setPos(sf::Vector2f(start_x,start_y));
             e.setDestPos(sf::Vector2f(dest_x,dest_y));
+
+            e.setPatrolPath(pathFinder(sf::Vector2f(start_x,start_y),sf::Vector2f(dest_x,dest_y)));
             //set additional enemy 2 var here
 
         }
@@ -188,18 +194,18 @@ void Logic::loadEntities(std::string filename) {
             l.setDirection(dest_x);
             l.setRotate(dest_x,dest_y);
 
-
         }
-
-
 
         counter=counter+1;
 
     }
 
     //testing
-    std::cout << "Logic.cpp: checking enemy info (enemy 3's position) " << vecutil::vecInfo(getEntity("Enemy3").getPos()) << std::endl;
-
+    std::deque<sf::Vector2f> enemy1path=static_cast<Enemy&> (getEntity("Enemy2")).getPatrolPath();
+    for (int i=0;i< enemy1path.size();i++) {
+        std::cout<<"logic.cpp::inspect enemyPath" << enemy1path[i].x<<" "<<enemy1path[i].y <<  "\n";
+        //std::cout<<"inspect tile path"<<path_[i].first<<" "<<path_[i].second<<"\n";
+    }
 }
 
 void Logic::buildWallShapes() {
@@ -303,24 +309,187 @@ bool Logic::handleWallCollisions(Entity& e) {
             if (worldManifold.separations[0] < closest) {
                 closest = worldManifold.separations[i];
             }
-            onWallCollision(e, collision_pt, norm);
+            e.onWallCollision(vecutil::toSFVec(collision_pt), vecutil::toSFVec(norm));
         }
     }
     
     return closest < vecutil::infinity();
 }
 
-void Logic::onWallCollision(Entity& e, b2Vec2 point, b2Vec2 normal) {
-    //std::cout << "Wall collision handling" << std::endl;
-    float vrestrict = vecutil::clamp(vecutil::dotProd(e.getVel(),
-                        vecutil::normalize(vecutil::toSFVec(normal))),
-                                        -vecutil::infinity(), 0);
-    // remove that component from the velocity
-    sf::Vector2f vadjusted = e.getVel() - vecutil::toSFVec(vrestrict * normal);
-    e.setVel(vadjusted);
+bool Logic::sightObstructed(sf::Vector2f src, sf::Vector2f target, 
+                              sf::Vector2f& hit) {
+    int hit_shape = -1;
+    float min_frac = vecutil::infinity();
+    b2Transform itransform = vecutil::iform();
+    b2RayCastOutput ray_output;
+    b2RayCastInput ray_input;
+    ray_input.p1 = vecutil::toB2Vec(src);
+    ray_input.p2 = vecutil::toB2Vec(target);
+    ray_input.maxFraction = 1.0f;
+    int child;
+    for (int i = 0; i < wall_shapes_.size(); i++) {
+        bool rayhit = wall_shapes_[i]->RayCast(&ray_output, ray_input, itransform, child);
+        if (rayhit && ray_output.fraction < min_frac) {
+            min_frac = ray_output.fraction;
+            hit_shape = i;
+            hit = vecutil::toSFVec(ray_input.p1 + 
+                                   ray_output.fraction * (ray_input.p2 - ray_input.p1));
+        }
+    }
+    return hit_shape >= 0;
+}
+
+std::deque<sf::Vector2f> Logic::pathFinder(sf::Vector2f startPos, sf::Vector2f endPos){
+    openSet_.clear();
+    closedSet_.clear();
+    surroundSet_.clear();
+    path_.clear();
+    enemyPath_.clear();
+    tileNodeMap_.clear();
+    std::pair<int,int> minPair;
+
+    int startRow;
+    int startCol;
+
+    int endRow;
+    int endCol;
+
+    std::vector<std::vector<int>>& v=getTiles();
+
+    if(startPos.x>=0 && startPos.y>=0){
+        startRow= (startPos.y-1)/32;
+        startCol=(startPos.x-1)/32;
+    }
+    //add current tile to closedSet
+    closedSet_.insert(std::make_pair(startRow,startCol));
+
+    endRow=(endPos.y-1)/32;
+    endCol=(endPos.x-1)/32;
+
+    std::vector<Node> newNodeVec;
+
+    Node n;
+    n.row=-1;
+    n.col=-1;
+    n.g=0;
+    n.h=0;
+    n.f=n.g+n.h;
+
+    for(int i=0;i<v.size();i++){
+
+        for(int j=0;j<v[i].size();j++){
+            //xxx.push_back(0);
+            n.row=i;
+            n.col=j;
+            newNodeVec.push_back(n);
+
+        }
+        tileNodeMap_.push_back(newNodeVec);
+
+        newNodeVec.clear();
+    }
+
+    Node* curNode=&tileNodeMap_[startRow][startCol];
+
+    do{
+        //generate surrounding set
+        surroundSet_.clear();
+        if(curNode->row>=1 && !tileIsWall(v[curNode->row-1][curNode->col])){
+            surroundSet_.insert(std::make_pair(curNode->row-1,curNode->col));
+        }
+        if(curNode->col>=1 && !tileIsWall(v[curNode->row][curNode->col-1])){
+            surroundSet_.insert(std::make_pair(curNode->row,curNode->col-1));
+        }
+        if(curNode->row<v.size()-1 && !tileIsWall(v[curNode->row+1][curNode->col])){
+            surroundSet_.insert(std::make_pair(curNode->row+1,curNode->col));
+        }
+        if(curNode->col<v[0].size()-1 && !tileIsWall(v[curNode->row][curNode->col+1])){
+            surroundSet_.insert(std::make_pair(curNode->row,curNode->col+1));
+        }
+
+        //iterate surroundingset
+        for(auto elem : surroundSet_){
+            if (closedSet_.count(elem)){//if elem is in closed set(count returns not 0), skip
+                continue;
+            }
+            else if(openSet_.count(elem)){
+                int curG=computeG(elem);
+                if (curG < tileNodeMap_[elem.first][elem.second].g){
+                    tileNodeMap_[elem.first][elem.second].parent = curNode;
+                    tileNodeMap_[elem.first][elem.second].g=curG;
+                    tileNodeMap_[elem.first][elem.second].f=
+                            tileNodeMap_[elem.first][elem.second].g+tileNodeMap_[elem.first][elem.second].h;
+                }
+
+            }else{ //elem not in openset
+
+                 tileNodeMap_[elem.first][elem.second].parent = curNode;
+                    tileNodeMap_[elem.first][elem.second].g=computeG(elem);
+                    tileNodeMap_[elem.first][elem.second].h=computeH(elem,std::make_pair(endRow,endCol));
+                    tileNodeMap_[elem.first][elem.second].f=
+                            tileNodeMap_[elem.first][elem.second].g+tileNodeMap_[elem.first][elem.second].h;
+                    openSet_.insert(elem);
+
+            }
+        }
+        if(openSet_.empty()){
+
+            break;
+        }
+
+        //find node with minimum f
+
+        int minF=99;
+
+        for(auto target : openSet_){//target is a int pair
+
+            if(tileNodeMap_[target.first][target.second].f<minF){
+                minPair=std::make_pair(target.first,target.second);
+                minF=tileNodeMap_[target.first][target.second].f;
+
+            }
+        }
+
+        curNode=&tileNodeMap_[minPair.first][minPair.second];
+
+        openSet_.erase(minPair);
+        closedSet_.insert(minPair);
+
+
+    }
+    while(curNode->row!=endRow || curNode->col!=endCol);
+
+    //create a deque of Nodes,represented by int pairs, from start to finish
+
+
+    do{
+
+       // path_.push_front(std::make_pair(curNode->col,curNode->row));
+        enemyPath_.push_front(sf::Vector2f((curNode->col)*32+16, (curNode->row)*32+16));
+        curNode=tileNodeMap_[curNode->row][curNode->col].parent;
+    }while(curNode->row!=startRow || curNode->col!=startCol);
+    //push the start position because the above doesn't
+    //path_.push_front(std::make_pair(startCol,startRow));
+    enemyPath_.push_front(sf::Vector2f(startCol*32+16,startRow*32+16));
+
+    //testing
+//    for (int i=0;i< enemyPath_.size();i++) {
+//        std::cout<<"inspect enemyPath" << enemyPath_[i].x<<" "<<enemyPath_[i].y <<  "\n";
+//        //std::cout<<"inspect tile path"<<path_[i].first<<" "<<path_[i].second<<"\n";
+//    }
+
+    return enemyPath_;
+
     
-    // reposition to no longer be inside the wall
-    // this may need tweaking; not sure if TILE_SIZE is the right value to downscale by
-    sf::Vector2f padjusted = (e.getPos() - vecutil::toSFVec(point)) / (1.0f * TILE_SIZE) + e.getPos();
-    e.setPos(padjusted);
+}
+
+int Logic::computeG(std::pair<int,int> curPair){
+
+    return tileNodeMap_[curPair.first][curPair.second].parent->g+1;
+
+
+}
+
+int Logic::computeH(std::pair<int,int> curPair,std::pair<int,int> goalPair){
+    return std::abs(curPair.first-goalPair.first)+std::abs(curPair.second-goalPair.second);
 }

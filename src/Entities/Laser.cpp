@@ -4,7 +4,6 @@
 
 #include "Entities/Laser.hpp"
 
-#include "Logic.hpp"
 const float Laser::COLLISION_SIZE = 32.0f;
 Laser::Laser(){
     sf::Texture texture;
@@ -24,6 +23,10 @@ Laser::Laser(){
     hacked_=false;
 }
 
+void Laser::setDirection(float angle) {
+    dir_ = angle;
+}
+
 void Laser::setRotate(float startRotate, float endRotate){
     startRotate_=startRotate;
     endRotate_=endRotate;
@@ -35,15 +38,6 @@ void Laser::setShootTime(float shootTime){
 
 void Laser::setStopTime(float stopTime){
     stopTime_=stopTime;
-}
-
-
-void Laser::setDirection(float dir){
-    dir_=dir;
-}
-
-int Laser::getDirection(){
-    return dir_;
 }
 
 void Laser::rotate(float angle){
