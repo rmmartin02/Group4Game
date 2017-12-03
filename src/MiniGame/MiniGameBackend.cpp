@@ -411,113 +411,64 @@ MiniGameScreenBackend MiniGameScreenBackend::shuffleBoard(int pathLength) {
         }
     }
 
-    //std::cout << "board size is" << boardSize << std::endl;
+    std::cout << "zero is at row: " << row << " column: " << column << std::endl;
 
     // 0 = UP, 1 = RIGHT, 2 = DOWN, 3 = LEFT
 
-    if (boardSize == 3){
+    //if (boardSize == 3){
 
-        if (column == 3 && row == 3) {
+        std::cout << "Entered" << std::endl;
+
+        if (column == 2 && row == 2) {
 
             int array [] = {0, 3}; //CORNER CASE: Excludes RIGHT & DOWN
-            direction = getRandom(array);
+            direction = this->getRandom(array);
 
         } else if (column == 0 && row == 0) {
 
             int array [] = {1, 2}; //CORNER CASE: Excludes LEFT & UP
-            direction = getRandom(array);
+            direction = this->getRandom(array);
 
-        } else if (column == 3 && row == 0) {
+        } else if (column == 2 && row == 0) {
 
             int array [] = {2, 3}; //CORNER CASE: Excludes RIGHT & UP
-            direction = getRandom(array);
+            direction = this->getRandom(array);
 
-        } else if (column == 0 && row == 3) {
+        } else if (column == 0 && row == 2) {
 
             int array [] = {0, 1}; //CORNER CASE: Excludes LEFT & DOWN
-            direction = getRandom(array);
+            direction = this->getRandom(array);
 
-        } else if (column == 3) {
+        } else if (column == 2) {
 
             int array [] = {0, 2, 3};
-            direction = getRandom(array); //EXCLUDES RIGHT
+            direction = this->getRandom(array); //EXCLUDES RIGHT
 
-        } else if (row == 3) {
+        } else if (row == 2) {
 
             int array [] = {0, 1, 3}; // EXCLUDES DOWN
-            direction = getRandom(array);
+            direction = this->getRandom(array);
 
         } else if (column == 0) {
 
             int array [] = {0, 1, 2}; //EXCLUDES LEFT
-            direction = getRandom(array);
+            direction = this->getRandom(array);
 
         } else if (row == 0) {
 
             int array [] = {1, 2, 3}; //EXCLUDES UP
-            direction = getRandom(array);
+            direction = this->getRandom(array);
 
         } else {
 
             int array [] = {0, 1, 2, 3}; // NO EXCLUSIONS
-            direction = getRandom(array);
+            direction = this->getRandom(array);
 
         }
 
-    } else if (boardSize == 2) {
+    //}
 
-        if (column == 1 && row == 1) {
-
-            int array [] = {0, 3}; //CORNER CASE: Excludes RIGHT & DOWN
-            direction = getRandom(array);
-            //std::cout << "col 1 row 1 direction is" << direction <<std::endl;
-
-        } else if (column == 0 && row == 0) {
-
-            int array [] = {1, 2}; //CORNER CASE: Excludes LEFT & UP
-            direction = getRandom(array);
-
-        } else if (column == 1 && row == 0) {
-
-            int array [] = {2, 3}; //CORNER CASE: Excludes RIGHT & UP
-            direction = getRandom(array);
-
-        } else if (column == 0 && row == 1) {
-
-            int array [] = {0, 1}; //CORNER CASE: Excludes LEFT & DOWN
-            direction = getRandom(array);
-
-        } else if (column == 1) {
-
-            int array [] = {0, 2, 3};
-            direction = getRandom(array); //EXCLUDES RIGHT
-
-        } else if (row == 1) {
-
-            int array [] = {0, 1, 3}; // EXCLUDES DOWN
-            direction = getRandom(array);
-
-        } else if (column == 0) {
-
-            int array [] = {0, 1, 2}; //EXCLUDES LEFT
-            direction = getRandom(array);
-
-        } else if (row == 0) {
-
-            int array [] = {1, 2, 3}; //EXCLUDES UP
-            direction = getRandom(array);
-
-        } else {
-
-            int array [] = {0, 1, 2, 3}; // NO EXCLUSIONS
-            direction = getRandom(array);
-
-        }
-
-    } else
-        direction = 0; //remove later
-
-    //std::cout << direction <<std::endl;
+    std::cout << "Direction is: " << direction << std::endl;
 
     if (pathLength == 0) {
         //std::cout << "return this" << std::endl;
@@ -527,28 +478,28 @@ MiniGameScreenBackend MiniGameScreenBackend::shuffleBoard(int pathLength) {
 
         //EMPTY SPACE MOVES UP
         MiniGameScreenBackend newState;
-        newState = move(row - 1, column, MOVEDOWN);
+        newState = this->move(row - 1, column, MOVEDOWN);
         return newState.shuffleBoard(pathLength - 1);
 
     } else if (direction == 1 && this->getValue(row, column + 1) != 0) {
 
         //EMPTY SPACE MOVES RIGHT
         MiniGameScreenBackend newState;
-        newState = move(row, column + 1, MOVELEFT);
+        newState = this->move(row, column + 1, MOVELEFT);
         return newState.shuffleBoard(pathLength - 1);
 
     } else if (direction == 2 && this->getValue(row + 1, column) != 0) {
 
         //EMPTY SPACE MOVES DOWN
         MiniGameScreenBackend newState;
-        newState = move(row + 1, column, MOVEUP);
+        newState = this->move(row + 1, column, MOVEUP);
         return newState.shuffleBoard(pathLength - 1);
 
     } else if (direction == 3 && this->getValue(row, column - 1) != 0) {
 
         //EMPTY SPACE MOVES LEFT
         MiniGameScreenBackend newState;
-        newState = move(row, column - 1, MOVERIGHT);
+        newState = this->move(row, column - 1, MOVERIGHT);
         return newState.shuffleBoard(pathLength - 1);
 
     } else {
@@ -581,6 +532,8 @@ int MiniGameScreenBackend::getRandom (int array[]) {
 
     // METHOD TO PULL RANDOM INTEGER FROM A GIVEN ARRAY
     int randIndex = rand() % sizeof(array);
+
+    std::cout << "Rand index is: " << randIndex << std::endl;
 
     //std::cout << "Rand no is" << array[randIndex] <<std::endl;
 

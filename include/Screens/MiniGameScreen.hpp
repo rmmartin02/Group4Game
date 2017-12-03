@@ -22,6 +22,8 @@ public:
 
     bool tilesOrdered= false;
 
+    bool gameWon = false;
+
     std::vector<sf::Sprite> tiles;
 
     std::vector<sf::Sprite> orderedTiles;
@@ -36,7 +38,7 @@ public:
 
     sf::Texture background;
 
-    sf::Texture two_sheet;
+    sf::Texture three_sheet;
 
     sf::Sprite bg;
 
@@ -48,7 +50,7 @@ public:
 
     std::vector<sf::Sprite> createSpriteBoard(int difficulty);
 
-    std::vector<sf::Sprite> orderSpriteBoard(std::vector<sf::Sprite> spriteBoard);
+    std::vector<sf::Sprite> orderSpriteBoard(std::vector<sf::Sprite> spriteBoard, MiniGameScreenBackend puzzleIn);
 
     void render(sf::RenderWindow *window);
 
