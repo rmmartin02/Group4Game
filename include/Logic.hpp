@@ -7,6 +7,8 @@
 
 #include "Global.hpp"
 #include <memory>
+#include <cmath>
+#include <deque>
 
 #include "Entities/Entity.hpp"
 #include "Entities/Character.hpp"
@@ -14,10 +16,19 @@
 #include "Entities/Laser.hpp"
 
 #include "Box2D/Box2D.h"
-
+struct Node{
+    int row;
+    int col;
+    int g;
+    int h;
+    int f;
+    Node* parent;
+};
 
 class Logic {
 public:
+
+
     // Represents the size of a tile, in pixels on the tileset file,
     // and in SFML's drawing units. We may want to separate the two
     // in the future.
@@ -67,6 +78,7 @@ private:
     float time_left_;
     
     std::vector<std::vector<int>> tiles_;
+
     ENTITY_DATA entities_;
     
     std::vector<std::unique_ptr<b2Shape>> wall_shapes_;
@@ -97,6 +109,22 @@ private:
     // Handle an entity's collision with a wall shape
     void onWallCollision(Entity& e, b2Vec2 point, b2Vec2 normal);
 
+    //pathfinding var and methods
+    //pathFinder:
+    //param: startPos: starting position of the entity or, current position of entity(when chasing)
+    //param: destPos: destination of entity, or character position(when chasing)
+    //return: a DEQUE of vector2f(location) from the start to the destination position,
+    //          the Vector2f location is the CENTER of the tile
+    std::deque<sf::Vector2f> pathFinder(sf::Vector2f startPos, sf::Vector2f destPos);
+    std::vector<std::vector<Node>> tileNodeMap_;
+
+    std::set< std::pair<int,int>> closedSet_;
+    std::set< std::pair<int,int>> openSet_;
+    std::set<std::pair<int,int>> surroundSet_;
+    int computeG(std::pair<int,int> curPair);
+    int computeH(std::pair<int,int> curPair,std::pair<int,int> goalPair);
+    std::deque<std::pair<int,int>> path_; //deque of tile x and y, for your reference
+    std::deque<sf::Vector2f> enemyPath_;
 };
 
 #endif // LOGIC_HPP
