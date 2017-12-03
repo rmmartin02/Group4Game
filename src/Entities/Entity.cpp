@@ -60,11 +60,11 @@ b2Transform Entity::getTransform(){
     return b2Transform(b2Vec2(pos_.x, pos_.y), b2Rot(0.0f));
 }
 
-bool Entity::wallCollision() {
+bool Entity::canWallCollide() {
     return true;
 }
 
-void Entity::onTouchWall() {
+void Entity::onWallCollision(sf::Vector2f point, sf::Vector2f normal) {
     return;
 }
 

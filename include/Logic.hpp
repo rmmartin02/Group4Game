@@ -68,6 +68,11 @@ public:
     // retreives debug information to be rendered in GameScreen
     // returns true if valid info was retreived
     bool getDebugInfo(sf::Vector2f& p1, sf::Vector2f& p2);
+    
+    // Returns false if no walls come between the points `src` and `target`
+    // Returns true if there is an obstruction: sets `hit` to the point
+    // at which an obstruction is encountered
+    bool sightObstructed(sf::Vector2f src, sf::Vector2f target, sf::Vector2f& hit);
 
 private:
     float time_left_;
@@ -120,7 +125,6 @@ private:
     int computeH(std::pair<int,int> curPair,std::pair<int,int> goalPair);
     std::deque<std::pair<int,int>> path_; //deque of tile x and y, for your reference
     std::deque<sf::Vector2f> enemyPath_;
-
 };
 
 #endif // LOGIC_HPP

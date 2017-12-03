@@ -17,6 +17,9 @@ public:
     // Change the velocity according to an inputted movement direction
     void onMoveInput(sf::Vector2f);
     
+    // Handle this character's collision with a wall shape
+    void onWallCollision(sf::Vector2f point, sf::Vector2f normal) override;
+    
 private:
     // The maximum speed at which the character can move.
     static const float MAX_SPEED;
