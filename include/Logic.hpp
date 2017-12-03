@@ -105,15 +105,21 @@ private:
     void onWallCollision(Entity& e, b2Vec2 point, b2Vec2 normal);
 
     //pathfinding var and methods
+    //pathFinder:
+    //param: startPos: starting position of the entity or, current position of entity(when chasing)
+    //param: destPos: destination of entity, or character position(when chasing)
+    //return: a deque of vector2f(location) from the start to the destination position,
+    //          the Vector2f location is the CENTER of the tile
+    //in Enemy.setPatrolPath or similar function, the deque of location is could be deep copy into a vector of location
     std::deque<sf::Vector2f> pathFinder(sf::Vector2f startPos, sf::Vector2f destPos);
     std::vector<std::vector<Node>> tileNodeMap_;
 
-    std::set< std::pair<int,int>> closedSet;
-    std::set< std::pair<int,int>> openSet;
-    std::set<std::pair<int,int>> surroundSet;
+    std::set< std::pair<int,int>> closedSet_;
+    std::set< std::pair<int,int>> openSet_;
+    std::set<std::pair<int,int>> surroundSet_;
     int computeG(std::pair<int,int> curPair);
     int computeH(std::pair<int,int> curPair,std::pair<int,int> goalPair);
-    std::deque<std::pair<int,int>> path_;
+    std::deque<std::pair<int,int>> path_; //deque of tile x and y, for your reference
     std::deque<sf::Vector2f> enemyPath_;
 
 };

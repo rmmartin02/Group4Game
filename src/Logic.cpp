@@ -51,7 +51,7 @@ void Logic::load(std::string mapfilename,std::string enemyfilename) {
     clearLevel();
     loadTiles(mapfilename);
     loadEntities(enemyfilename);
-    pathFinder(sf::Vector2f(40,160),sf::Vector2f(200,160));//40 160 200 160
+    //pathFinder(sf::Vector2f(40,160),sf::Vector2f(200,160));//40 160 200 160
     std::cout<<"character pos"<<getCharacter().getPos().x<<" "<<getCharacter().getPos().y<<"\n";
     std::cout << "Logic.cpp: Map size: " << getMapSize().first 
               << "," << getMapSize().second << std::endl;
@@ -143,9 +143,6 @@ void Logic::loadTiles(std::string filename) {
 }
 
 void Logic::loadEntities(std::string filename) {
-    // dummy behavior, creating the character entity
-    //entities_["Character"] = Character();
-    //entities_["Character"].setVel(sf::Vector2f(1,1));
     addEntity("Character", new Character());
     getCharacter().setVel(sf::Vector2f(1,1));
     std::ifstream file(filename);
@@ -166,8 +163,6 @@ void Logic::loadEntities(std::string filename) {
         float start_x, start_y,dest_x,dest_y;
         iss >> level >> start_x>> start_y >> dest_x >> dest_y;
 
-
-
         if(level==1){
             addEntity("Enemy"+std::to_string(counter),new Enemy());
 
@@ -175,6 +170,8 @@ void Logic::loadEntities(std::string filename) {
             e.setStartPos(sf::Vector2f(start_x,start_y));
             e.setPos(sf::Vector2f(start_x,start_y));
             e.setDestPos(sf::Vector2f(dest_x,dest_y));
+
+            e.setPatrolPath(pathFinder(sf::Vector2f(start_x,start_y),sf::Vector2f(dest_x,dest_y)));
             //set additional enemy 1 var here
 
         }
@@ -185,6 +182,8 @@ void Logic::loadEntities(std::string filename) {
             e.setStartPos(sf::Vector2f(start_x,start_y));
             e.setPos(sf::Vector2f(start_x,start_y));
             e.setDestPos(sf::Vector2f(dest_x,dest_y));
+
+            e.setPatrolPath(pathFinder(sf::Vector2f(start_x,start_y),sf::Vector2f(dest_x,dest_y)));
             //set additional enemy 2 var here
 
         }
@@ -197,15 +196,16 @@ void Logic::loadEntities(std::string filename) {
 
         }
 
-
-
         counter=counter+1;
 
     }
 
     //testing
-    //std::cout << "Logic.cpp: checking enemy info (enemy 3's position) " << vecutil::vecInfo(getEntity("Enemy3").getPos()) << std::endl;
-
+    std::vector<sf::Vector2f> enemy1path=static_cast<Enemy&> (getEntity("Enemy1")).getPatrolPath();
+    for (int i=0;i< enemy1path.size();i++) {
+        std::cout<<"logic.cpp::inspect enemyPath" << enemy1path[i].x<<" "<<enemy1path[i].y <<  "\n";
+        //std::cout<<"inspect tile path"<<path_[i].first<<" "<<path_[i].second<<"\n";
+    }
 }
 
 void Logic::buildWallShapes() {
@@ -332,10 +332,12 @@ void Logic::onWallCollision(Entity& e, b2Vec2 point, b2Vec2 normal) {
 }
 
 std::deque<sf::Vector2f> Logic::pathFinder(sf::Vector2f startPos, sf::Vector2f endPos){
-
-    openSet.clear();
-    closedSet.clear();
-    surroundSet.clear();
+    openSet_.clear();
+    closedSet_.clear();
+    surroundSet_.clear();
+    path_.clear();
+    enemyPath_.clear();
+    tileNodeMap_.clear();
     std::pair<int,int> minPair;
 
     int startRow;
@@ -351,12 +353,12 @@ std::deque<sf::Vector2f> Logic::pathFinder(sf::Vector2f startPos, sf::Vector2f e
         startCol=(startPos.x-1)/32;
     }
     //add current tile to closedSet
-    closedSet.insert(std::make_pair(startRow,startCol));
+    closedSet_.insert(std::make_pair(startRow,startCol));
 
     endRow=(endPos.y-1)/32;
     endCol=(endPos.x-1)/32;
 
-    std::vector<Node> xxx;
+    std::vector<Node> newNodeVec;
 
     Node n;
     n.row=-1;
@@ -371,38 +373,38 @@ std::deque<sf::Vector2f> Logic::pathFinder(sf::Vector2f startPos, sf::Vector2f e
             //xxx.push_back(0);
             n.row=i;
             n.col=j;
-            xxx.push_back(n);
+            newNodeVec.push_back(n);
 
         }
-        tileNodeMap_.push_back(xxx);
+        tileNodeMap_.push_back(newNodeVec);
 
-        xxx.clear();
+        newNodeVec.clear();
     }
 
     Node* curNode=&tileNodeMap_[startRow][startCol];
 
     do{
         //generate surrounding set
-        surroundSet.clear();
+        surroundSet_.clear();
         if(curNode->row>=1 && !tileIsWall(v[curNode->row-1][curNode->col])){
-            surroundSet.insert(std::make_pair(curNode->row-1,curNode->col));
+            surroundSet_.insert(std::make_pair(curNode->row-1,curNode->col));
         }
         if(curNode->col>=1 && !tileIsWall(v[curNode->row][curNode->col-1])){
-            surroundSet.insert(std::make_pair(curNode->row,curNode->col-1));
+            surroundSet_.insert(std::make_pair(curNode->row,curNode->col-1));
         }
         if(curNode->row<v.size()-1 && !tileIsWall(v[curNode->row+1][curNode->col])){
-            surroundSet.insert(std::make_pair(curNode->row+1,curNode->col));
+            surroundSet_.insert(std::make_pair(curNode->row+1,curNode->col));
         }
         if(curNode->col<v[0].size()-1 && !tileIsWall(v[curNode->row][curNode->col+1])){
-            surroundSet.insert(std::make_pair(curNode->row,curNode->col+1));
+            surroundSet_.insert(std::make_pair(curNode->row,curNode->col+1));
         }
 
         //iterate surroundingset
-        for(auto elem : surroundSet){
-            if (closedSet.count(elem)){//if elem is in closed set(count returns not 0), skip
+        for(auto elem : surroundSet_){
+            if (closedSet_.count(elem)){//if elem is in closed set(count returns not 0), skip
                 continue;
             }
-            else if(openSet.count(elem)){
+            else if(openSet_.count(elem)){
                 int curG=computeG(elem);
                 if (curG < tileNodeMap_[elem.first][elem.second].g){
                     tileNodeMap_[elem.first][elem.second].parent = curNode;
@@ -418,11 +420,11 @@ std::deque<sf::Vector2f> Logic::pathFinder(sf::Vector2f startPos, sf::Vector2f e
                     tileNodeMap_[elem.first][elem.second].h=computeH(elem,std::make_pair(endRow,endCol));
                     tileNodeMap_[elem.first][elem.second].f=
                             tileNodeMap_[elem.first][elem.second].g+tileNodeMap_[elem.first][elem.second].h;
-                    openSet.insert(elem);
+                    openSet_.insert(elem);
 
             }
         }
-        if(openSet.empty()){
+        if(openSet_.empty()){
 
             break;
         }
@@ -431,7 +433,7 @@ std::deque<sf::Vector2f> Logic::pathFinder(sf::Vector2f startPos, sf::Vector2f e
 
         int minF=99;
 
-        for(auto target : openSet){//target is a int pair
+        for(auto target : openSet_){//target is a int pair
 
             if(tileNodeMap_[target.first][target.second].f<minF){
                 minPair=std::make_pair(target.first,target.second);
@@ -440,12 +442,10 @@ std::deque<sf::Vector2f> Logic::pathFinder(sf::Vector2f startPos, sf::Vector2f e
             }
         }
 
-        Node *parentRef = tileNodeMap_[minPair.first][minPair.second].parent;
-
         curNode=&tileNodeMap_[minPair.first][minPair.second];
 
-        openSet.erase(minPair);
-        closedSet.insert(minPair);
+        openSet_.erase(minPair);
+        closedSet_.insert(minPair);
 
 
     }
@@ -456,16 +456,19 @@ std::deque<sf::Vector2f> Logic::pathFinder(sf::Vector2f startPos, sf::Vector2f e
 
     do{
 
-        //path_.push_front(std::make_pair(curNode->row,curNode->col));
+       // path_.push_front(std::make_pair(curNode->col,curNode->row));
         enemyPath_.push_front(sf::Vector2f((curNode->col)*32+16, (curNode->row)*32+16));
         curNode=tileNodeMap_[curNode->row][curNode->col].parent;
     }while(curNode->row!=startRow || curNode->col!=startCol);
     //push the start position because the above doesn't
+    //path_.push_front(std::make_pair(startCol,startRow));
     enemyPath_.push_front(sf::Vector2f(startCol*32+16,startRow*32+16));
 
-    for (int i=0;i< enemyPath_.size();i++) {
-        std::cout<<"inspect path" << enemyPath_[i].x<<" "<<enemyPath_[i].y <<  "\n";
-    }
+    //testing
+//    for (int i=0;i< enemyPath_.size();i++) {
+//        std::cout<<"inspect enemyPath" << enemyPath_[i].x<<" "<<enemyPath_[i].y <<  "\n";
+//        //std::cout<<"inspect tile path"<<path_[i].first<<" "<<path_[i].second<<"\n";
+//    }
 
     return enemyPath_;
 
