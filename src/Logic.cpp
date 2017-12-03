@@ -2,8 +2,6 @@
 
 #include <sstream>
 #include <fstream>
-#include <cmath>
-#include <deque>
 
 #include "VecUtil.hpp"
 
@@ -53,7 +51,7 @@ void Logic::load(std::string mapfilename,std::string enemyfilename) {
     clearLevel();
     loadTiles(mapfilename);
     loadEntities(enemyfilename);
-    pathFinder(sf::Vector2f(0,100),sf::Vector2f(1,1));
+    pathFinder(sf::Vector2f(40,160),sf::Vector2f(200,160));//40 160 200 160
     std::cout<<"character pos"<<getCharacter().getPos().x<<" "<<getCharacter().getPos().y<<"\n";
     std::cout << "Logic.cpp: Map size: " << getMapSize().first 
               << "," << getMapSize().second << std::endl;
@@ -197,7 +195,6 @@ void Logic::loadEntities(std::string filename) {
             l.setDirection(dest_x);
             l.setRotate(dest_x,dest_y);
 
-
         }
 
 
@@ -207,7 +204,7 @@ void Logic::loadEntities(std::string filename) {
     }
 
     //testing
-    std::cout << "Logic.cpp: checking enemy info (enemy 3's position) " << vecutil::vecInfo(getEntity("Enemy3").getPos()) << std::endl;
+    //std::cout << "Logic.cpp: checking enemy info (enemy 3's position) " << vecutil::vecInfo(getEntity("Enemy3").getPos()) << std::endl;
 
 }
 
@@ -334,7 +331,7 @@ void Logic::onWallCollision(Entity& e, b2Vec2 point, b2Vec2 normal) {
     e.setPos(padjusted);
 }
 
-void Logic::pathFinder(sf::Vector2f startPos, sf::Vector2f endPos){
+std::deque<sf::Vector2f> Logic::pathFinder(sf::Vector2f startPos, sf::Vector2f endPos){
 
     openSet.clear();
     closedSet.clear();
@@ -387,16 +384,16 @@ void Logic::pathFinder(sf::Vector2f startPos, sf::Vector2f endPos){
     do{
         //generate surrounding set
         surroundSet.clear();
-        if(curNode->row>=1){
+        if(curNode->row>=1 && !tileIsWall(v[curNode->row-1][curNode->col])){
             surroundSet.insert(std::make_pair(curNode->row-1,curNode->col));
         }
-        if(curNode->col>=1){
+        if(curNode->col>=1 && !tileIsWall(v[curNode->row][curNode->col-1])){
             surroundSet.insert(std::make_pair(curNode->row,curNode->col-1));
         }
-        if(curNode->row<v.size()-1){
+        if(curNode->row<v.size()-1 && !tileIsWall(v[curNode->row+1][curNode->col])){
             surroundSet.insert(std::make_pair(curNode->row+1,curNode->col));
         }
-        if(curNode->col<v[0].size()-1){
+        if(curNode->col<v[0].size()-1 && !tileIsWall(v[curNode->row][curNode->col+1])){
             surroundSet.insert(std::make_pair(curNode->row,curNode->col+1));
         }
 
@@ -449,26 +446,28 @@ void Logic::pathFinder(sf::Vector2f startPos, sf::Vector2f endPos){
 
         openSet.erase(minPair);
         closedSet.insert(minPair);
-  
+
 
     }
     while(curNode->row!=endRow || curNode->col!=endCol);
 
     //create a deque of Nodes,represented by int pairs, from start to finish
 
-    std::deque<std::pair<int,int>> path;
 
-    while(curNode->row!=startRow || curNode->col!=startCol){
+    do{
 
-        path.push_front(std::make_pair(curNode->row,curNode->col));
-
+        //path_.push_front(std::make_pair(curNode->row,curNode->col));
+        enemyPath_.push_front(sf::Vector2f((curNode->col)*32+16, (curNode->row)*32+16));
         curNode=tileNodeMap_[curNode->row][curNode->col].parent;
+    }while(curNode->row!=startRow || curNode->col!=startCol);
+    //push the start position because the above doesn't
+    enemyPath_.push_front(sf::Vector2f(startCol*32+16,startRow*32+16));
 
+    for (int i=0;i< enemyPath_.size();i++) {
+        std::cout<<"inspect path" << enemyPath_[i].x<<" "<<enemyPath_[i].y <<  "\n";
     }
 
-    for (int i=0;i<path.size();i++) {
-        std::cout<<"inspect path" << path[i].first<<" "<<path[i].second <<  "\n";
-    }
+    return enemyPath_;
 
     
 }

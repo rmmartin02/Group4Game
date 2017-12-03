@@ -7,6 +7,8 @@
 
 #include "Global.hpp"
 #include <memory>
+#include <cmath>
+#include <deque>
 
 #include "Entities/Entity.hpp"
 #include "Entities/Character.hpp"
@@ -103,7 +105,7 @@ private:
     void onWallCollision(Entity& e, b2Vec2 point, b2Vec2 normal);
 
     //pathfinding var and methods
-    void pathFinder(sf::Vector2f startPos, sf::Vector2f destPos);
+    std::deque<sf::Vector2f> pathFinder(sf::Vector2f startPos, sf::Vector2f destPos);
     std::vector<std::vector<Node>> tileNodeMap_;
 
     std::set< std::pair<int,int>> closedSet;
@@ -111,6 +113,8 @@ private:
     std::set<std::pair<int,int>> surroundSet;
     int computeG(std::pair<int,int> curPair);
     int computeH(std::pair<int,int> curPair,std::pair<int,int> goalPair);
+    std::deque<std::pair<int,int>> path_;
+    std::deque<sf::Vector2f> enemyPath_;
 
 };
 
