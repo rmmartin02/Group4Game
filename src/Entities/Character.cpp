@@ -11,21 +11,14 @@ const float Character::ACCELERATION = 0.4f;
 const float Character::COLLISION_SIZE = 16.0f;
 
 Character::Character(){
-	sf::Texture texture;
-	//load texture and sprite
-	if (!texture.create(32, 32))
-	{
-    // error...
-	}
-	sf::Sprite sprite;
-	sprite.setTexture(texture);
-	sprite.setColor(sf::Color(0, 255, 0));
-	this->setSprite(sprite);
-    
     b2CircleShape* collider = new b2CircleShape();
     collider->m_p.Set(0.0f, 0.0f);
     collider->m_radius = COLLISION_SIZE;
     this->attachShape(collider);
+}
+
+std::string Character::getTypeId() {
+    return Entity::CHARACTER_ID;
 }
 
 void Character::onMoveInput(sf::Vector2f dir) {

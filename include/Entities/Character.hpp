@@ -14,6 +14,8 @@ public:
     
     Character();
 
+    std::string getTypeId() override;
+    
     // Change the velocity according to an inputted movement direction
     void onMoveInput(sf::Vector2f);
     

@@ -12,7 +12,7 @@ class GameScreen : public Screen {
 
 public:
 
-    GameScreen(Logic *logic);
+    GameScreen(Logic *logic, TextureManager* tex_manager);
 
     void render(sf::RenderWindow *window);
     void interpretInput(std::vector<sf::Event>& events);
@@ -39,19 +39,28 @@ private:
     sf::Keyboard::Key keys_[4];
     
     Logic* logic_;
+    TextureManager* tex_manager_;
     
-    TextureManager tex_manager_;
+    std::map<std::string, sf::Sprite> sprites_;
+    
     std::map<int, std::pair<int, int>> texture_coords_;
     
     sf::VertexArray tile_vertices_;
     
-
+    // Create sprites to be used for rendering entities
+    void initializeSprites();
+    
+    // Get the sprite to be drawn for an entity
+    sf::Sprite& getEntitySprite(Entity* entity);
+    
     // Rendering order is tiles -> entities -> particles
     // If we find exceptions to this, we can restructure how this class orders
     // things. 
     void renderTiles(sf::RenderWindow *window);
     void renderEntities(sf::RenderWindow *window);
     void renderParticles(sf::RenderWindow *window);
+    
+    void renderEntity(sf::RenderWindow *window, Entity* entity);
 
 };
 

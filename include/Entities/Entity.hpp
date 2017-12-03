@@ -10,11 +10,20 @@
 class Entity {
 
 public:
+  // Entity identifier strings.
+  static const std::string DEFAULT_ID;
+  static const std::string CHARACTER_ID;
+  static const std::string ENEMY_ID;
+  static const std::string LASER_ID;
+    
   Entity();
   //Entity(const Entity&);
   //Entity& operator=(const Entity&);
   //~Entity() = default;
 
+  // Return a string representing this entity's type
+  virtual std::string getTypeId();
+  
   // Update the entity's game state according to time delta
   // and state of other objects in the logic
   virtual void update(float delta, int &logic);
@@ -40,8 +49,6 @@ public:
   // Get the direction angle (in degrees, 0 is directly right, increases going clockwise)
   // Entity direction is determined by the most recent non-zero velocity.
   float getDirection();
-
-  void setSprite(sf::Sprite sprite);
 
   // Attach a Box2D shape to this object
   void attachShape(b2Shape* shape);

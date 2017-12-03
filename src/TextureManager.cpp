@@ -9,6 +9,11 @@ TextureManager::TextureManager() {
 }
 
 bool TextureManager::loadTexture(std::string name, std::string filename){
+    if ( textures_.find(name) != textures_.end() ){
+        std::cout << "TextureManager.cpp: already loaded texture "
+                  << name << " from " << filename << std::endl;
+        return true;
+    }
     sf::Texture tex;
     if (tex.loadFromFile(filename)) {
         textures_[name] = tex;

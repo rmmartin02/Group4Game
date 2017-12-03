@@ -10,6 +10,9 @@
 class Enemy : public Entity{
 public:
     Enemy();
+    
+    std::string getTypeId() override;
+    
     bool isHacked();
     void setStartPos(sf::Vector2f pos);
     void setDestPos(sf::Vector2f pos);

@@ -5,8 +5,10 @@
 const std::string GameScreen::TILESET_FILENAME = "../resource/maps/map_tiles.png";
 const std::string GameScreen::TILESET_TEX_NAME = "tileset";
 
-GameScreen::GameScreen(Logic* logic) {
+GameScreen::GameScreen(Logic* logic, TextureManager* tex_manager) {
     logic_ = logic;
+    tex_manager_ = tex_manager;
+    
     //load default keys in case custom binding fails to load
     keys_[0] = sf::Keyboard::Up;
     keys_[1] = sf::Keyboard::Down;
@@ -16,10 +18,13 @@ GameScreen::GameScreen(Logic* logic) {
 }
 
 bool GameScreen::loadTextures() {
-    if (!tex_manager_.loadTexture(TILESET_TEX_NAME, TILESET_FILENAME)) {
-        return false;
-    }
+    bool success = true;
     
+    // load tileset texture
+    if (!tex_manager_->loadTexture(TILESET_TEX_NAME, TILESET_FILENAME)) {
+        success = false;
+    }
+    // load tileset texture coordinates
     for (int i = 0; i<4;i++){
         for (int j = 0; j<4;j++){
             std::cout << "GameScreen.cpp: loading tile texture coordinates: "
@@ -27,7 +32,47 @@ bool GameScreen::loadTextures() {
             texture_coords_[i*4+j] = std::make_pair(Logic::TILE_SIZE*j, Logic::TILE_SIZE*i);
         }
     }
-    return true;
+    
+    // TODO: load correct sprite textures
+    // determine if we need offsets/coordinates for switching between textures?
+    
+    initializeSprites();
+    
+    return success;
+}
+
+void GameScreen::initializeSprites() {
+    sf::Texture texture;
+    //load texture and sprite
+    if (!texture.create(32, 32)) {
+        std::cout << "GameScreen.cpp: failed to create texture during sprite init" << std::endl;
+    }
+    sf::Sprite sprite;
+    sprite.setTexture(texture);
+    sprite.setOrigin(sprite.getGlobalBounds().width / 2.0f,
+                      sprite.getGlobalBounds().height / 2.0f);
+    sprite.setColor(sf::Color(255, 255, 50));
+    sprites_[Entity::DEFAULT_ID] = sprite;
+    
+    sprite.setColor(sf::Color(0, 255, 0));
+    sprites_[Entity::CHARACTER_ID] = sprite;
+    
+    sprite.setColor(sf::Color(0, 255, 250));
+    sprites_[Entity::ENEMY_ID] = sprite;
+
+    sprite.setColor(sf::Color(0, 255, 200));
+    sprites_[Entity::LASER_ID] = sprite;
+
+}
+
+sf::Sprite& GameScreen::getEntitySprite(Entity* e) {
+    auto found = sprites_.find(e->getTypeId());
+    if (found != sprites_.end()) {
+        //std::cout << "GameScreen.cpp: found sprite for type " << e->getTypeId() << std::endl;
+        return found->second;
+    }
+    //std::cout << "GameScreen.cpp: could not find sprite for " << e->getTypeId() << std::endl;
+    return sprites_[Entity::DEFAULT_ID];
 }
 
 void GameScreen::panCamera(sf::RenderWindow *window, sf::Vector2f amount){
@@ -99,7 +144,7 @@ void GameScreen::renderTiles(sf::RenderWindow *window) {
             tile_vertices_.append(v);
         }
     }
-    window->draw(tile_vertices_, &(tex_manager_.getRef(TILESET_TEX_NAME)));
+    window->draw(tile_vertices_, &(tex_manager_->getRef(TILESET_TEX_NAME)));
 }
 
 void GameScreen::renderEntities(sf::RenderWindow *window) {
@@ -107,10 +152,19 @@ void GameScreen::renderEntities(sf::RenderWindow *window) {
     std::cout << "GameScreen.cpp: character dir: " << logic_->getCharacter().getDirection() << std::endl;
 
     for (auto& pair : logic_->getEntities()) {
-        pair.second->render(window);
-
+        renderEntity(window, pair.second.get());
     }
     
+}
+
+void GameScreen::renderEntity(sf::RenderWindow *window, Entity* entity) {
+    sf::Sprite& sprite = getEntitySprite(entity);
+    sprite.setPosition(entity->getPos());
+    
+    // TODO: perform any needed transformations to the entity's sprite
+    // switch out / shift texture to different coordinates if needed
+
+	window->draw(sprite);
 }
 
 void GameScreen::renderParticles(sf::RenderWindow *window) {

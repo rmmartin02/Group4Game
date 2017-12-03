@@ -6,21 +6,15 @@
 
 const float Laser::COLLISION_SIZE = 32.0f;
 Laser::Laser(){
-    sf::Texture texture;
-    if (!texture.create(32, 32))
-    {
-        // error...
-    }
-    sf::Sprite sprite;
-    sprite.setTexture(texture);
-    sprite.setColor(sf::Color(0, 255, 200));
-    this->setSprite(sprite);
-
     b2CircleShape* collider = new b2CircleShape();
     collider->m_p.Set(0.0f, 0.0f);
     collider->m_radius = COLLISION_SIZE;
     this->attachShape(collider);
     hacked_=false;
+}
+
+std::string Laser::getTypeId() {
+    return Entity::LASER_ID;
 }
 
 void Laser::setDirection(float angle) {

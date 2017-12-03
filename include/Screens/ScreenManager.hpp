@@ -20,6 +20,8 @@ public:
     bool isOnGameScreen();
 
 private:
+    TextureManager tex_manager_;
+    
     Screen *current_screen;
     MenuScreen *menu_screen;
     GameScreen *game_screen;

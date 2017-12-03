@@ -3,7 +3,7 @@
 
 ScreenManager::ScreenManager(Logic *logic){
 	logic_ = logic;
-	game_screen = new GameScreen(logic);
+	game_screen = new GameScreen(logic, &tex_manager_);
 	menu_screen = new MenuScreen();
 	controls_screen = new ControlsScreen();
 	current_screen = menu_screen;
