@@ -3,7 +3,6 @@
 //
 
 #include "Entities/Enemy.hpp"
-#include "VecUtil.hpp"
 const float Enemy::COLLISION_SIZE = 32.0f;
 Enemy::Enemy(){
     sf::Texture texture;
@@ -25,7 +24,8 @@ Enemy::Enemy(){
     alerted_ = false;
     //change based on level?
     sight_distance_ = 100;
-    sight_angle_ = 30;
+    //half
+    sight_angle_ = 15;
     alert_time_ = 10;
     alert_time_left_ = 10;
     alert_radius_ = 100;
@@ -65,20 +65,20 @@ sf::Vector2f Enemy::getNextPos(){
 
 }
 
+
 bool Enemy::canSeePlayer(sf::Vector2f character){
-    float dist = sqrt(pow(getPos().x-character.x,2)+pow(getPos().y-character.y,2));
-    if(dist<=sight_distance_){
-        std::cout << "LOS: In distance\n";
-        float x3 = getPos().x+vel_.x;
-        float y3 = getPos().y+vel_.y;
-        float a = pow(getPos().x-character.x,2)+pow(getPos().y-character.y,2);
-        float b = pow(getPos().x-x3,2)+pow(getPos().y-y3,2);
-        float c = pow(x3-character.x,2)+pow(y3-character.x,2);
-        float angle = acos((a+b-c)/sqrt(4*a*b));
-        if(angle<=sight_angle_){
-            std::cout << "LOS: In Angle\n";
-            //still need to write a check for walls here
-            return true;
+    sf::Vector2f u = sf::Vector2f(character.x-getPos().x,character.y-getPos().y);
+    sf::Vector2f v = sf::Vector2f(sight_distance_*cos(vecutil::degToRad(getDirection())),
+        sight_distance_*sin(vecutil::degToRad(getDirection())));
+    sf::Vector2f e1 = sf::Vector2f(sight_distance_*cos(vecutil::degToRad(getDirection()-sight_angle_)),
+        sight_distance_*sin(vecutil::degToRad(getDirection()-sight_angle_)));
+    sf::Vector2f e2 = sf::Vector2f(sight_distance_*cos(getDirection()+sight_angle_),
+        sight_distance_*sin(getDirection()+sight_angle_));
+    if(vecutil::dotProd(u,v)>0){
+        if(vecutil::dotProd(u,u)<(sight_distance_*sight_distance_)){
+            if(vecutil::crossProd(e1,u)*vecutil::crossProd(u,e2)>=0.0f){
+                return true;
+            }
         }
     }
     return false;
@@ -115,4 +115,19 @@ void Enemy::timer(float deltaTime){
     if(alert_time_left_<=0){
         alerted_ = false;
     }
+}
+
+void Enemy::setPatrolPath(std::deque<sf::Vector2f> path){
+//    patrolPath_.clear();
+    patrolPath_=path;
+
+}
+
+std::deque<sf::Vector2f> Enemy::getPatrolPath(){
+    for(int i=0;i<patrolPath_.size();i++){
+        std::cout<<"Enemy.cpp:enemy path: "<<patrolPath_[i].x<<" "<<patrolPath_[i].y<<"\n";
+    }
+    std::cout<<"Enemy.cpp:enemy path inspect complete\n";
+    return patrolPath_;
+
 }

@@ -1,6 +1,6 @@
 #include "Entities/Entity.hpp"
 
-#include "Logic.hpp"
+#include "VecUtil.hpp"
   
 Entity::Entity(){};
 
@@ -16,12 +16,12 @@ void Entity::render (sf::RenderWindow *window) {
 
 // Return the current position
 sf::Vector2f Entity::getPos(){
-	return sf::Vector2f(pos_.x+16.0f,pos_.y+16.0f);
+	return pos_;
 }
 
 // Place this entity at a new position
 void Entity::setPos(sf::Vector2f pos){
-	pos_=sf::Vector2f(pos.x-16.0f,pos.y-16.0f);
+	pos_=pos;
 }
 
 // Displace this entity relative to its current position
@@ -40,6 +40,13 @@ sf::Vector2f Entity::getVel(){
 // Set the current velocity
 void Entity::setVel(sf::Vector2f vel){
 	vel_ = vel;
+    if ( vecutil::nonZero(vel) != 0 ) {
+        dir_ = vecutil::radToDeg(vecutil::angle(vel));
+    }
+}
+
+float Entity::getDirection() {
+    return dir_;
 }
 
 void Entity::setSprite(sf::Sprite sprite){
