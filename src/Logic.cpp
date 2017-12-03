@@ -41,24 +41,24 @@ void Logic::update(float delta) {
             if(enemy->canSeePlayer(getCharacter().getPos()) && !sightObstructed(enemy->getPos(), getCharacter().getPos(), hit)){
                 std::cout<<"Logic: Charcter in line of sight\n";
                 //chase player, send out signal
-                enemy.alert();
-                enemy.signal(getEntities());
+                enemy->alert();
+                enemy->signal(getEntities());
                 last_seen_character_pos_ = getCharacter().getPos();
             }
             else{
                 //cant see player but is alerted
-                if(enemy.isAlerted()){
-                    enemy.timer(delta);
+                if(enemy->isAlerted()){
+                    enemy->timer(delta);
                 }
             }
-            if(enemy.isAlerted()){
-                float dist = sqrt(pow(enemy.getPos().x-getCharacter().getPosition().x,2)+pow(enemy.getPos().y-getCharacter().getPos().y,2));
-                if(dist<enemy.getAttackRadius()){
-                    enemy.attack();
+            if(enemy->isAlerted()){
+                float dist = sqrt(pow(enemy->getPos().x-getCharacter().getPos().x,2)+pow(enemy->getPos().y-getCharacter().getPos().y,2));
+                if(dist<enemy->getAttackRadius()){
+                    enemy->attack();
                 }
                 else{
                     //chase character (maybe have it go to last seen position?)
-                    enemy.setDestPos(last_seen_character_pos_);
+                    enemy->setDestPos(last_seen_character_pos_);
                 }
             }
             else{

@@ -5,6 +5,7 @@
 #ifndef ENEMY1_HPP
 #define ENEMY1_HPP
 #include "Entities/Entity.hpp"
+#include <map>
 
 class Enemy : public Entity{
 public:
@@ -21,7 +22,8 @@ public:
 
     bool canSeePlayer(sf::Vector2f character);
     void alert();
-    void setTimer(float deltaTime);
+    void signal(std::map<std::string, std::unique_ptr<Entity>> &entities);
+    void timer(float deltaTime);
     float getAttackRadius();
     void attack();
 

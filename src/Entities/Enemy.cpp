@@ -90,14 +90,14 @@ void Enemy::alert(){
     alert_time_left_ = alert_time_;
 }
 
-void Enemy::signal(ENTITY_DATA& entities){
+void Enemy::signal(std::map<std::string, std::unique_ptr<Entity>> &entities){
     //alert enemies within radius
     for ( auto& pair : entities ) {
         Entity& e = *(pair.second.get());
         if (Enemy* enemy = dynamic_cast<Enemy*>(&e)){
-            float dist = sqrt(pow(pos_.x-enemy.getPos().x,2)+pow(pos_.y-enemy.getPos().y,2));
-            if (dist<alert_radius){
-                enemy.alert();
+            float dist = sqrt(pow(getPos().x-enemy->getPos().x,2)+pow(getPos().y-enemy->getPos().y,2));
+            if (dist<alert_radius_){
+                enemy->alert();
             }
         }
     }
@@ -111,7 +111,7 @@ void Enemy::attack(){
 }
 
 void Enemy::timer(float deltaTime){
-    alert_time_left_-=delaTime;
+    alert_time_left_-=deltaTime;
     if(alert_time_left_<=0){
         alerted_ = false;
     }
