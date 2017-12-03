@@ -16,12 +16,12 @@ void Entity::render (sf::RenderWindow *window) {
 
 // Return the current position
 sf::Vector2f Entity::getPos(){
-	return pos_;
+	return sf::Vector2f(pos_.x+16.0f,pos_.y+16.0f);
 }
 
 // Place this entity at a new position
 void Entity::setPos(sf::Vector2f pos){
-	pos_=pos;
+	pos_=sf::Vector2f(pos.x-16.0f,pos.y-16.0f);
 }
 
 // Displace this entity relative to its current position

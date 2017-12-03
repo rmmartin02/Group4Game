@@ -44,25 +44,27 @@ void Logic::update(float delta) {
                 enemy->alert();
                 enemy->signal(getEntities());
                 last_seen_character_pos_ = getCharacter().getPos();
+                //if close enough attack
+                if(dist<enemy->getAttackRadius()){
+                    enemy->attack();
+                }
             }
             else{
-                //cant see player but is alerted
+                //cant see player but is alerted, so countdown
                 if(enemy->isAlerted()){
                     enemy->timer(delta);
                 }
             }
             if(enemy->isAlerted()){
                 float dist = sqrt(pow(enemy->getPos().x-getCharacter().getPos().x,2)+pow(enemy->getPos().y-getCharacter().getPos().y,2));
-                if(dist<enemy->getAttackRadius()){
-                    enemy->attack();
-                }
                 else{
-                    //chase character (maybe have it go to last seen position?)
+                    //chase character (to last seen position)
                     enemy->setDestPos(last_seen_character_pos_);
                 }
             }
             else{
-                //patrol route
+                //return to patrol route/go to next patrol point
+
             }
         }
     }
