@@ -25,7 +25,7 @@ MiniGameScreen::MiniGameScreen() {
     }
     bg.setTexture(background);
 
-    three_sheet.loadFromFile("../src/MiniGame/laser3.png");
+    three_sheet.loadFromFile("../src/MiniGame/laser3ez.png");
 
     if (!winScreen.loadFromFile("../src/MiniGame/winscreen.png")) {
         // error...
