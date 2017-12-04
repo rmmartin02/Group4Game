@@ -43,8 +43,8 @@ void Logic::update(float delta) {
                 //chase player, send out signal
                 enemy->alert();
                 enemy->signal(getEntities());
-                enemy->setChasePath(getCharacter.getPos());
-                lastKnownCharPos = getCharacter.getPos();
+                enemy->setChasePath(pathFinder(enemy->getPos(),getCharacter().getPos()));
+                lastKnownCharPos = getCharacter().getPos();
                 //if close enough attack
                 float dist = vecutil::distance(enemy->getPos(),getCharacter().getPos());
                 if(dist<enemy->getAttackRadius()){
@@ -55,8 +55,8 @@ void Logic::update(float delta) {
             else{
                 //cant see player but is alerted, so countdown
                 if(enemy->isAlerted()){
-                    if(!enemy->hasChasePath() || vecutil::distance(lastKnownCharPos,enemy->lastKnownCharPos)>32){
-                        enemy->setChasePath(lastKnownCharPos);
+                    if(!enemy->hasChasePath() || vecutil::distance(lastKnownCharPos,enemy->getLastKnownCharacterPos())>32){
+                        enemy->setChasePath(pathFinder(enemy->getPos(),lastKnownCharPos));
                     }
                     //std::cout<<"Logic: Enemy Timer\n";
                     enemy->timer(delta);

@@ -42,7 +42,7 @@ public:
     static const float COLLISION_SIZE;
 
     bool canSeePlayer(sf::Vector2f);
-    void alert(sf::Vector2f);
+    void alert();
     void unAlert();
     void signal(std::map<std::string, std::unique_ptr<Entity>> &entities);
     void timer(float deltaTime);
