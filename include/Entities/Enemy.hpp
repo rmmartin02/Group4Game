@@ -13,6 +13,7 @@
 class Enemy : public Entity{
 public:
     Enemy();
+    Enemy(bool isLevel2);
     bool isHacked();
     bool isAlerted();
     bool isOffPatrol();

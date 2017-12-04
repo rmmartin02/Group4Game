@@ -41,6 +41,52 @@ Enemy::Enemy(){
     last_known_character_pos_ = sf::Vector2f(0,0);
 }
 
+Enemy::Enemy(bool isLevel2){
+    sf::Texture texture;
+    if (!texture.create(32, 32))
+    {
+        // error...
+    }
+    sf::Sprite sprite;
+    sprite.setTexture(texture);
+    sprite.setColor(sf::Color(0, 255, 250));
+    this->setSprite(sprite);
+
+    b2CircleShape* collider = new b2CircleShape();
+    collider->m_p.Set(0.0f, 0.0f);
+    collider->m_radius = COLLISION_SIZE;
+    this->attachShape(collider);
+
+    hacked_=false;
+    alerted_ = false;
+    off_patrol = false;
+    has_path_back_= false;
+    has_chase_path_ = false;
+    if(isLevel2){
+        move_speed_ = 1;
+        sight_distance_ = 5*32;
+        //half
+        sight_angle_ = 15;
+        alert_time_ = 10;
+        alert_time_left_ = 10;
+        alert_radius_ = 5*32;
+    }
+    else{
+        move_speed_ = 1.5;
+        sight_distance_ = 5*32;
+        //half
+        sight_angle_ = 15;
+        alert_time_ = 10;
+        alert_time_left_ = 10;
+        alert_radius_ = 5*32;  
+    }
+    cur_patrol_node = 1;
+    cur_patrol_dir = 1;
+    cur_chase_node = 1;
+
+    last_known_character_pos_ = sf::Vector2f(0,0);
+}
+
 bool Enemy::isHacked(){
     return hacked_;
 }
@@ -226,7 +272,7 @@ sf::Vector2f Enemy::getLastKnownCharacterPos(){
 
 void Enemy::followPatrolPath(){
     sf::Vector2f curNode = patrol_path_.at(cur_patrol_node);
-    if(vecutil::distance(curNode,getPos())<.5){
+    if(vecutil::distance(curNode,getPos())<1){
         cur_patrol_node += cur_patrol_dir;
         if (cur_patrol_node<0){
             std::cout << "Beginning of Patrol\n";
@@ -255,7 +301,7 @@ void Enemy::followChasePath(){
     sf::Vector2f dirVec;
     sf::Vector2f velVec;
     sf::Vector2f curNode = chase_path_.at(cur_chase_node);
-    if(vecutil::distance(curNode,getPos())<.5 && cur_chase_node<chase_path_.size()-1){
+    if(vecutil::distance(curNode,getPos())<1 && cur_chase_node<chase_path_.size()-1){
         cur_chase_node += 1;
     }
     if(cur_chase_node<=chase_path_.size()-1){
@@ -277,7 +323,7 @@ void Enemy::followReturnPath(){
     sf::Vector2f dirVec;
     sf::Vector2f velVec;
     sf::Vector2f curNode = return_path_.at(cur_return_node);
-    if(vecutil::distance(curNode,getPos())<.5){
+    if(vecutil::distance(curNode,getPos())<1){
         cur_return_node += 1;
     }
     if(cur_return_node<=return_path_.size()-1){

@@ -216,7 +216,7 @@ void Logic::loadEntities(std::string filename) {
         float start_x, start_y,dest_x,dest_y;
         iss >> level >> start_x>> start_y >> dest_x >> dest_y;
         if(level==1){
-            addEntity("Enemy"+std::to_string(counter),new Enemy());
+            addEntity("Enemy"+std::to_string(counter),new Enemy(true));
             Enemy& e=static_cast<Enemy&>(getEntity("Enemy"+std::to_string(counter)));
             //e.setStartPos(sf::Vector2f(start_x,start_y));
             e.setPos(sf::Vector2f(start_x,start_y));
@@ -227,7 +227,7 @@ void Logic::loadEntities(std::string filename) {
 
         }
         else if(level==2){
-            addEntity("Enemy"+std::to_string(counter),new Enemy());
+            addEntity("Enemy"+std::to_string(counter),new Enemy(false));
 
             Enemy& e=static_cast<Enemy&>(getEntity("Enemy"+std::to_string(counter)));
             //e.setStartPos(sf::Vector2f(start_x,start_y));
