@@ -14,10 +14,6 @@ GameScreen::GameScreen(Logic* logic, TextureManager* tex_manager) {
     logic_ = logic;
     tex_manager_ = tex_manager;
     
-    char_walk_ = std::unique_ptr<WalkAnimation>(new WalkAnimation(sf::IntRect(0,0,32,32), 
-                                                                  sf::IntRect(32,0,32,32), 
-                                                                  sf::IntRect(0,32,32,32)));
-    
     //load default keys in case custom binding fails to load
     keys_[0] = sf::Keyboard::Up;
     keys_[1] = sf::Keyboard::Down;
@@ -36,6 +32,10 @@ bool GameScreen::loadTextures() {
     
     // load character texture
     success = success && tex_manager_->loadTexture(CHARACTER_TEX_NAME, CHARACTER_FILENAME);
+    // texture coordinates for walk animation assigned
+    char_walk_ = std::unique_ptr<WalkAnimation>(new WalkAnimation(sf::IntRect(0,0,32,32), 
+                                                                  sf::IntRect(32,0,32,32), 
+                                                                  sf::IntRect(0,32,32,32)));
     
     // load tileset texture
     success = success && tex_manager_->loadTexture(TILESET_TEX_NAME, TILESET_FILENAME);
@@ -48,9 +48,6 @@ bool GameScreen::loadTextures() {
             texture_coords_[i*4+j] = std::make_pair(Logic::TILE_SIZE*j, Logic::TILE_SIZE*i);
         }
     }
-    
-    // TODO: load correct sprite textures
-    // determine if we need offsets/coordinates for switching between textures?
     
     initializeSprites();
     if (!success) {

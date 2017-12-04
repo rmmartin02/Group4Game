@@ -50,7 +50,7 @@ public:
   void deliberateMotion(sf::Vector2f vel);
 
   // Get the direction angle (in degrees, 0 is directly right, increases going clockwise)
-  // Entity direction is determined by the most recent non-zero velocity.
+  // Entity direction is determined by the most recent non-zero deliberate motion.
   float getDirection();
 
   // Attach a Box2D shape to this object
