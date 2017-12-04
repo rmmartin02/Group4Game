@@ -19,18 +19,24 @@ void MiniGameScreen::setPuzzle(int size, int numberOfEmptySlots) {
 }
 
 MiniGameScreen::MiniGameScreen() {
-    //background
+    //Background
     if (!background.loadFromFile("../src/MiniGame/minigame-bg.jpg")) {
         // error...
     }
     bg.setTexture(background);
 
+    //Sprite Sheet
     three_sheet.loadFromFile("../src/MiniGame/laser3ez.png");
 
+    //Win Screen
     if (!winScreen.loadFromFile("../src/MiniGame/winscreen.png")) {
         // error...
     }
     winScreenSprite.setTexture(winScreen);
+
+    //Sliding Sound
+    bufferSlide.loadFromFile("../src/MiniGame/slide.wav");
+    slideSound.setBuffer(bufferSlide);
 
 
 }
@@ -247,6 +253,7 @@ void MiniGameScreen::moveOnClick(MiniGameScreenBackend puzzle, sf::Vector2<float
     }
 
     // NOW MOVE!!
+    slideSound.play();
 
     if (row == 2 && column == 2) {
         std::cout << "Move 4th tile" << std::endl;
@@ -503,6 +510,8 @@ void MiniGameScreen::render(sf::RenderWindow *window) {
     if (!shuffled) {
 
         //set second parameter to zero to NOT shuffle
+        // 40 is a good diff
+
         shuffledPuzzle = MiniGameScreen::shufflePuzzle(puzzle,40);
 
         std::cout << "shuffled" << std::endl;

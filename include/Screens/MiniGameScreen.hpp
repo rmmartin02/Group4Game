@@ -48,6 +48,10 @@ public:
 
     sf::Sprite winScreenSprite;
 
+    sf::SoundBuffer bufferSlide;
+
+    sf::Sound slideSound;
+
     int difficulty;
 
     void setPuzzle(int size, int numberOfEmptySlots);
