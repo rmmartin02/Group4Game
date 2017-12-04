@@ -50,9 +50,8 @@ private:
     bool has_path_back_;
     //sf::Vector2f start_pos_;
     //sf::Vector2f dest_pos_;
-    static const float MOVE_SPEED;
-
     
+    float move_speed_;
     float sight_distance_;
     float sight_angle_;
     float alert_time_;

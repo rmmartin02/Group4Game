@@ -43,7 +43,7 @@ void Logic::update(float delta) {
                 enemy->signal(getEntities());
                 enemy->setLastKnownCharacterPos(getCharacter().getPos());
                 //if close enough attack
-                float dist = sqrt(pow(enemy->getPos().x-getCharacter().getPos().x,2)+pow(enemy->getPos().y-getCharacter().getPos().y,2));
+                float dist = vecutil::distance(enemy->getPos(),getCharacter().getPos());
                 if(dist<enemy->getAttackRadius()){
                     std::cout<<"Logic: Charcter attacked\n";
                     enemy->attack();

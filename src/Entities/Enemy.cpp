@@ -25,6 +25,7 @@ Enemy::Enemy(){
     off_patrol = false;
     has_path_back_= false;
     //change based on level?
+    move_speed_ = 10;
     sight_distance_ = 100;
     //half
     sight_angle_ = 15;
@@ -172,9 +173,31 @@ sf::Vector2f Enemy::getLastKnownCharacterPos(){
 }
 
 void Enemy::followPatrolPath(){
-
+    sf::Vector2f curNode = patrol_path_.at(cur_patrol_node);
+    if(vecutil::distance(curNode,getPos())<1){
+        cur_patrol_node += cur_patrol_dir;
+        if (cur_chase_node<0){
+            cur_patrol_node = 1;
+            cur_patrol_dir = 1;
+        }
+        else{
+            cur_patrol_node = patrol_path_.size()-2;
+            cur_patrol_dir = -1;
+        }
+        curNode = patrol_path_.at(cur_patrol_node);
+    }
+    sf::Vector2f dirVec = sf::Vector2f(curNode.x-getPos().x,curNode.y-getPos().y);
+    sf::Vector2f velVec = move_speed_ * (dirVec/vecutil::length(dirVec));
+    setVel(velVec);
 }
 
 void Enemy::followChasePath(){
-
+    sf::Vector2f curNode = chase_path_.at(cur_chase_node);
+    if(vecutil::distance(curNode,getPos())<1){
+        cur_chase_node += 1;
+        curNode = chase_path_.at(cur_chase_node);
+    }
+    sf::Vector2f dirVec = sf::Vector2f(curNode.x-getPos().x,curNode.y-getPos().y);
+    sf::Vector2f velVec = move_speed_ * (dirVec/vecutil::length(dirVec));
+    setVel(velVec);
 }

@@ -35,6 +35,9 @@ float crossProd(sf::Vector2f, sf::Vector2f);
 // Returns the magnitude of the vector.
 float length(sf::Vector2f);
 
+//Returns distance between two vectors
+float distance(sf::Vector2f, sf::Vector2f);
+
 // Returns the polar angle of this vector's direction, in radians.
 // Can return nan or other error-y values for vectors whose angle is uncertain,
 // such as zero.

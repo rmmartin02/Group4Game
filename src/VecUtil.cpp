@@ -25,6 +25,10 @@ float vecutil::crossProd(sf::Vector2f a, sf::Vector2f b){
     return a.x*b.y - a.y*b.x;
 }
 
+float vecutil::distance(sf::Vector2f a, sf::Vector2f b){
+    return sqrt(pow(a.x-b.x,2)+pow(a.y-b.y,2));
+}
+
 bool vecutil::nonZero(sf::Vector2f v) {
     return v.x != 0 || v.y != 0;
 }
