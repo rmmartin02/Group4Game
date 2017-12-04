@@ -37,13 +37,11 @@ void Logic::update(float delta) {
         //check if character is in enemies line of sight
         if (Enemy* enemy = dynamic_cast<Enemy*>(&e)){
             sf::Vector2f hit;
-            sf::Vector2f last_seen_character_pos_;
             if(enemy->canSeePlayer(getCharacter().getPos()) && !sightObstructed(enemy->getPos(), getCharacter().getPos(), hit)){
                 std::cout<<"Logic: Charcter in line of sight\n";
                 //chase player, send out signal
-                enemy->alert();
                 enemy->signal(getEntities());
-                last_seen_character_pos_ = getCharacter().getPos();
+                enemy->setLastKnownCharacterPos(getCharacter().getPos());
                 //if close enough attack
                 float dist = sqrt(pow(enemy->getPos().x-getCharacter().getPos().x,2)+pow(enemy->getPos().y-getCharacter().getPos().y,2));
                 if(dist<enemy->getAttackRadius()){
@@ -61,11 +59,27 @@ void Logic::update(float delta) {
             if(enemy->isAlerted()){
                 //chase character (to last seen position)
                 std::cout<<"Logic: Chase Character\n";
-                enemy->setDestPos(last_seen_character_pos_);
+                if(getCharacter().getPos().x!=enemy->getLastKnownCharacterPos().x
+                    || getCharacter().getPos().y!=enemy->getLastKnownCharacterPos().y){
+                    enemy->setChasePath(pathFinder(enemy->getPos(),getCharacter().getPos()));
+                }
+                enemy->followChasePath();
             }
             else{
                 //return to patrol route/go to next patrol point
                 std::cout<<"Logic: Return to patrol\n";
+                if(enemy->isOffPatrol()){
+                    if(!enemy->hasPathBack()){
+                        enemy->setChasePath(pathFinder(enemy->getPos(),enemy->getCurrentPatrolNode()));
+                        enemy->setPathBackTrue();
+                    }
+                    else{
+                        enemy->followChasePath();
+                    }
+                }
+                else{
+                    enemy->followPatrolPath();
+                }
             }
         }
     }
@@ -202,9 +216,9 @@ void Logic::loadEntities(std::string filename) {
             addEntity("Enemy"+std::to_string(counter),new Enemy());
 
             Enemy& e=static_cast<Enemy&>(getEntity("Enemy"+std::to_string(counter)));
-            e.setStartPos(sf::Vector2f(start_x,start_y));
+           // e.setStartPos(sf::Vector2f(start_x,start_y));
             e.setPos(sf::Vector2f(start_x,start_y));
-            e.setDestPos(sf::Vector2f(dest_x,dest_y));
+            //e.setDestPos(sf::Vector2f(dest_x,dest_y));
 
             e.setPatrolPath(pathFinder(sf::Vector2f(start_x,start_y),sf::Vector2f(dest_x,dest_y)));
             //set additional enemy 1 var here
@@ -214,9 +228,9 @@ void Logic::loadEntities(std::string filename) {
             addEntity("Enemy"+std::to_string(counter),new Enemy());
 
             Enemy& e=static_cast<Enemy&>(getEntity("Enemy"+std::to_string(counter)));
-            e.setStartPos(sf::Vector2f(start_x,start_y));
+            //e.setStartPos(sf::Vector2f(start_x,start_y));
             e.setPos(sf::Vector2f(start_x,start_y));
-            e.setDestPos(sf::Vector2f(dest_x,dest_y));
+            //e.setDestPos(sf::Vector2f(dest_x,dest_y));
 
             e.setPatrolPath(pathFinder(sf::Vector2f(start_x,start_y),sf::Vector2f(dest_x,dest_y)));
             //set additional enemy 2 var here

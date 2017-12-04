@@ -22,6 +22,8 @@ Enemy::Enemy(){
 
     hacked_=false;
     alerted_ = false;
+    off_patrol = false;
+    has_path_back_= false;
     //change based on level?
     sight_distance_ = 100;
     //half
@@ -29,6 +31,12 @@ Enemy::Enemy(){
     alert_time_ = 10;
     alert_time_left_ = 10;
     alert_radius_ = 100;
+
+    cur_patrol_node = 0;
+    cur_patrol_dir = 1;
+    cur_chase_node = 0;
+
+    //last_known_character_pos_ = sf::Vector2f(0,0);
 }
 
 bool Enemy::isHacked(){
@@ -39,6 +47,19 @@ bool Enemy::isAlerted(){
     return alerted_;
 }
 
+bool Enemy::isOffPatrol(){
+    return off_patrol;
+}
+
+bool Enemy::hasPathBack(){
+    return has_path_back_;
+}
+
+void Enemy::setPathBackTrue(){
+    has_path_back_ = true;
+}
+
+/*
 void Enemy::setStartPos(sf::Vector2f pos){
     start_pos_=pos;
 
@@ -47,12 +68,12 @@ void Enemy::setStartPos(sf::Vector2f pos){
 void Enemy::setDestPos(sf::Vector2f pos){
     dest_pos_=pos;
 
-}
+}*/
 
 float Enemy::getAttackRadius(){
     return attack_radius_;
 }
-
+/*
 sf::Vector2f Enemy::getStartPos(){
     return start_pos_;
 }
@@ -60,9 +81,9 @@ sf::Vector2f Enemy::getStartPos(){
 sf::Vector2f Enemy::getDestPos(){
     return dest_pos_;
 }
-
-sf::Vector2f Enemy::getNextPos(){
-
+*/
+sf::Vector2f Enemy::getCurrentPatrolNode(){
+    return patrol_path_.at(cur_patrol_node);
 }
 
 
@@ -88,6 +109,8 @@ void Enemy::alert(){
     //if enemy is hacked it can't alert/be alerted?
     alerted_ = true;
     alert_time_left_ = alert_time_;
+    off_patrol = true;
+    has_path_back_= false;
 }
 
 void Enemy::signal(std::map<std::string, std::unique_ptr<Entity>> &entities){
@@ -114,20 +137,44 @@ void Enemy::timer(float deltaTime){
     alert_time_left_-=deltaTime;
     if(alert_time_left_<=0){
         alerted_ = false;
+        off_patrol = true;
+        has_path_back_= false;
     }
 }
 
 void Enemy::setPatrolPath(std::deque<sf::Vector2f> path){
 //    patrolPath_.clear();
-    patrolPath_=path;
-
+    patrol_path_=path;
 }
 
 std::deque<sf::Vector2f> Enemy::getPatrolPath(){
-    for(int i=0;i<patrolPath_.size();i++){
+    /*for(int i=0;i<patrolPath_.size();i++){
         std::cout<<"Enemy.cpp:enemy path: "<<patrolPath_[i].x<<" "<<patrolPath_[i].y<<"\n";
     }
-    std::cout<<"Enemy.cpp:enemy path inspect complete\n";
-    return patrolPath_;
+    std::cout<<"Enemy.cpp:enemy path inspect complete\n";*/
+    return patrol_path_;
+}
+
+void Enemy::setChasePath(std::deque<sf::Vector2f> path){
+    chase_path_=path;
+}
+
+std::deque<sf::Vector2f> Enemy::getChasePath(){
+    return chase_path_;
+}
+
+void Enemy::setLastKnownCharacterPos(sf::Vector2f pos){
+    last_known_character_pos_ = pos;
+}
+
+sf::Vector2f Enemy::getLastKnownCharacterPos(){
+    //return last_known_character_pos_;
+}
+
+void Enemy::followPatrolPath(){
+
+}
+
+void Enemy::followChasePath(){
 
 }

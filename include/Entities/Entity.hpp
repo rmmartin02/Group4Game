@@ -69,6 +69,7 @@ protected:
 
   // Box2D shape object used for collision calculations  
   std::unique_ptr<b2Shape> coll_shape_;
+
 };
 
 #endif // ENTITY_HPP
