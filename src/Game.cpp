@@ -8,6 +8,7 @@ Game::Game(){
     window = new sf::RenderWindow(sf::VideoMode(SCREEN_WIDTH,SCREEN_HEIGHT,32), "Agent P: Infiltration");
     logic = new Logic();
     screenManager = new ScreenManager(logic);
+    miniGameSong.openFromFile("../resource/minigamesong.wav");
 }
 
 Game::~Game()
@@ -24,6 +25,10 @@ void Game::Loop() {
     sf::Clock clock;
     //window->clear();
     while (window->isOpen()) {
+        if (!miniGameSongStarted) {
+            miniGameSong.play();
+            miniGameSongStarted = true;
+        }
  
         float deltaTime = clock.getElapsedTime().asSeconds();
         if (deltaTime >= 1.0f / 60.0f) {
@@ -56,6 +61,12 @@ void Game::Loop() {
                     screenManager->switchToTimeout(window);
                 }
 
+            }
+            if (screenManager->isOnMinigameScreen()){
+
+                if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+                    static_cast<MiniGameScreen*>(screenManager->current_screen)->moveOnClick(
+                            static_cast<MiniGameScreen*>(screenManager->current_screen)->shuffledPuzzle, sf::Vector2f(sf::Mouse::getPosition(*window)), window);
             }
             
             screenManager->render(window);
