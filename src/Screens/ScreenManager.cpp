@@ -7,6 +7,7 @@ ScreenManager::ScreenManager(Logic *logic){
 	menu_screen = new MenuScreen();
 	controls_screen = new ControlsScreen();
     timeout_screen = new TimeoutScreen();
+    minigame_screen = new MiniGameScreen();
 	current_screen = menu_screen;
 }
 
@@ -31,6 +32,10 @@ void ScreenManager::interpretInput(std::vector<sf::Event>& events){
                         current_screen = controls_screen;
                     }
                     eventAccepted = true;
+                }
+                if(event.key.code==sf::Keyboard::M){
+                    current_screen = minigame_screen;
+
                 }
             }
         }
@@ -70,3 +75,6 @@ void ScreenManager::switchToTimeout(sf::RenderWindow* window){
     current_screen=timeout_screen;
 }
 
+bool ScreenManager::isOnMinigameScreen(){
+    return current_screen==minigame_screen;
+}

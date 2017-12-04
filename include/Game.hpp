@@ -24,6 +24,8 @@ private:
     sf::RenderWindow *window;
     Logic *logic;
     ScreenManager *screenManager;
+    bool miniGameSongStarted=false;
+    sf::Music miniGameSong;
 };
 
 #endif // GAME_HPP
