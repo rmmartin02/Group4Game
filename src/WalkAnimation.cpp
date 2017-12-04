@@ -7,6 +7,7 @@ const float WalkAnimation::MAX_TIME = 0.2f;
 // Minimum delay between frame switches when moving (fastest)
 const float WalkAnimation::MIN_TIME = 0.1f;
 // Speed associated with minimum delay (0 associated with max)
+// Maybe instead the character's max speed should be used?
 const float WalkAnimation::FAST_VEL = 10.0f;
 
 WalkAnimation::WalkAnimation(sf::IntRect stand, sf::IntRect walk1, sf::IntRect walk2) {

@@ -41,6 +41,11 @@ sf::Vector2f Entity::getVel(){
 // Set the current velocity
 void Entity::setVel(sf::Vector2f vel){
 	vel_ = vel;
+}
+
+// Deliberately set velocity, affecting the faced direction
+void Entity::deliberateMotion(sf::Vector2f vel) {
+    setVel(vel);
     if ( vecutil::nonZero(vel) != 0 ) {
         dir_ = vecutil::radToDeg(vecutil::angle(vel));
     }

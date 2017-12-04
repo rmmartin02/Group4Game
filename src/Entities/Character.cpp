@@ -30,17 +30,17 @@ void Character::onMoveInput(sf::Vector2f dir) {
     // if directional input is opposite from current velocity along that axis,
     // reset velocity on that axis to zero. Not sure if we should keep this.
     if (getVel().x * dir.x <= 0) {
-        setVel(sf::Vector2f(0, getVel().y));
+        deliberateMotion(sf::Vector2f(0, getVel().y));
     }
     if (getVel().y * dir.y <= 0) {
-        setVel(sf::Vector2f(getVel().x, 0));
+        deliberateMotion(sf::Vector2f(getVel().x, 0));
     }
     sf::Vector2f dnorm = vecutil::normalize(dir);
-    setVel( getVel() + dnorm * ACCELERATION );
+    deliberateMotion( getVel() + dnorm * ACCELERATION );
     
     float sqlen = vecutil::dotProd(getVel(), getVel());
     if (sqlen > (MAX_SPEED * MAX_SPEED)) {
-        setVel(vecutil::normalize(getVel()) * MAX_SPEED);
+        deliberateMotion(vecutil::normalize(getVel()) * MAX_SPEED);
     }
 }
 

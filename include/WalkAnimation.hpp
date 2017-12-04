@@ -20,7 +20,6 @@ private:
     static const float MAX_TIME;
     // Minimum delay between frame switches when moving (fastest)
     static const float MIN_TIME;
-    
     // Speed associated with minimum delay (0 associated with max)
     static const float FAST_VEL;
     

@@ -45,6 +45,9 @@ public:
 
   // Set the current velocity
   void setVel(sf::Vector2f vel);
+  
+  // Deliberately set velocity, affecting the faced direction
+  void deliberateMotion(sf::Vector2f vel);
 
   // Get the direction angle (in degrees, 0 is directly right, increases going clockwise)
   // Entity direction is determined by the most recent non-zero velocity.
