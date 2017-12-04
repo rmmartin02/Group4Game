@@ -26,6 +26,7 @@ void Game::Loop() {
     //window->clear();
     while (window->isOpen()) {
         if (!miniGameSongStarted) {
+            miniGameSong.setLoop(true);
             miniGameSong.play();
             miniGameSongStarted = true;
         }
