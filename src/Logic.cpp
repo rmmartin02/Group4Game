@@ -39,12 +39,12 @@ void Logic::update(float delta) {
             sf::Vector2f hit;
             sf::Vector2f lastKnownCharPos;
             if(enemy->canSeePlayer(getCharacter().getPos()) && !sightObstructed(enemy->getPos(), getCharacter().getPos(), hit)){
-                std::cout<<"Logic: Charcter in line of sight\n";
+                //std::cout<<"Logic: Charcter in line of sight\n";
                 //chase player, send out signal
                 enemy->alert();
                 enemy->signal(getEntities());
                 enemy->setChasePath(pathFinder(enemy->getPos(),getCharacter().getPos()));
-                lastKnownCharPos = getCharacter().getPos();
+                //lastKnownCharPos = getCharacter().getPos();
                 //if close enough attack
                 float dist = vecutil::distance(enemy->getPos(),getCharacter().getPos());
                 if(dist<enemy->getAttackRadius()){
@@ -55,8 +55,8 @@ void Logic::update(float delta) {
             else{
                 //cant see player but is alerted, so countdown
                 if(enemy->isAlerted()){
-                    if(!enemy->hasChasePath() || vecutil::distance(lastKnownCharPos,enemy->getLastKnownCharacterPos())>32){
-                        enemy->setChasePath(pathFinder(enemy->getPos(),lastKnownCharPos));
+                    if(vecutil::distance(getCharacter().getPos(),enemy->getChaseEndPos())>32){
+                        enemy->setChasePath(pathFinder(enemy->getPos(),getCharacter().getPos()));
                     }
                     //std::cout<<"Logic: Enemy Timer\n";
                     enemy->timer(delta);
@@ -64,12 +64,7 @@ void Logic::update(float delta) {
             }
             if(enemy->isAlerted()){
                 //std::cout << "Enemy chasing\n";
-                if(!enemy->hasFinishedChase()){
-                    enemy->followChasePath();
-                }
-                else{
-                    enemy->unAlert();
-                }
+                enemy->followChasePath();
             }
             else{
                 //return to patrol route/go to next patrol point
@@ -81,12 +76,12 @@ void Logic::update(float delta) {
                         enemy->setPathBackTrue();
                     }
                     else{
-                        std::cout << "follow return path\n";
+                        //std::cout << "follow return path\n";
                         enemy->followReturnPath();
                     }
                 }
                 else{
-                    std::cout << "follow patrol path\n";
+                    //std::cout << "follow patrol path\n";
                     enemy->followPatrolPath();
                 }
             }

@@ -39,6 +39,7 @@ public:
     //part of path finding, find the next position that the entity should go to
     sf::Vector2f getCurrentPatrolNode();
     sf::Vector2f getLastKnownCharacterPos();
+    sf::Vector2f getChaseEndPos();
     static const float COLLISION_SIZE;
 
     bool canSeePlayer(sf::Vector2f);

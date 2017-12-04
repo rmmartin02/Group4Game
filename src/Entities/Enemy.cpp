@@ -26,13 +26,13 @@ Enemy::Enemy(){
     has_path_back_= false;
     has_chase_path_ = false;
     //change based on level?
-    move_speed_ = .5;
-    sight_distance_ = 100;
+    move_speed_ = 1;
+    sight_distance_ = 5*32;
     //half
     sight_angle_ = 15;
     alert_time_ = 10;
     alert_time_left_ = 10;
-    alert_radius_ = 100;
+    alert_radius_ = 2*32;
 
     cur_patrol_node = 1;
     cur_patrol_dir = 1;
@@ -142,15 +142,17 @@ void Enemy::signal(std::map<std::string, std::unique_ptr<Entity>> &entities){
 
 void Enemy::attack(){
 //switch to minigame screen
-
+    std::cout << "attack\n";
 //if player fails minigame, damage?
 //else player wins minigame, enemy hacked
 }
 
 void Enemy::timer(float deltaTime){
     alert_time_left_-=deltaTime;
+    //std::cout << alert_time_left_ << "\n";
     if(alert_time_left_<=0){
         unAlert();
+        std::cout << "Unalert\n";
     }
 }
 
@@ -175,6 +177,10 @@ void Enemy::setChasePath(std::deque<sf::Vector2f> path){
 
 bool Enemy::hasFinishedChase(){
     return cur_chase_node==chase_path_.size()-1;
+}
+
+sf::Vector2f Enemy::getChaseEndPos(){
+    return chase_path_.at(chase_path_.size()-1);
 }
 
 std::deque<sf::Vector2f> Enemy::getChasePath(){
@@ -216,11 +222,13 @@ void Enemy::followPatrolPath(){
     }
     sf::Vector2f dirVec = sf::Vector2f(curNode.x-getPos().x,curNode.y-getPos().y);
     sf::Vector2f velVec = move_speed_ * (dirVec/vecutil::length(dirVec));
+    setVel(velVec);
+    /*
     std::cout<< "CurPos: " << getPos().x << " " << getPos().y  << " " 
     << vecutil::distance(curNode,getPos()) <<" CurNode: " << cur_patrol_node 
     << "/" << patrol_path_.size()-1 << " " << curNode.x << " " << curNode.y << "\n";
     std::cout<< "Vel: " << velVec.x << " " << velVec.y << "\n";
-    setVel(velVec);
+    */
 }
 
 void Enemy::followChasePath(){
