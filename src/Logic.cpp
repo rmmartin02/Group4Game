@@ -55,7 +55,7 @@ void Logic::update(float delta) {
             else{
                 //cant see player but is alerted, so countdown
                 if(enemy->isAlerted()){
-                    if(vecutil::distance(getCharacter().getPos(),enemy->getChaseEndPos())>32){
+                    if(!enemy->hasChasePath() || vecutil::distance(getCharacter().getPos(),enemy->getChaseEndPos())>32){
                         enemy->setChasePath(pathFinder(enemy->getPos(),getCharacter().getPos()));
                     }
                     //std::cout<<"Logic: Enemy Timer\n";
@@ -63,8 +63,9 @@ void Logic::update(float delta) {
                 }
             }
             if(enemy->isAlerted()){
-                //std::cout << "Enemy chasing\n";
+                std::cout << "Enemy chasing\n";
                 enemy->followChasePath();
+                std::cout << "Followed path";
             }
             else{
                 //return to patrol route/go to next patrol point

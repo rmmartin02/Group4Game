@@ -32,7 +32,7 @@ Enemy::Enemy(){
     sight_angle_ = 15;
     alert_time_ = 10;
     alert_time_left_ = 10;
-    alert_radius_ = 2*32;
+    alert_radius_ = 5*32;
 
     cur_patrol_node = 1;
     cur_patrol_dir = 1;
@@ -118,6 +118,15 @@ void Enemy::alert(){
     off_patrol = true;
     has_path_back_= false;
     has_chase_path_ = false;
+    sf::Texture texture;
+    if (!texture.create(32, 32))
+    {
+        // error...
+    }
+    sf::Sprite sprite;
+    sprite.setTexture(texture);
+    sprite.setColor(sf::Color(255, 0, 0));
+    this->setSprite(sprite);
 }
 
 void Enemy::unAlert(){
@@ -125,15 +134,26 @@ void Enemy::unAlert(){
     off_patrol = true;
     has_path_back_= false;
     has_chase_path_ = false;
+    sf::Texture texture;
+    if (!texture.create(32, 32))
+    {
+        // error...
+    }
+    sf::Sprite sprite;
+    sprite.setTexture(texture);
+    sprite.setColor(sf::Color(0, 255, 250));
+    this->setSprite(sprite);
 }
 
 void Enemy::signal(std::map<std::string, std::unique_ptr<Entity>> &entities){
     //alert enemies within radius
+    std::cout << "Signal\n";
     for ( auto& pair : entities ) {
         Entity& e = *(pair.second.get());
         if (Enemy* enemy = dynamic_cast<Enemy*>(&e)){
             float dist = sqrt(pow(getPos().x-enemy->getPos().x,2)+pow(getPos().y-enemy->getPos().y,2));
             if (dist<alert_radius_){
+                std::cout << "Signal Alert\n";
                 enemy->alert();
             }
         }
