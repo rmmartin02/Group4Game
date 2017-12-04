@@ -503,7 +503,7 @@ void MiniGameScreen::render(sf::RenderWindow *window) {
     if (!shuffled) {
 
         //set second parameter to zero to NOT shuffle
-        shuffledPuzzle = MiniGameScreen::shufflePuzzle(puzzle,15);
+        shuffledPuzzle = MiniGameScreen::shufflePuzzle(puzzle,40);
 
         std::cout << "shuffled" << std::endl;
 
