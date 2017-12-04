@@ -19,7 +19,6 @@ public:
 
     //loads current key bindings
 	bool loadKeys();
-
 	bool saveKeys();
 
 	std::string key_strings[103] = { 

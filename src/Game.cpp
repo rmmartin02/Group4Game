@@ -49,8 +49,14 @@ void Game::Loop() {
             screenManager->interpretInput(events);
             
             //Don't really like this
-            if (screenManager->isOnGameScreen())
+            if (screenManager->isOnGameScreen()){
                 logic->update(deltaTime);
+                if(logic->getTimeLeft()<=0){
+
+                    screenManager->switchToTimeout(window);
+                }
+
+            }
             
             screenManager->render(window);
             //window->display();

@@ -6,6 +6,7 @@ ScreenManager::ScreenManager(Logic *logic){
 	game_screen = new GameScreen(logic);
 	menu_screen = new MenuScreen();
 	controls_screen = new ControlsScreen();
+    timeout_screen = new TimeoutScreen();
 	current_screen = menu_screen;
 }
 
@@ -59,5 +60,13 @@ bool ScreenManager::loadTextures(){
 
 bool ScreenManager::isOnGameScreen(){
 	return current_screen==game_screen;
+}
+
+void ScreenManager::switchToTimeout(sf::RenderWindow* window){
+   // view.setCenter(sf::Vector2f(400,300));
+    sf::View camera = window->getView();
+    camera.setCenter(sf::Vector2f(400,300));
+    window->setView(camera);
+    current_screen=timeout_screen;
 }
 
