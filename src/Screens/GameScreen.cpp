@@ -147,6 +147,9 @@ void GameScreen::renderTimeLeft(sf::RenderWindow *window){
     int time = static_cast<int>(logic_->getTimeLeft());
     int minutes = time/60;
     int seconds = time%60;
+    if(time==60){
+        time_left_text.setFillColor(sf::Color::Red);
+    }
     time_left_text.setString("Time Left: " + std::to_string(minutes) + ":" + (seconds>=10 ? std::to_string(seconds) : "0" + std::to_string(seconds)));
     time_left_text.setPosition(sf::Vector2f(window->getView().getCenter().x - time_left_width/2, 
         window->getView().getCenter().y-window->getView().getSize().y/2+10));

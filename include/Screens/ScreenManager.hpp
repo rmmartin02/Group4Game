@@ -16,6 +16,7 @@ public:
 
     void render(sf::RenderWindow *window);
     void interpretInput(std::vector<sf::Event>& events);
+    void switchToTimeout(sf::RenderWindow *window);
 
     bool loadTextures();
     bool isOnGameScreen();
@@ -27,6 +28,7 @@ private:
     ControlsScreen *controls_screen;
     TimeoutScreen *timeout_screen;
     Logic* logic_;
+    sf::RenderWindow* window;
 };
 
 #endif // SCREENMANAGER_HPP

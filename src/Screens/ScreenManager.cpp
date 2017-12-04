@@ -25,7 +25,7 @@ void ScreenManager::interpretInput(std::vector<sf::Event>& events){
                     std::cout << "ScreenManager: menu screen has highlighted " 
                               << menu_screen->getHighlighted() << std::endl;
                     if(menu_screen->getHighlighted()==0){
-                        current_screen = timeout_screen;
+                        current_screen = game_screen;
                     }
                     else{
                         current_screen = controls_screen;
@@ -60,5 +60,13 @@ bool ScreenManager::loadTextures(){
 
 bool ScreenManager::isOnGameScreen(){
 	return current_screen==game_screen;
+}
+
+void ScreenManager::switchToTimeout(sf::RenderWindow* window){
+   // view.setCenter(sf::Vector2f(400,300));
+    sf::View camera = window->getView();
+    camera.setCenter(sf::Vector2f(400,300));
+    window->setView(camera);
+    current_screen=timeout_screen;
 }
 
