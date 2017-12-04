@@ -24,6 +24,8 @@ public:
 
     bool gameWon = false;
 
+    bool checkWinStatus (MiniGameScreenBackend solvedPuzzle, MiniGameScreenBackend currentPuzzle);
+
     std::vector<sf::Sprite> tiles;
 
     std::vector<sf::Sprite> orderedTiles;
@@ -41,6 +43,10 @@ public:
     sf::Texture three_sheet;
 
     sf::Sprite bg;
+
+    sf::Texture winScreen;
+
+    sf::Sprite winScreenSprite;
 
     int difficulty;
 

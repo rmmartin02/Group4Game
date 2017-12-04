@@ -26,6 +26,13 @@ MiniGameScreen::MiniGameScreen() {
     bg.setTexture(background);
 
     three_sheet.loadFromFile("../src/MiniGame/laser3.png");
+
+    if (!winScreen.loadFromFile("../src/MiniGame/winscreen.png")) {
+        // error...
+    }
+    winScreenSprite.setTexture(winScreen);
+
+
 }
 
 std::vector<sf::Sprite> MiniGameScreen::createSpriteBoard(int difficulty) {
@@ -120,6 +127,20 @@ std::vector<sf::Sprite> MiniGameScreen::orderSpriteBoard(std::vector<sf::Sprite>
 
 }
 
+bool MiniGameScreen::checkWinStatus(MiniGameScreenBackend solvedPuzzle, MiniGameScreenBackend currentPuzzle) {
+
+    for (int i = 0; i < difficulty; i++) {
+        for (int m = 0; m < difficulty; m ++) {
+
+            if (solvedPuzzle.getValue(i,m) != currentPuzzle.getValue(i,m))
+                return false;
+
+        }
+    }
+
+    gameWon = true;
+    return true;
+}
 
 MiniGameScreenBackend MiniGameScreen::shufflePuzzle(MiniGameScreenBackend unshuffledPuzzle, int pathLength) {
 
@@ -481,7 +502,8 @@ void MiniGameScreen::render(sf::RenderWindow *window) {
 
     if (!shuffled) {
 
-        shuffledPuzzle = MiniGameScreen::shufflePuzzle(puzzle,19);
+        //set second parameter to zero to NOT shuffle
+        shuffledPuzzle = MiniGameScreen::shufflePuzzle(puzzle,15);
 
         std::cout << "shuffled" << std::endl;
 
@@ -516,6 +538,13 @@ void MiniGameScreen::render(sf::RenderWindow *window) {
     gridSprite.setTexture(grid);
 
     window->draw(gridSprite);
+
+    MiniGameScreen::checkWinStatus(puzzle, shuffledPuzzle);
+
+    if (gameWon) {
+        window->draw(winScreenSprite);
+    }
+
     window->display();
 
 }
