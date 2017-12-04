@@ -22,6 +22,10 @@ bool TextureManager::loadTexture(std::string name, std::string filename){
     return false;
 }
 
+void TextureManager::addTexture(std::string name, sf::Texture tex) {
+    textures_[name] = tex;
+}
+
 sf::Texture& TextureManager::getRef(std::string tex_name) {
     if ( textures_.find(tex_name) == textures_.end() ) {
         std::cout << "TextureManager.cpp: tried to get ref to non-loaded texture "

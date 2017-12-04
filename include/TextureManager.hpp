@@ -16,6 +16,9 @@ public:
     // Returns true if succeeded or already loaded, false if failed
     bool loadTexture(std::string name, std::string filename);
     
+    // Manually add a texture to this manager
+    void addTexture(std::string name, sf::Texture tex);
+    
     // Return a reference to a named texture
     sf::Texture& getRef(std::string tex_name);
     

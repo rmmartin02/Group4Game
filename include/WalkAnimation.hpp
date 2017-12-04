@@ -9,6 +9,9 @@ class WalkAnimation {
 public:
     WalkAnimation(sf::IntRect stand, sf::IntRect walk1, sf::IntRect walk2);
     
+    // Return the rectangle defining the texture coordinates of the stand-still frame
+    sf::IntRect getStandingFrame();
+    
     // Set a referenced sprite to the correct animation frame for the entity.
     void adjustSprite(sf::Sprite& sprite, Entity* entity);
     
@@ -41,8 +44,7 @@ private:
     sf::IntRect walk1_;
     sf::IntRect walk2_;
     
-    // Switch the sprite to show the frame, reset time elapsed
-    void switchSprite(sf::Sprite&, Frame);
+    void setFrame(sf::Sprite&, Frame);
     
     // Change the time between frame switches based on entity information
     // Return true if the entity is apparently moving

@@ -2,12 +2,21 @@
 
 #include "VecUtil.hpp"
 
+const std::string GameScreen::BLANK_TEX_NAME = "blank";
+
 const std::string GameScreen::TILESET_FILENAME = "../resource/maps/map_tiles.png";
 const std::string GameScreen::TILESET_TEX_NAME = "tileset";
+
+const std::string GameScreen::CHARACTER_FILENAME = "../resource/Entities/character_sprite.png";
+const std::string GameScreen::CHARACTER_TEX_NAME = "character_sheet";
 
 GameScreen::GameScreen(Logic* logic, TextureManager* tex_manager) {
     logic_ = logic;
     tex_manager_ = tex_manager;
+    
+    char_walk_ = std::unique_ptr<WalkAnimation>(new WalkAnimation(sf::IntRect(0,0,32,32), 
+                                                                  sf::IntRect(32,0,32,32), 
+                                                                  sf::IntRect(0,32,32,32)));
     
     //load default keys in case custom binding fails to load
     keys_[0] = sf::Keyboard::Up;
@@ -20,10 +29,17 @@ GameScreen::GameScreen(Logic* logic, TextureManager* tex_manager) {
 bool GameScreen::loadTextures() {
     bool success = true;
     
+    // Blank texture to use when missing something else
+    sf::Texture blank_tex;
+    success = success && blank_tex.create(32, 32);
+    tex_manager_->addTexture(BLANK_TEX_NAME, blank_tex);
+    
+    // load character texture
+    success = success && tex_manager_->loadTexture(CHARACTER_TEX_NAME, CHARACTER_FILENAME);
+    
     // load tileset texture
-    if (!tex_manager_->loadTexture(TILESET_TEX_NAME, TILESET_FILENAME)) {
-        success = false;
-    }
+    success = success && tex_manager_->loadTexture(TILESET_TEX_NAME, TILESET_FILENAME);
+    
     // load tileset texture coordinates
     for (int i = 0; i<4;i++){
         for (int j = 0; j<4;j++){
@@ -37,32 +53,38 @@ bool GameScreen::loadTextures() {
     // determine if we need offsets/coordinates for switching between textures?
     
     initializeSprites();
-    
+    if (!success) {
+        std::cout << "GameScreen.cpp: failed to load some textures" << std::endl;
+    }
     return success;
 }
 
 void GameScreen::initializeSprites() {
-    sf::Texture texture;
-    //load texture and sprite
-    if (!texture.create(32, 32)) {
-        std::cout << "GameScreen.cpp: failed to create texture during sprite init" << std::endl;
-    }
-    sf::Sprite sprite;
-    sprite.setTexture(texture);
-    sprite.setOrigin(sprite.getGlobalBounds().width / 2.0f,
-                      sprite.getGlobalBounds().height / 2.0f);
-    sprite.setColor(sf::Color(255, 255, 50));
-    sprites_[Entity::DEFAULT_ID] = sprite;
+    // to do this properly, should be sf::Texture& blank_tex
+    // however, that's invisible.
+    sf::Texture blank_tex = tex_manager_->getRef(BLANK_TEX_NAME);
+    sf::Sprite blank_sprite;
+    blank_sprite.setTexture(blank_tex);
+    blank_sprite.setOrigin(blank_sprite.getGlobalBounds().width / 2.0f,
+                      blank_sprite.getGlobalBounds().height / 2.0f);
+    blank_sprite.setColor(sf::Color(255, 255, 50));
+    sprites_[Entity::DEFAULT_ID] = blank_sprite;
     
-    sprite.setColor(sf::Color(0, 255, 0));
-    sprites_[Entity::CHARACTER_ID] = sprite;
+    blank_sprite.setColor(sf::Color(0, 255, 250));
+    sprites_[Entity::ENEMY_ID] = blank_sprite;
+
+    blank_sprite.setColor(sf::Color(0, 255, 200));
+    sprites_[Entity::LASER_ID] = blank_sprite;
     
-    sprite.setColor(sf::Color(0, 255, 250));
-    sprites_[Entity::ENEMY_ID] = sprite;
-
-    sprite.setColor(sf::Color(0, 255, 200));
-    sprites_[Entity::LASER_ID] = sprite;
-
+    sf::Texture& char_tex = tex_manager_->getRef(CHARACTER_TEX_NAME);
+    sf::Sprite char_sprite;
+    //char_sprite.setColor(sf::Color(0,0,0,0));
+    char_sprite.setTexture(char_tex);
+    char_sprite.setTextureRect(char_walk_->getStandingFrame());
+    char_sprite.setOrigin(char_sprite.getGlobalBounds().width / 2.0f,
+                      char_sprite.getGlobalBounds().height / 2.0f);
+    //blank_sprite.setColor(sf::Color(0, 255, 0));
+    sprites_[Entity::CHARACTER_ID] = char_sprite;
 }
 
 sf::Sprite& GameScreen::getEntitySprite(Entity* e) {
@@ -163,8 +185,11 @@ void GameScreen::renderEntity(sf::RenderWindow *window, Entity* entity) {
     
     // TODO: perform any needed transformations to the entity's sprite
     // switch out / shift texture to different coordinates if needed
-
-	window->draw(sprite);
+    if (entity->getTypeId() == Entity::CHARACTER_ID) {
+        char_walk_->adjustSprite(sprite, entity);
+    }
+    
+    window->draw(sprite);
 }
 
 void GameScreen::renderParticles(sf::RenderWindow *window) {

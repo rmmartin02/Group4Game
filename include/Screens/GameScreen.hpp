@@ -7,6 +7,7 @@
 #include "Logic.hpp"
 #include "TextureManager.hpp"
 #include "Screens/Screen.hpp"
+#include "WalkAnimation.hpp"
 
 class GameScreen : public Screen {
 
@@ -30,11 +31,17 @@ public:
     bool loadKeys();
 
 private:
-
+    // Name in texture manager for small blank texture
+    static const std::string BLANK_TEX_NAME;
+    
     // Filename for the texture file containing tile sprites
     static const std::string TILESET_FILENAME;
-
+    // Name in texture manager for tile texture file
     static const std::string TILESET_TEX_NAME;
+    // Filename for character sprite sheet
+    static const std::string CHARACTER_FILENAME;
+    // Name in texture manager for tile texture file
+    static const std::string CHARACTER_TEX_NAME;
     
     sf::Keyboard::Key keys_[4];
     
@@ -46,6 +53,8 @@ private:
     std::map<int, std::pair<int, int>> texture_coords_;
     
     sf::VertexArray tile_vertices_;
+    
+    std::unique_ptr<WalkAnimation> char_walk_;
     
     // Create sprites to be used for rendering entities
     void initializeSprites();
