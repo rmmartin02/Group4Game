@@ -215,6 +215,11 @@ void Logic::loadEntities(std::string filename) {
         int level;
         float start_x, start_y,dest_x,dest_y;
         iss >> level >> start_x>> start_y >> dest_x >> dest_y;
+        start_x = start_x*32.0f-16.0f;
+        start_y = start_y*32.0f-16.0f;
+        dest_x = dest_x*32.0f-16.0f;
+        dest_y = dest_y*32.0f-16.0f;
+        std::cout << start_x << " " << start_y << " " << dest_x << " " << dest_y << "\n";
         if(level==1){
             addEntity("Enemy"+std::to_string(counter),new Enemy(true));
             Enemy& e=static_cast<Enemy&>(getEntity("Enemy"+std::to_string(counter)));
