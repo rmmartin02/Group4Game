@@ -23,11 +23,11 @@ sf::IntRect WalkAnimation::getStandingFrame() {
 void WalkAnimation::adjustSprite(sf::Sprite& sprite, Entity* entity) {
     
     bool moving = adjustSwitchTime(entity);
-    if (!moving) {
-        setFrame(sprite, Frame::STAND);
+    if (walk_timer_.getElapsedTime().asSeconds() < switch_time_) {
         return;
     }
-    if (walk_timer_.getElapsedTime().asSeconds() < switch_time_) {
+    if (!moving) {
+        setFrame(sprite, Frame::STAND);
         return;
     }
     Frame next = Frame::STAND;
@@ -66,7 +66,7 @@ bool WalkAnimation::adjustSwitchTime(Entity* entity) {
     float speed = vecutil::clamp(vecutil::length(entity->getVel()), 0, FAST_VEL) / FAST_VEL;
     if (speed == 0) {
         // if not moving, should switch immediately to standing frame
-        switch_time_ = 0;
+        switch_time_ = MIN_TIME;
         return false;
     }
     switch_time_ = (MAX_TIME - MIN_TIME) * (1-speed) + MIN_TIME;

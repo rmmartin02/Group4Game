@@ -203,10 +203,10 @@ void GameScreen::renderParticles(sf::RenderWindow *window) {
 
 void GameScreen::render(sf::RenderWindow *window) {
     window->clear();
+    centerCameraOnCharacter(window);
     renderTiles(window);
     renderEntities(window);
     renderParticles(window);
-    centerCameraOnCharacter(window);
     window->display();
 }
 

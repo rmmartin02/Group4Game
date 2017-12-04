@@ -4,6 +4,8 @@
 #include "Global.hpp"
 #include "Entities/Entity.hpp"
 
+// Deals with switching between different texture coordinates in order to animate
+// the character's walking motion.
 class WalkAnimation {
 
 public:

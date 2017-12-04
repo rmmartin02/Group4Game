@@ -54,7 +54,7 @@ void Character::onWallCollision(sf::Vector2f point, sf::Vector2f normal) {
     
     // reposition to no longer be inside the wall
     // this may need tweaking; not sure what is the right value to downscale by
-    float downscale = 32.0f;
+    float downscale = 60.0f;
     sf::Vector2f padjusted = (getPos() - point) / (downscale) + getPos();
     setPos(padjusted);
 }
