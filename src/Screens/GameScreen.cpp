@@ -183,10 +183,12 @@ void GameScreen::renderEntity(sf::RenderWindow *window, Entity* entity) {
     sf::Sprite& sprite = getEntitySprite(entity);
     sprite.setPosition(entity->getPos());
     
-    // TODO: perform any needed transformations to the entity's sprite
+    // perform any needed transformations to the entity's sprite
     // switch out / shift texture to different coordinates if needed
+    
     if (entity->getTypeId() == Entity::CHARACTER_ID) {
         char_walk_->adjustSprite(sprite, entity);
+        sprite.setRotation(entity->getDirection() + 90);
     }
     
     window->draw(sprite);
