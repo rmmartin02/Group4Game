@@ -25,6 +25,8 @@ public:
   // Return the current position
   sf::Vector2f getPos();
 
+  sf::Vector2f getCenterPos();
+
   // Place this entity at a new position
   void setPos(sf::Vector2f pos);
 

@@ -16,19 +16,24 @@ public:
     bool isHacked();
     bool isAlerted();
     bool isOffPatrol();
+    bool hasFinishedChase();
     bool hasPathBack();
+    bool hasChasePath();
     //void setStartPos(sf::Vector2f pos);
     //void setDestPos(sf::Vector2f pos);
     void setPathBackTrue();
     void setLastKnownCharacterPos(sf::Vector2f pos);
     void setPatrolPath(std::deque<sf::Vector2f> path);
     void setChasePath(std::deque<sf::Vector2f> path);
+    void setReturnPath(std::deque<sf::Vector2f> path);
     std::deque<sf::Vector2f> getChasePath();
     std::deque<sf::Vector2f> getPatrolPath();
+    std::deque<sf::Vector2f> getReturnPath();
 
     //follows currently set path from cur node to next node
     void followPatrolPath();
     void followChasePath();
+    void followReturnPath();
     //sf::Vector2f getStartPos();
     //sf::Vector2f getDestPos();
     //part of path finding, find the next position that the entity should go to
@@ -36,8 +41,9 @@ public:
     sf::Vector2f getLastKnownCharacterPos();
     static const float COLLISION_SIZE;
 
-    bool canSeePlayer(sf::Vector2f character);
-    void alert();
+    bool canSeePlayer(sf::Vector2f);
+    void alert(sf::Vector2f);
+    void unAlert();
     void signal(std::map<std::string, std::unique_ptr<Entity>> &entities);
     void timer(float deltaTime);
     float getAttackRadius();
@@ -48,6 +54,7 @@ private:
     bool alerted_;
     bool off_patrol;
     bool has_path_back_;
+    bool has_chase_path_;
     //sf::Vector2f start_pos_;
     //sf::Vector2f dest_pos_;
     
@@ -64,7 +71,9 @@ private:
     int cur_patrol_node;
     int cur_patrol_dir;
     int cur_chase_node;
+    int cur_return_node;
     std::deque<sf::Vector2f> patrol_path_;
     std::deque<sf::Vector2f> chase_path_;
+    std::deque<sf::Vector2f> return_path_;
 };
 #endif // ENEMY_HPP

@@ -24,8 +24,9 @@ Enemy::Enemy(){
     alerted_ = false;
     off_patrol = false;
     has_path_back_= false;
+    has_chase_path_ = false;
     //change based on level?
-    move_speed_ = 10;
+    move_speed_ = .5;
     sight_distance_ = 100;
     //half
     sight_angle_ = 15;
@@ -33,11 +34,11 @@ Enemy::Enemy(){
     alert_time_left_ = 10;
     alert_radius_ = 100;
 
-    cur_patrol_node = 0;
+    cur_patrol_node = 1;
     cur_patrol_dir = 1;
-    cur_chase_node = 0;
+    cur_chase_node = 1;
 
-    //last_known_character_pos_ = sf::Vector2f(0,0);
+    last_known_character_pos_ = sf::Vector2f(0,0);
 }
 
 bool Enemy::isHacked(){
@@ -54,6 +55,10 @@ bool Enemy::isOffPatrol(){
 
 bool Enemy::hasPathBack(){
     return has_path_back_;
+}
+
+bool Enemy::hasChasePath(){
+    return has_chase_path_;
 }
 
 void Enemy::setPathBackTrue(){
@@ -112,6 +117,14 @@ void Enemy::alert(){
     alert_time_left_ = alert_time_;
     off_patrol = true;
     has_path_back_= false;
+    has_chase_path_ = false;
+}
+
+void Enemy::unAlert(){
+    alerted_ = false;
+    off_patrol = true;
+    has_path_back_= false;
+    has_chase_path_ = false;
 }
 
 void Enemy::signal(std::map<std::string, std::unique_ptr<Entity>> &entities){
@@ -137,9 +150,7 @@ void Enemy::attack(){
 void Enemy::timer(float deltaTime){
     alert_time_left_-=deltaTime;
     if(alert_time_left_<=0){
-        alerted_ = false;
-        off_patrol = true;
-        has_path_back_= false;
+        unAlert();
     }
 }
 
@@ -157,11 +168,26 @@ std::deque<sf::Vector2f> Enemy::getPatrolPath(){
 }
 
 void Enemy::setChasePath(std::deque<sf::Vector2f> path){
+    has_chase_path_ = true;
+    cur_chase_node = 1;
     chase_path_=path;
+}
+
+bool Enemy::hasFinishedChase(){
+    return cur_chase_node==chase_path_.size()-1;
 }
 
 std::deque<sf::Vector2f> Enemy::getChasePath(){
     return chase_path_;
+}
+
+void Enemy::setReturnPath(std::deque<sf::Vector2f> path){
+    cur_return_node = 1;
+    return_path_=path;
+}
+
+std::deque<sf::Vector2f> Enemy::getReturnPath(){
+    return return_path_;
 }
 
 void Enemy::setLastKnownCharacterPos(sf::Vector2f pos){
@@ -169,18 +195,20 @@ void Enemy::setLastKnownCharacterPos(sf::Vector2f pos){
 }
 
 sf::Vector2f Enemy::getLastKnownCharacterPos(){
-    //return last_known_character_pos_;
+    return last_known_character_pos_;
 }
 
 void Enemy::followPatrolPath(){
     sf::Vector2f curNode = patrol_path_.at(cur_patrol_node);
-    if(vecutil::distance(curNode,getPos())<1){
+    if(vecutil::distance(curNode,getPos())<.5){
         cur_patrol_node += cur_patrol_dir;
-        if (cur_chase_node<0){
+        if (cur_patrol_node<0){
+            std::cout << "Beginning of Patrol\n";
             cur_patrol_node = 1;
             cur_patrol_dir = 1;
         }
-        else{
+        if (cur_patrol_node>patrol_path_.size()-1){
+            std::cout << "End of Patrol\n";
             cur_patrol_node = patrol_path_.size()-2;
             cur_patrol_dir = -1;
         }
@@ -188,16 +216,57 @@ void Enemy::followPatrolPath(){
     }
     sf::Vector2f dirVec = sf::Vector2f(curNode.x-getPos().x,curNode.y-getPos().y);
     sf::Vector2f velVec = move_speed_ * (dirVec/vecutil::length(dirVec));
+    std::cout<< "CurPos: " << getPos().x << " " << getPos().y  << " " 
+    << vecutil::distance(curNode,getPos()) <<" CurNode: " << cur_patrol_node 
+    << "/" << patrol_path_.size()-1 << " " << curNode.x << " " << curNode.y << "\n";
+    std::cout<< "Vel: " << velVec.x << " " << velVec.y << "\n";
     setVel(velVec);
 }
 
 void Enemy::followChasePath(){
+    sf::Vector2f dirVec;
+    sf::Vector2f velVec;
     sf::Vector2f curNode = chase_path_.at(cur_chase_node);
-    if(vecutil::distance(curNode,getPos())<1){
+    if(vecutil::distance(curNode,getPos())<.5 && cur_chase_node<chase_path_.size()-1){
         cur_chase_node += 1;
-        curNode = chase_path_.at(cur_chase_node);
     }
-    sf::Vector2f dirVec = sf::Vector2f(curNode.x-getPos().x,curNode.y-getPos().y);
-    sf::Vector2f velVec = move_speed_ * (dirVec/vecutil::length(dirVec));
-    setVel(velVec);
+    if(cur_chase_node<=chase_path_.size()-1){
+        curNode = chase_path_.at(cur_chase_node);
+        sf::Vector2f dirVec = sf::Vector2f(curNode.x-getPos().x,curNode.y-getPos().y);
+        sf::Vector2f velVec = move_speed_ * (dirVec/vecutil::length(dirVec));
+        setVel(velVec);
+        /*
+        std::cout<< "Chasing: CurPos: " << getPos().x << " " << getPos().y  << " " 
+        << vecutil::distance(curNode,getPos()) <<" CurNode: " << cur_chase_node 
+        << "/" << chase_path_.size()-1 << " " << curNode.x << " " << curNode.y << "\n";
+        std::cout<< "Vel: " << velVec.x << " " << velVec.y << "\n";
+        */
+
+    }
+}
+
+void Enemy::followReturnPath(){
+    sf::Vector2f dirVec;
+    sf::Vector2f velVec;
+    sf::Vector2f curNode = return_path_.at(cur_return_node);
+    if(vecutil::distance(curNode,getPos())<.5){
+        cur_return_node += 1;
+    }
+    if(cur_return_node<=return_path_.size()-1){
+        curNode = return_path_.at(cur_return_node);
+        sf::Vector2f dirVec = sf::Vector2f(curNode.x-getPos().x,curNode.y-getPos().y);
+        sf::Vector2f velVec = move_speed_ * (dirVec/vecutil::length(dirVec));
+        setVel(velVec);
+        /*
+        std::cout<< "Chasing: CurPos: " << getPos().x << " " << getPos().y  << " " 
+        << vecutil::distance(curNode,getPos()) <<" CurNode: " << cur_return_node 
+        << "/" << return_path_.size()-1 << " " << curNode.x << " " << curNode.y << "\n";
+        std::cout<< "Vel: " << velVec.x << " " << velVec.y << "\n";
+        */
+
+    }
+    else{
+        off_patrol = false;
+    }
+    
 }
