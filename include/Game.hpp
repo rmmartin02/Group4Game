@@ -27,6 +27,10 @@ private:
     MenuScreen *menuScreen;
     GameScreen *gameScreen;
     MiniGameScreen *miniGameScreen;
+
+    bool miniGameSongStarted = false;
+
+    sf::Music miniGameSong;
 };
 
 #endif // GAME_HPP

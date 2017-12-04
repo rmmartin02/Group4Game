@@ -15,6 +15,8 @@ Game::Game(){
     gameScreen->loadTextures();
 
     currentScreen = menuScreen;
+
+    miniGameSong.openFromFile("../resource/minigamesong.wav");
 }
 
 Game::~Game()
@@ -54,6 +56,7 @@ void Game::Loop() {
             }
             
             if(currentScreen == gameScreen){
+
                 sf::Vector2f cam_offset(0,0);
                 if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)){
                     cam_offset.y -= CAMERA_SPEED * deltaTime;
@@ -71,7 +74,14 @@ void Game::Loop() {
                 logic->update(deltaTime);
             }
 
+
             if (currentScreen == miniGameScreen){
+
+                if (!miniGameSongStarted) {
+                    miniGameSong.play();
+                    miniGameSongStarted = true;
+                }
+
                 if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
                     miniGameScreen->moveOnClick(miniGameScreen->shuffledPuzzle, sf::Vector2f(sf::Mouse::getPosition(*window)), window);
             }

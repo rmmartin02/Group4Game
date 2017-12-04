@@ -35,7 +35,7 @@ MiniGameScreen::MiniGameScreen() {
     winScreenSprite.setTexture(winScreen);
 
     //Sliding Sound
-    bufferSlide.loadFromFile("../src/MiniGame/slide.wav");
+    bufferSlide.loadFromFile("../src/MiniGame/click.flac");
     slideSound.setBuffer(bufferSlide);
 
 
