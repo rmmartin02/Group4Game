@@ -56,8 +56,15 @@ MenuScreen::MenuScreen(){
     options.setCharacterSize(40);
     options.setPosition(sf::Vector2f(SCREEN_WIDTH/2 - options.getLocalBounds().width/2, start.getLocalBounds().height+start.getPosition().y+20));
 
+    info.setFont(textFont);
+    info.setString("Info");
+    info.setFillColor(sf::Color::White);
+    info.setCharacterSize(40);
+    info.setPosition(sf::Vector2f(SCREEN_WIDTH/2-info.getLocalBounds().width/2,options.getLocalBounds().height+options.getPosition().y+20));
+
     menu_options[0] = &start;
     menu_options[1] = &options;
+    menu_options[2] = &info;
     menu_options[highlighted]->setFillColor(sf::Color::Green);
 }
 
@@ -68,6 +75,7 @@ void MenuScreen::render(sf::RenderWindow *window){
     window->draw(tagline);
     window->draw(start);
     window->draw(options);
+    window->draw(info);
     window->display();
 
 }
@@ -80,14 +88,14 @@ void MenuScreen::interpretInput(std::vector<sf::Event>& events) {
                 menu_options[highlighted]->setFillColor(sf::Color::White);
                 //because c++ has a remainder operator NOT a modulus operator
                 if(highlighted==0)
-                    highlighted = 1;
+                    highlighted = 2;
                 else
-                    highlighted = (highlighted-1)%2;
+                    highlighted = (highlighted-1)%3;
                 menu_options[highlighted]->setFillColor(sf::Color::Green);
             }
             if (event.key.code == sf::Keyboard::Down){
                 menu_options[highlighted]->setFillColor(sf::Color::White);
-                highlighted = (highlighted+1)%2;
+                highlighted = (highlighted+1)%3;
                 menu_options[highlighted]->setFillColor(sf::Color::Green);
             }
         }

@@ -8,6 +8,7 @@
 #include "Screens/ControlsScreen.hpp"
 #include "Screens/MiniGameScreen.hpp"
 #include "Screens/TimeoutScreen.hpp"
+#include "Screens/InfoScreen.hpp"
 
 class ScreenManager{
 
@@ -32,6 +33,7 @@ private:
     ControlsScreen *controls_screen;
     TimeoutScreen *timeout_screen;
     MiniGameScreen *minigame_screen;
+    InfoScreen *info_screen;
     Logic* logic_;
     sf::RenderWindow* window;
 };
