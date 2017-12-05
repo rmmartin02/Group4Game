@@ -73,6 +73,8 @@ public:
     // Returns true if there is an obstruction: sets `hit` to the point
     // at which an obstruction is encountered
     bool sightObstructed(sf::Vector2f src, sf::Vector2f target, sf::Vector2f& hit);
+    bool hackEnemy;
+    bool hackEnemyT;
 
 private:
     float time_left_;

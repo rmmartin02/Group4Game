@@ -61,15 +61,19 @@ void Game::Loop() {
 
                     screenManager->switchToTimeout(window);
                 }
+                else if(logic->hackEnemy){
+                    std::cout<<"Game.cpp switch to minigame\n";
+                    screenManager->switchToMinigame(window);
+                }
 
             }
             if (screenManager->isOnMinigameScreen()){
-
+                std::cout<<"Game.cpp::on minigame screen, getting mouse input\n";
                 if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
                     static_cast<MiniGameScreen*>(screenManager->current_screen)->moveOnClick(
                             static_cast<MiniGameScreen*>(screenManager->current_screen)->shuffledPuzzle, sf::Vector2f(sf::Mouse::getPosition(*window)), window);
             }
-            
+
             screenManager->render(window);
             //window->display();
 

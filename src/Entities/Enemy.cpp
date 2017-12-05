@@ -33,6 +33,7 @@ Enemy::Enemy(){
     alert_time_ = 10;
     alert_time_left_ = 10;
     alert_radius_ = 5*32;
+    attack_radius_=44;
 
     cur_patrol_node = 1;
     cur_patrol_path = 0;
@@ -70,6 +71,7 @@ Enemy::Enemy(bool isLevel2){
         alert_time_ = 10;
         alert_time_left_ = 10;
         alert_radius_ = 5*32;
+        attack_radius_=44;
     }
     else{
         move_speed_ = 1.5;
@@ -78,7 +80,8 @@ Enemy::Enemy(bool isLevel2){
         sight_angle_ = 15;
         alert_time_ = 10;
         alert_time_left_ = 10;
-        alert_radius_ = 5*32;  
+        alert_radius_ = 5*32;
+        attack_radius_=44;
     }
     cur_patrol_node = 1;
     cur_patrol_path = 0;
@@ -123,6 +126,7 @@ void Enemy::setDestPos(sf::Vector2f pos){
 }*/
 
 float Enemy::getAttackRadius(){
+    std::cout<<"Enemy::attack radius "<<attack_radius_<<"\n";
     return attack_radius_;
 }
 /*

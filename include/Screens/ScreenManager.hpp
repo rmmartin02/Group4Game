@@ -19,6 +19,7 @@ public:
     void render(sf::RenderWindow *window);
     void interpretInput(std::vector<sf::Event>& events);
     void switchToTimeout(sf::RenderWindow *window);
+    void switchToMinigame(sf::RenderWindow *window);
 
     bool loadTextures();
     bool isOnGameScreen();

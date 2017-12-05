@@ -82,13 +82,22 @@ bool ScreenManager::isOnGameScreen(){
 }
 
 void ScreenManager::switchToTimeout(sf::RenderWindow* window){
-   // view.setCenter(sf::Vector2f(400,300));
     sf::View camera = window->getView();
+
     camera.setCenter(sf::Vector2f(400,300));
     window->setView(camera);
     current_screen=timeout_screen;
+
+}
+
+void ScreenManager::switchToMinigame(sf::RenderWindow* window){
+    sf::View camera = window->getView();
+    camera.setCenter(sf::Vector2f(400,300));
+    window->setView(camera);
+    current_screen=minigame_screen;
 }
 
 bool ScreenManager::isOnMinigameScreen(){
+
     return current_screen==minigame_screen;
 }

@@ -8,6 +8,8 @@
 Logic::Logic() {
     
     time_left_ = 10 * 60;
+    hackEnemy=false;
+    hackEnemyT=false;
     
     //entities_["Character"] = Character();
     //entities_["Character"].setVel(sf::Vector2f(0,0));
@@ -47,9 +49,11 @@ void Logic::update(float delta) {
                 //lastKnownCharPos = getCharacter().getPos();
                 //if close enough attack
                 float dist = vecutil::distance(enemy->getPos(),getCharacter().getPos());
-                if(dist<enemy->getAttackRadius()){
-                    //std::cout<<"Logic: Charcter attacked\n";
-                    enemy->attack();
+
+                if(dist < enemy->getAttackRadius()){
+                    std::cout<<"Logic: Charcter attacked\n";
+                    //enemy->attack();
+                    hackEnemyT=true;
                 }
             }
             else{
@@ -96,8 +100,9 @@ void Logic::update(float delta) {
     if (time_left_ < 0) {
         std::cout << "Logic.cpp: Ran out of time!" << std::endl;
     }
-
-
+    if(hackEnemyT){
+        hackEnemy=true;
+    }
 
 }
 
