@@ -80,7 +80,6 @@ void MiniGameScreenBackend::setToInitialState(unsigned int numberOfEmptySlots) {
 
 int MiniGameScreenBackend::getValue(int row, int column) {
     // RETRIEVE A VALUE AT GIVEN COORDINATES
-
     int value = currentBoard[row][column];
     return value;
 
@@ -233,7 +232,7 @@ MiniGameScreenBackend MiniGameScreenBackend::flip (int startRow, int startColumn
             if (getValue(startRow, startColumn + 1) == 0) {
                 newState = move(startRow, startColumn, MOVERIGHT);
                 return newState.flip(startRow, startColumn + 1, endRow, endColumn);
-            } else {
+            } else{
                 newState = move(startRow, startColumn, MOVEDOWN);
                 return newState.flip(startRow + 1, startColumn, endRow, endColumn);
             }
@@ -241,7 +240,7 @@ MiniGameScreenBackend MiniGameScreenBackend::flip (int startRow, int startColumn
             if (getValue(startRow, startColumn - 1) == 0) {
                 newState = move(startRow, startColumn, MOVELEFT);
                 return newState.flip(startRow, startColumn - 1, endRow, endColumn);
-            } else {
+            } else{
                 newState = move(startRow, startColumn, MOVEUP);
                 return newState.flip(startRow - 1, startColumn, endRow, endColumn);
             }
@@ -249,7 +248,7 @@ MiniGameScreenBackend MiniGameScreenBackend::flip (int startRow, int startColumn
             if (getValue(startRow, startColumn - 1) == 0) {
                 newState = move(startRow, startColumn, MOVELEFT);
                 return newState.flip(startRow, startColumn - 1, endRow, endColumn);
-            } else {
+            } else{
                 newState = move(startRow, startColumn, MOVEDOWN);
                 return newState.flip(startRow + 1, startColumn, endRow, endColumn);
             }
@@ -257,7 +256,7 @@ MiniGameScreenBackend MiniGameScreenBackend::flip (int startRow, int startColumn
             if (getValue(startRow, startColumn + 1) == 0) {
                 newState = move(startRow, startColumn, MOVERIGHT);
                 return newState.flip(startRow, startColumn + 1, endRow, endColumn);
-            } else {
+            } else{
                 newState = move(startRow, startColumn, MOVEUP);
                 return newState.flip(startRow - 1, startColumn, endRow, endColumn);
             }

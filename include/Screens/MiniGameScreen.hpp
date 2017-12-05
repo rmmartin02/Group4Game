@@ -32,7 +32,7 @@ public:
 
     MiniGameScreenBackend shufflePuzzle (MiniGameScreenBackend unshuffledPuzzle, int pathLenth);
 
-    void moveOnClick(MiniGameScreenBackend puzzle, sf::Vector2<float> coordinates, sf::RenderWindow* window);
+    int moveOnClick(MiniGameScreenBackend puzzle, sf::Vector2<float> coordinates, sf::RenderWindow* window);
 
     MiniGameScreenBackend puzzle;
 

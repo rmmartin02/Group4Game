@@ -52,7 +52,7 @@ void Logic::update(float delta) {
 
                 if(dist < enemy->getAttackRadius()){
                     std::cout<<"Logic: Charcter attacked\n";
-                    //enemy->attack();
+                    enemy->attack();
                     hackEnemyT=true;
                 }
             }

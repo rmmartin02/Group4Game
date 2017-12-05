@@ -155,7 +155,7 @@ MiniGameScreenBackend MiniGameScreen::shufflePuzzle(MiniGameScreenBackend unshuf
 
 }
 
-void MiniGameScreen::moveOnClick(MiniGameScreenBackend puzzle, sf::Vector2<float> coordinates, sf::RenderWindow* window) {
+int MiniGameScreen::moveOnClick(MiniGameScreenBackend puzzle, sf::Vector2<float> coordinates, sf::RenderWindow* window) {
 
     int row;
     int column;
@@ -250,6 +250,8 @@ void MiniGameScreen::moveOnClick(MiniGameScreenBackend puzzle, sf::Vector2<float
             row = 0;
 
         std::cout << "Tile 9 hit" << std::endl;
+    }else{
+        return -1;
     }
 
     // NOW MOVE!!
@@ -486,6 +488,7 @@ void MiniGameScreen::moveOnClick(MiniGameScreenBackend puzzle, sf::Vector2<float
         }
     }
     **/
+return 0;
 
 }
 
