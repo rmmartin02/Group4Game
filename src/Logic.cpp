@@ -404,6 +404,8 @@ std::deque<sf::Vector2f> Logic::pathFinder(sf::Vector2f startPos, sf::Vector2f e
     path_.clear();
     enemyPath_.clear();
     tileNodeMap_.clear();
+    path_.shrink_to_fit();
+    enemyPath_.shrink_to_fit();
     std::pair<int,int> minPair;
 
     int startRow;
