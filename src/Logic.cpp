@@ -7,7 +7,7 @@
 
 Logic::Logic() {
     
-    time_left_ = 10 * 60;
+    time_left_ = .1 * 60;
     
     //entities_["Character"] = Character();
     //entities_["Character"].setVel(sf::Vector2f(0,0));
@@ -36,9 +36,9 @@ void Logic::update(float delta) {
 
         //check if character is in enemies line of sight
         if (Enemy* enemy = dynamic_cast<Enemy*>(&e)){
+            sf::Vector2f hit;
+            sf::Vector2f lastKnownCharPos;
             if(!enemy->isHacked()){
-                sf::Vector2f hit;
-                sf::Vector2f lastKnownCharPos;
                 if(enemy->canSeePlayer(getCharacter().getPos()) && !sightObstructed(enemy->getPos(), getCharacter().getPos(), hit)){
                     //std::cout<<"Logic: Charcter in line of sight\n";
                     //chase player, send out signal

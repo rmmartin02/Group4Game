@@ -234,7 +234,7 @@ void GameScreen::renderEntities(sf::RenderWindow *window) {
 void GameScreen::renderEntity(sf::RenderWindow *window, Entity* entity) {
     sf::Sprite& sprite = getEntitySprite(entity);
     sprite.setPosition(entity->getPos());
-    
+    sprite.setColor(sf::Color::White);
     // perform any needed transformations to the entity's sprite
     // switch out / shift texture to different coordinates if needed
     
@@ -259,7 +259,14 @@ void GameScreen::renderEntity(sf::RenderWindow *window, Entity* entity) {
             sprite.setRotation(entity->getDirection() + 90);
         }
     }
-    
+    if (Enemy* enemy = dynamic_cast<Enemy*>(entity)){
+        if(enemy->isAlerted()){
+            sprite.setColor(sf::Color::Red);
+        }
+        if(enemy->isHacked()){
+            sprite.setColor(sf::Color::Black);
+        }
+    }
     window->draw(sprite);
 }
 
