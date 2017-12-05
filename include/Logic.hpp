@@ -29,6 +29,7 @@ class Logic {
 public:
     // Possible gameplay states. 
     enum PlayState {
+        UNLOADED    = -1, // level not yet loaded
         PLAYING     = 0, // normal gameplay
         MINIGAME    = 1, // mini-game in progress; paused here, should be switched away from GameScreen
         LOST        = 2, // should switch screens to reflect failure
@@ -48,7 +49,10 @@ public:
     PlayState getPlayState();
     
     // Loads a level from a file
-    void load(std::string mapfilename,std::string enemyfilename);
+    void load(std::string level_name, std::string mapfilename, std::string enemyfilename);
+    
+    // Reload the current level
+    void reload();
     
     // Return the numbers of rows and columns in the loaded tile map
     std::pair<int, int> getMapSize();
@@ -89,7 +93,13 @@ public:
 
 private:
     float time_left_;
-    PlayState state_ = PlayState::PLAYING;
+    float level_start_time_;
+    
+    std::string level_name_;
+    std::string level_tile_filename_;
+    std::string level_entity_filename_;
+    
+    PlayState state_;
     
     std::vector<std::vector<int>> tiles_;
 

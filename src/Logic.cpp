@@ -6,34 +6,24 @@
 #include "VecUtil.hpp"
 
 Logic::Logic(float time_limit) {
-    
     time_left_ = time_limit;
-    
-    //entities_["Character"] = Character();
-    //entities_["Character"].setVel(sf::Vector2f(0,0));
-    tiles_ = { 
-        { -1, -1, 1, 1, 1 },
-        {  1, 1, -1, -1, 1},
-        {  1, 1, 1, 1, 1 },
-        { -1, -1, -1, -1, 1},
-        {  2,  1,  2,  1,  1},
-        { 1,  2,  1,  1,  1}
-    };
-    
-    b2Vec2 gravity(0.0f, 0.0f); // no gravity
-    b2World world(gravity);
-    
+    level_start_time_ = time_limit;
+    state_ = PlayState::UNLOADED;
+}
+
+Logic::PlayState Logic::getPlayState() {
+    return state_;
 }
 
 void Logic::update(float delta) {
-    // adjust the timer
-    time_left_ -= delta;
-    if (time_left_ < 0) {
-        onTimeExpired();
-        return;
-    }
-    
     if (state_ == PlayState::PLAYING) {
+        // adjust the timer
+        time_left_ -= delta;
+        if (time_left_ < 0) {
+            onTimeExpired();
+            return;
+        }
+        
         // update every entity.
         for ( auto& pair : getEntities() ) {
             Entity& e = *(pair.second.get());
@@ -124,14 +114,24 @@ void Logic::onExitReached() {
     state_ = PlayState::WON;
 }
 
-void Logic::load(std::string mapfilename,std::string enemyfilename) {
+void Logic::load(std::string level_name, std::string mapfilename, std::string enemyfilename) {
+    level_name_ = level_name;
+    level_tile_filename_ = mapfilename;
+    level_entity_filename_ = enemyfilename;
+    reload();
+}
+
+void Logic::reload() {
+    state_ = PlayState::UNLOADED;
     clearLevel();
-    loadTiles(mapfilename);
-    loadEntities(enemyfilename);
+    loadTiles(level_tile_filename_);
+    loadEntities(level_entity_filename_);
     //pathFinder(sf::Vector2f(40,160),sf::Vector2f(200,160));//40 160 200 160
     std::cout<<"character pos"<<getCharacter().getPos().x<<" "<<getCharacter().getPos().y<<"\n";
     std::cout << "Logic.cpp: Map size: " << getMapSize().first 
               << "," << getMapSize().second << std::endl;
+    // once loaded, should be ready to play; but updates won't happen until Game.cpp allows it (switched to GameScreen)
+    state_ = PlayState::PLAYING;
 }
 
 std::pair<int, int> Logic::getMapSize() {
