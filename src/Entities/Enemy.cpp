@@ -138,21 +138,21 @@ sf::Vector2f Enemy::getCurrentPatrolNode(){
     return patrol_paths_.at(cur_patrol_path).at(cur_patrol_node);
 }
 
-
+//https://legends2k.github.io/2d-fov/design.html
 bool Enemy::canSeePlayer(sf::Vector2f character){
-    sf::Vector2f u = sf::Vector2f(character.x-getPos().x,character.y-getPos().y);
-    sf::Vector2f v = sf::Vector2f(sight_distance_*cos(vecutil::degToRad(getDirection())),
-        sight_distance_*sin(vecutil::degToRad(getDirection())));
-    sf::Vector2f e1 = sf::Vector2f(sight_distance_*cos(vecutil::degToRad(getDirection()-sight_angle_)),
-        sight_distance_*sin(vecutil::degToRad(getDirection()-sight_angle_)));
-    sf::Vector2f e2 = sf::Vector2f(sight_distance_*cos(getDirection()+sight_angle_),
-        sight_distance_*sin(getDirection()+sight_angle_));
-    if(vecutil::dotProd(u,v)>0){
-        if(vecutil::dotProd(u,u)<(sight_distance_*sight_distance_)){
-            if(vecutil::crossProd(e1,u)*vecutil::crossProd(u,e2)>=0.0f){
-                return true;
-            }
-        }
+    character = sf::Vector2f(character.x-16.0f, character.y-16.0f);
+    sf::Vector2f u = sf::Vector2f(character.x-getCenterPos().x,character.y-getCenterPos().y);
+    sf::Vector2f v = vecutil::fromPolar(sight_distance_,vecutil::degToRad(getDirection()));
+    sf::Vector2f e1 = vecutil::fromPolar(sight_distance_,vecutil::degToRad(getDirection()+sight_angle_));
+    sf::Vector2f e2 = vecutil::fromPolar(sight_distance_,vecutil::degToRad(getDirection()-sight_angle_));
+    if(vecutil::dotProd(u,v)<=0){
+        return false;
+    }
+    if(vecutil::dotProd(u,u)>(sight_distance_*sight_distance_)){
+        return false;
+    }
+    if(vecutil::crossProd(e1,u)*vecutil::crossProd(u,e2)>=0.0f){
+        return true;
     }
     return false;
 }
