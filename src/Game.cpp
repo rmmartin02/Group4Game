@@ -6,7 +6,7 @@
 
 Game::Game(){
     window = new sf::RenderWindow(sf::VideoMode(SCREEN_WIDTH,SCREEN_HEIGHT,32), "Agent P: Infiltration");
-    logic = new Logic();
+    logic = new Logic(10 * 60);
     screenManager = new ScreenManager(logic);
 }
 
@@ -51,6 +51,7 @@ void Game::Loop() {
             //Don't really like this
             if (screenManager->isOnGameScreen()){
                 logic->update(deltaTime);
+                
                 if(logic->getTimeLeft()<=0){
 
                     screenManager->switchToTimeout(window);
