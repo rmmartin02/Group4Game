@@ -198,13 +198,16 @@ void Enemy::timer(float deltaTime){
 }
 
 void Enemy::setPatrolPath(std::vector<std::deque<sf::Vector2f>> paths){
-//    patrolPath_.clear();
+    patrol_paths_.clear();
+    patrol_paths_.shrink_to_fit();
     for(int i = 0; i<paths.size(); i++){
         for(int j = 0; j<paths.at(i).size();j++){ 
             std::cout << paths.at(i).at(j).x << " " << paths.at(i).at(j).y << "\n";
         }
     }
     patrol_paths_=paths;
+    paths.clear();
+    paths.shrink_to_fit();
 }
 
 std::vector<std::deque<sf::Vector2f>> Enemy::getPatrolPath(){
@@ -214,7 +217,11 @@ std::vector<std::deque<sf::Vector2f>> Enemy::getPatrolPath(){
 void Enemy::setChasePath(std::deque<sf::Vector2f> path){
     has_chase_path_ = true;
     cur_chase_node = 1;
+    chase_path_.clear();
+    chase_path_.shrink_to_fit();
     chase_path_=path;
+    path.clear();
+    path.shrink_to_fit();
 }
 
 bool Enemy::hasFinishedChase(){
@@ -231,7 +238,11 @@ std::deque<sf::Vector2f> Enemy::getChasePath(){
 
 void Enemy::setReturnPath(std::deque<sf::Vector2f> path){
     cur_return_node = 1;
+    return_path_.clear();
+    return_path_.shrink_to_fit();
     return_path_=path;
+    path.clear();
+    path.shrink_to_fit();
 }
 
 std::deque<sf::Vector2f> Enemy::getReturnPath(){
