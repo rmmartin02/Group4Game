@@ -44,23 +44,25 @@ Enemy::Enemy(bool isLevel2){
     has_path_back_= false;
     has_chase_path_ = false;
     if(isLevel2){
+        attack_radius_ = 1.5*32;
         is_level_2_ = true;
         move_speed_ = 1.5;
         sight_distance_ = 5*32;
         //half
-        sight_angle_ = 15;
+        sight_angle_ = 40;
         alert_time_ = 10;
         alert_time_left_ = 10;
         alert_radius_ = 5*32;
     }
     else{
+        attack_radius_ = 1*32;
         is_level_2_ = false;
         move_speed_ = 1;
-        sight_distance_ = 5*32;
+        sight_distance_ = 4*32;
         //half
-        sight_angle_ = 15;
-        alert_time_ = 10;
-        alert_time_left_ = 10;
+        sight_angle_ = 30;
+        alert_time_ = 7.5;
+        alert_time_left_ = 7.5;
         alert_radius_ = 5*32;  
     }
     cur_patrol_node = 1;
@@ -72,9 +74,9 @@ Enemy::Enemy(bool isLevel2){
 
 std::string Enemy::getTypeId() {
     if(is_level_2_){
-        return Entity::ENEMY1_ID;
+        return Entity::ENEMY2_ID;
     }
-    return Entity::ENEMY2_ID;
+    return Entity::ENEMY1_ID;
 }
 
 bool Enemy::isHacked(){
@@ -180,7 +182,8 @@ void Enemy::signal(std::map<std::string, std::unique_ptr<Entity>> &entities){
 
 void Enemy::attack(){
 //switch to minigame screen
-    std::cout << "attack\n";
+std::cout << "attack\n";
+hacked_ = true;
 //if player fails minigame, damage?
 //else player wins minigame, enemy hacked
 }

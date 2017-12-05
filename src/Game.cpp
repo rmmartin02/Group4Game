@@ -16,7 +16,7 @@ Game::~Game()
 
 void Game::initialize() {
     // if it can fail, or takes a long time, it shouldn't be in a constructor
-    logic->load("../resource/maps/Map1.csv", "../resource/EntityLevel1.txt");
+    logic->load("../resource/maps/Map2.csv", "../resource/EntityLevel2.txt");
     screenManager->loadTextures();
 }
 

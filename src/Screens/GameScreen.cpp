@@ -242,13 +242,22 @@ void GameScreen::renderEntity(sf::RenderWindow *window, Entity* entity) {
         char_walk_->adjustSprite(sprite, entity);
         sprite.setRotation(entity->getDirection() + 90);
     }
-    if (entity->getTypeId() == Entity::ENEMY1_ID) {
-        enemy1_walk_->adjustSprite(sprite, entity);
-        sprite.setRotation(entity->getDirection() + 90);
-    }
-    if (entity->getTypeId() == Entity::ENEMY2_ID) {
-        enemy2_walk_->adjustSprite(sprite, entity);
-        sprite.setRotation(entity->getDirection() + 90);
+    if (Enemy* enemy = dynamic_cast<Enemy*>(entity)){
+        sprite.setColor(sf::Color(255,255,255));
+        if(enemy->isAlerted()){
+            sprite.setColor(sf::Color::Red);
+        }
+        if(enemy->isHacked()){
+            sprite.setColor(sf::Color::Black);
+        }
+        if (entity->getTypeId() == Entity::ENEMY1_ID) {
+            enemy1_walk_->adjustSprite(sprite, entity);
+            sprite.setRotation(entity->getDirection() + 90);
+        }
+        if (entity->getTypeId() == Entity::ENEMY2_ID) {
+            enemy2_walk_->adjustSprite(sprite, entity);
+            sprite.setRotation(entity->getDirection() + 90);
+        }
     }
     
     window->draw(sprite);

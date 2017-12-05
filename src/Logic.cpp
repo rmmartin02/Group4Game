@@ -36,68 +36,69 @@ void Logic::update(float delta) {
 
         //check if character is in enemies line of sight
         if (Enemy* enemy = dynamic_cast<Enemy*>(&e)){
-            sf::Vector2f hit;
-            sf::Vector2f lastKnownCharPos;
-            if(enemy->canSeePlayer(getCharacter().getPos()) && !sightObstructed(enemy->getPos(), getCharacter().getPos(), hit)){
-                //std::cout<<"Logic: Charcter in line of sight\n";
-                //chase player, send out signal
-                enemy->alert();
-                enemy->signal(getEntities());
-                enemy->setChasePath(pathFinder(enemy->getPos(),getCharacter().getPos()));
-                //lastKnownCharPos = getCharacter().getPos();
-                //if close enough attack
-                float dist = vecutil::distance(enemy->getPos(),getCharacter().getPos());
-                if(dist<enemy->getAttackRadius()){
-                    //std::cout<<"Logic: Charcter attacked\n";
-                    enemy->attack();
-                }
-            }
-            else{
-                //cant see player but is alerted, so countdown
-                if(enemy->isAlerted()){
-                    if(!enemy->hasChasePath() || vecutil::distance(getCharacter().getPos(),enemy->getChaseEndPos())>32){
-                        enemy->setChasePath(pathFinder(enemy->getPos(),getCharacter().getPos()));
-                    }
-                    //std::cout<<"Logic: Enemy Timer\n";
-                    enemy->timer(delta);
-                }
-            }
-            if(enemy->isAlerted()){
-                //std::cout << "Enemy chasing\n";
-                enemy->followChasePath();
-                //std::cout << "Followed path";
-            }
-            else{
-                //return to patrol route/go to next patrol point
-                //std::cout<<"Logic: Return to patrol\n";
-                if(enemy->isOffPatrol()){
-                    if(!enemy->hasPathBack()){
-                        std::cout << "set return path\n";
-                        enemy->setReturnPath(pathFinder(enemy->getPos(),enemy->getCurrentPatrolNode()));
-                        enemy->setPathBackTrue();
-                    }
-                    else{
-                        //std::cout << "follow return path\n";
-                        enemy->followReturnPath();
+            if(!enemy->isHacked()){
+                sf::Vector2f hit;
+                sf::Vector2f lastKnownCharPos;
+                if(enemy->canSeePlayer(getCharacter().getPos()) && !sightObstructed(enemy->getPos(), getCharacter().getPos(), hit)){
+                    //std::cout<<"Logic: Charcter in line of sight\n";
+                    //chase player, send out signal
+                    enemy->alert();
+                    enemy->signal(getEntities());
+                    enemy->setChasePath(pathFinder(enemy->getPos(),getCharacter().getPos()));
+                    //lastKnownCharPos = getCharacter().getPos();
+                    //if close enough attack
+                    float dist = vecutil::distance(enemy->getPos(),getCharacter().getPos());
+                    if(dist<enemy->getAttackRadius()){
+                        //std::cout<<"Logic: Charcter attacked\n";
+                        enemy->attack();
                     }
                 }
                 else{
-                    //std::cout << "follow patrol path\n";
-                    enemy->followPatrolPath();
+                    //cant see player but is alerted, so countdown
+                    if(enemy->isAlerted()){
+                        if(!enemy->hasChasePath() || vecutil::distance(getCharacter().getPos(),enemy->getChaseEndPos())>32){
+                            enemy->setChasePath(pathFinder(enemy->getPos(),getCharacter().getPos()));
+                        }
+                        //std::cout<<"Logic: Enemy Timer\n";
+                        enemy->timer(delta);
+                    }
                 }
+                if(enemy->isAlerted()){
+                    //std::cout << "Enemy chasing\n";
+                    enemy->followChasePath();
+                    //std::cout << "Followed path";
+                }
+                else{
+                    //return to patrol route/go to next patrol point
+                    //std::cout<<"Logic: Return to patrol\n";
+                    if(enemy->isOffPatrol()){
+                        if(!enemy->hasPathBack()){
+                            std::cout << "set return path\n";
+                            enemy->setReturnPath(pathFinder(enemy->getPos(),enemy->getCurrentPatrolNode()));
+                            enemy->setPathBackTrue();
+                        }
+                        else{
+                            //std::cout << "follow return path\n";
+                            enemy->followReturnPath();
+                        }
+                    }
+                    else{
+                        //std::cout << "follow patrol path\n";
+                        enemy->followPatrolPath();
+                    }
+                }
+            }
+            else{
+                enemy->setVel(sf::Vector2f(0,0));
             }
         }
     }
-
-
-    
+ 
     // adjust the timer
     time_left_ -= delta;
     if (time_left_ < 0) {
         std::cout << "Logic.cpp: Ran out of time!" << std::endl;
     }
-
-
 
 }
 
@@ -235,7 +236,7 @@ void Logic::loadEntities(std::string filename) {
             }
             if(level==1){
                 std::cout << "1\n";
-                addEntity("Enemy"+std::to_string(counter),new Enemy(true));
+                addEntity("Enemy"+std::to_string(counter),new Enemy(false));
                 std::cout << "2\n";
                 Enemy& e=static_cast<Enemy&>(getEntity("Enemy"+std::to_string(counter)));
                 std::cout << "3\n";
@@ -245,7 +246,7 @@ void Logic::loadEntities(std::string filename) {
                 std::cout << "5\n";
             }
             else if(level==2){
-                addEntity("Enemy"+std::to_string(counter),new Enemy(false));
+                addEntity("Enemy"+std::to_string(counter),new Enemy(true));
                 Enemy& e=static_cast<Enemy&>(getEntity("Enemy"+std::to_string(counter)));
                 e.setPos(positions.at(0));
                 e.setPatrolPath(multiPathFinder(positions));
