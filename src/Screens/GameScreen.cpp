@@ -2,12 +2,24 @@
 
 #include "VecUtil.hpp"
 
+const std::string GameScreen::BLANK_TEX_NAME = "blank";
 
 const std::string GameScreen::TILESET_FILENAME = "../resource/maps/map_tiles.png";
+const std::string GameScreen::TILESET_TEX_NAME = "tileset";
 
-GameScreen::GameScreen(Logic* logic) {
+const std::string GameScreen::CHARACTER_FILENAME = "../resource/Entities/character_sprite.png";
+const std::string GameScreen::CHARACTER_TEX_NAME = "character_sheet";
+
+const std::string GameScreen::ENEMY1_FILENAME = "../resource/Entities/robot_sprite.png";
+const std::string GameScreen::ENEMY1_TEX_NAME = "enemy1_sheet";
+
+const std::string GameScreen::ENEMY2_FILENAME = "../resource/Entities/alien_sprite.png";
+const std::string GameScreen::ENEMY2_TEX_NAME = "enemy2_sheet";
+
+GameScreen::GameScreen(Logic* logic, TextureManager* tex_manager) {
     logic_ = logic;
-    textures_ = std::map<std::string, sf::Texture>();
+    tex_manager_ = tex_manager;
+    
     //load default keys in case custom binding fails to load
     keys_[0] = sf::Keyboard::Up;
     keys_[1] = sf::Keyboard::Down;
@@ -33,10 +45,38 @@ GameScreen::GameScreen(Logic* logic) {
 }
 
 bool GameScreen::loadTextures() {
-    textures_["tileset"] = sf::Texture();
-    if (!textures_["tileset"].loadFromFile(TILESET_FILENAME)){
-        return false;
-    }
+    bool success = true;
+    
+    // Blank texture to use when missing something else
+    sf::Texture blank_tex;
+    success = success && blank_tex.create(32, 32);
+    tex_manager_->addTexture(BLANK_TEX_NAME, blank_tex);
+    
+    // load character texture
+    success = success && tex_manager_->loadTexture(CHARACTER_TEX_NAME, CHARACTER_FILENAME);
+    // texture coordinates for walk animation assigned
+    char_walk_ = std::unique_ptr<WalkAnimation>(new WalkAnimation(sf::IntRect(0,0,32,32), 
+                                                                  sf::IntRect(32,0,32,32), 
+                                                                  sf::IntRect(0,32,32,32)));
+    
+    // load character texture
+    success = success && tex_manager_->loadTexture(ENEMY1_TEX_NAME, ENEMY1_FILENAME);
+    // texture coordinates for walk animation assigned
+    enemy1_walk_ = std::unique_ptr<WalkAnimation>(new WalkAnimation(sf::IntRect(0,0,32,32), 
+                                                                  sf::IntRect(32,0,32,32), 
+                                                                  sf::IntRect(0,32,32,32)));
+    
+    // load character texture
+    success = success && tex_manager_->loadTexture(ENEMY2_TEX_NAME, ENEMY2_FILENAME);
+    // texture coordinates for walk animation assigned
+    enemy2_walk_ = std::unique_ptr<WalkAnimation>(new WalkAnimation(sf::IntRect(0,0,32,32), 
+                                                                  sf::IntRect(32,0,32,32), 
+                                                                  sf::IntRect(0,32,32,32)));
+    
+    // load tileset texture
+    success = success && tex_manager_->loadTexture(TILESET_TEX_NAME, TILESET_FILENAME);
+    
+    // load tileset texture coordinates
     for (int i = 0; i<4;i++){
         for (int j = 0; j<4;j++){
             std::cout << "GameScreen.cpp: loading tile texture coordinates: "
@@ -44,7 +84,73 @@ bool GameScreen::loadTextures() {
             texture_coords_[i*4+j] = std::make_pair(Logic::TILE_SIZE*j, Logic::TILE_SIZE*i);
         }
     }
-    return true;
+    
+    initializeSprites();
+    if (!success) {
+        std::cout << "GameScreen.cpp: failed to load some textures" << std::endl;
+    }
+    return success;
+}
+
+void GameScreen::initializeSprites() {
+    // to do this properly, should be sf::Texture& blank_tex
+    // however, that's invisible.
+    sf::Texture blank_tex = tex_manager_->getRef(BLANK_TEX_NAME);
+    sf::Sprite blank_sprite;
+    blank_sprite.setTexture(blank_tex);
+    blank_sprite.setOrigin(blank_sprite.getGlobalBounds().width / 2.0f,
+                      blank_sprite.getGlobalBounds().height / 2.0f);
+    blank_sprite.setColor(sf::Color(255, 255, 50));
+    sprites_[Entity::DEFAULT_ID] = blank_sprite;
+    
+    blank_sprite.setColor(sf::Color(0, 255, 250));
+    sprites_[Entity::ENEMY1_ID] = blank_sprite;
+
+    blank_sprite.setColor(sf::Color(0, 255, 250));
+    sprites_[Entity::ENEMY2_ID] = blank_sprite;
+
+    blank_sprite.setColor(sf::Color(0, 255, 200));
+    sprites_[Entity::LASER_ID] = blank_sprite;
+    
+    sf::Texture& char_tex = tex_manager_->getRef(CHARACTER_TEX_NAME);
+    sf::Sprite char_sprite;
+    //char_sprite.setColor(sf::Color(0,0,0,0));
+    char_sprite.setTexture(char_tex);
+    char_sprite.setTextureRect(char_walk_->getStandingFrame());
+    char_sprite.setOrigin(char_sprite.getGlobalBounds().width / 2.0f,
+                      char_sprite.getGlobalBounds().height / 2.0f);
+    //blank_sprite.setColor(sf::Color(0, 255, 0));
+    sprites_[Entity::CHARACTER_ID] = char_sprite;
+
+    sf::Texture& enemy1_tex = tex_manager_->getRef(ENEMY1_TEX_NAME);
+    sf::Sprite enemy1_sprite;
+    //char_sprite.setColor(sf::Color(0,0,0,0));
+    enemy1_sprite.setTexture(enemy1_tex);
+    enemy1_sprite.setTextureRect(enemy1_walk_->getStandingFrame());
+    enemy1_sprite.setOrigin(enemy1_sprite.getGlobalBounds().width / 2.0f,
+                      enemy1_sprite.getGlobalBounds().height / 2.0f);
+    //blank_sprite.setColor(sf::Color(0, 255, 0));
+    sprites_[Entity::ENEMY1_ID] = enemy1_sprite;
+
+    sf::Texture& enemy2_tex = tex_manager_->getRef(ENEMY2_TEX_NAME);
+    sf::Sprite enemy2_sprite;
+    //char_sprite.setColor(sf::Color(0,0,0,0));
+    enemy2_sprite.setTexture(enemy2_tex);
+    enemy2_sprite.setTextureRect(enemy2_walk_->getStandingFrame());
+    enemy2_sprite.setOrigin(enemy2_sprite.getGlobalBounds().width / 2.0f,
+                      enemy2_sprite.getGlobalBounds().height / 2.0f);
+    //blank_sprite.setColor(sf::Color(0, 255, 0));
+    sprites_[Entity::ENEMY2_ID] = enemy2_sprite;
+}
+
+sf::Sprite& GameScreen::getEntitySprite(Entity* e) {
+    auto found = sprites_.find(e->getTypeId());
+    if (found != sprites_.end()) {
+        //std::cout << "GameScreen.cpp: found sprite for type " << e->getTypeId() << std::endl;
+        return found->second;
+    }
+    //std::cout << "GameScreen.cpp: could not find sprite for " << e->getTypeId() << std::endl;
+    return sprites_[Entity::DEFAULT_ID];
 }
 
 void GameScreen::panCamera(sf::RenderWindow *window, sf::Vector2f amount){
@@ -116,18 +222,36 @@ void GameScreen::renderTiles(sf::RenderWindow *window) {
             tile_vertices_.append(v);
         }
     }
-    window->draw(tile_vertices_, &textures_["tileset"]);
+    window->draw(tile_vertices_, &(tex_manager_->getRef(TILESET_TEX_NAME)));
 }
 
 void GameScreen::renderEntities(sf::RenderWindow *window) {
-	// debug message to test that direction private variable works
-    //std::cout << "GameScreen.cpp: character dir: " << logic_->getCharacter().getDirection() << std::endl;
-
     for (auto& pair : logic_->getEntities()) {
-        pair.second->render(window);
+        renderEntity(window, pair.second.get());
+    }
+}
 
+void GameScreen::renderEntity(sf::RenderWindow *window, Entity* entity) {
+    sf::Sprite& sprite = getEntitySprite(entity);
+    sprite.setPosition(entity->getPos());
+    
+    // perform any needed transformations to the entity's sprite
+    // switch out / shift texture to different coordinates if needed
+    
+    if (entity->getTypeId() == Entity::CHARACTER_ID) {
+        char_walk_->adjustSprite(sprite, entity);
+        sprite.setRotation(entity->getDirection() + 90);
+    }
+    if (entity->getTypeId() == Entity::ENEMY1_ID) {
+        enemy1_walk_->adjustSprite(sprite, entity);
+        sprite.setRotation(entity->getDirection() + 90);
+    }
+    if (entity->getTypeId() == Entity::ENEMY2_ID) {
+        enemy2_walk_->adjustSprite(sprite, entity);
+        sprite.setRotation(entity->getDirection() + 90);
     }
     
+    window->draw(sprite);
 }
 
 void GameScreen::renderParticles(sf::RenderWindow *window) {
@@ -160,6 +284,7 @@ void GameScreen::renderTimeLeft(sf::RenderWindow *window){
 
 void GameScreen::render(sf::RenderWindow *window) {
     window->clear();
+    centerCameraOnCharacter(window);
     renderTiles(window);
     renderEntities(window);
     renderParticles(window);

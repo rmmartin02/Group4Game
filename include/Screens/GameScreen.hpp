@@ -7,11 +7,16 @@
 #include <sstream>
 #include <fstream>
 
+#include "Logic.hpp"
+#include "TextureManager.hpp"
+#include "Screens/Screen.hpp"
+#include "WalkAnimation.hpp"
+
 class GameScreen : public Screen {
 
 public:
 
-    GameScreen(Logic *logic);
+    GameScreen(Logic *logic, TextureManager* tex_manager);
 
     void render(sf::RenderWindow *window);
     void interpretInput(std::vector<sf::Event>& events);
@@ -29,18 +34,49 @@ public:
     bool loadKeys();
 
 private:
-
+    // Name in texture manager for small blank texture
+    static const std::string BLANK_TEX_NAME;
+    
     // Filename for the texture file containing tile sprites
     static const std::string TILESET_FILENAME;
+    // Name in texture manager for tile texture file
+    static const std::string TILESET_TEX_NAME;
+    // Filename for character sprite sheet
+    static const std::string CHARACTER_FILENAME;
+    // Name in texture manager for tile texture file
+    static const std::string CHARACTER_TEX_NAME;
+
+    // Filename for character sprite sheet
+    static const std::string ENEMY1_FILENAME;
+    // Name in texture manager for tile texture file
+    static const std::string ENEMY1_TEX_NAME;
+
+    // Filename for character sprite sheet
+    static const std::string ENEMY2_FILENAME;
+    // Name in texture manager for tile texture file
+    static const std::string ENEMY2_TEX_NAME;
     
     sf::Keyboard::Key keys_[4];
     
     Logic* logic_;
+    TextureManager* tex_manager_;
     
-    std::map<std::string, sf::Texture> textures_;
+    std::map<std::string, sf::Sprite> sprites_;
+    
     std::map<int, std::pair<int, int>> texture_coords_;
     
     sf::VertexArray tile_vertices_;
+    
+    std::unique_ptr<WalkAnimation> char_walk_;
+    std::unique_ptr<WalkAnimation> enemy1_walk_;
+    std::unique_ptr<WalkAnimation> enemy2_walk_;
+    
+    // Create sprites to be used for rendering entities
+    void initializeSprites();
+    
+    // Get the sprite to be drawn for an entity
+    sf::Sprite& getEntitySprite(Entity* entity);
+    
 
     sf::Font text_font;
     sf::Text time_left_text;
@@ -53,6 +89,7 @@ private:
     void renderTiles(sf::RenderWindow *window);
     void renderEntities(sf::RenderWindow *window);
     void renderParticles(sf::RenderWindow *window);
+    void renderEntity(sf::RenderWindow *window, Entity* entity);
     void renderTimeLeft(sf::RenderWindow *window);
 
 };

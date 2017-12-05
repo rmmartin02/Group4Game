@@ -20,6 +20,8 @@ protected:
 
 public:
     Laser();
+    
+    std::string getTypeId() override;
 
     // Set this laser's angle, in degrees (0 is right, increases clockwise)
     void setDirection(float angle);

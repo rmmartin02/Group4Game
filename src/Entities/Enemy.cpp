@@ -5,21 +5,12 @@
 #include "Entities/Enemy.hpp"
 const float Enemy::COLLISION_SIZE = 32.0f;
 Enemy::Enemy(){
-    sf::Texture texture;
-    if (!texture.create(32, 32))
-    {
-        // error...
-    }
-    sf::Sprite sprite;
-    sprite.setTexture(texture);
-    sprite.setColor(sf::Color(0, 255, 250));
-    this->setSprite(sprite);
-
     b2CircleShape* collider = new b2CircleShape();
     collider->m_p.Set(0.0f, 0.0f);
     collider->m_radius = COLLISION_SIZE;
     this->attachShape(collider);
 
+    is_level_2_ = false;
     hacked_=false;
     alerted_ = false;
     off_patrol = false;
@@ -42,16 +33,6 @@ Enemy::Enemy(){
 }
 
 Enemy::Enemy(bool isLevel2){
-    sf::Texture texture;
-    if (!texture.create(32, 32))
-    {
-        // error...
-    }
-    sf::Sprite sprite;
-    sprite.setTexture(texture);
-    sprite.setColor(sf::Color(0, 255, 250));
-    this->setSprite(sprite);
-
     b2CircleShape* collider = new b2CircleShape();
     collider->m_p.Set(0.0f, 0.0f);
     collider->m_radius = COLLISION_SIZE;
@@ -63,7 +44,8 @@ Enemy::Enemy(bool isLevel2){
     has_path_back_= false;
     has_chase_path_ = false;
     if(isLevel2){
-        move_speed_ = 1;
+        is_level_2_ = true;
+        move_speed_ = 1.5;
         sight_distance_ = 5*32;
         //half
         sight_angle_ = 15;
@@ -72,7 +54,8 @@ Enemy::Enemy(bool isLevel2){
         alert_radius_ = 5*32;
     }
     else{
-        move_speed_ = 1.5;
+        is_level_2_ = false;
+        move_speed_ = 1;
         sight_distance_ = 5*32;
         //half
         sight_angle_ = 15;
@@ -85,6 +68,13 @@ Enemy::Enemy(bool isLevel2){
     cur_chase_node = 1;
 
     last_known_character_pos_ = sf::Vector2f(0,0);
+}
+
+std::string Enemy::getTypeId() {
+    if(is_level_2_){
+        return Entity::ENEMY1_ID;
+    }
+    return Entity::ENEMY2_ID;
 }
 
 bool Enemy::isHacked(){
@@ -111,29 +101,11 @@ void Enemy::setPathBackTrue(){
     has_path_back_ = true;
 }
 
-/*
-void Enemy::setStartPos(sf::Vector2f pos){
-    start_pos_=pos;
-
-}
-
-void Enemy::setDestPos(sf::Vector2f pos){
-    dest_pos_=pos;
-
-}*/
-
 float Enemy::getAttackRadius(){
     return attack_radius_;
 }
-/*
-sf::Vector2f Enemy::getStartPos(){
-    return start_pos_;
-}
 
-sf::Vector2f Enemy::getDestPos(){
-    return dest_pos_;
-}
-*/
+
 sf::Vector2f Enemy::getCurrentPatrolNode(){
     return patrol_paths_.at(cur_patrol_path).at(cur_patrol_node);
 }
@@ -172,7 +144,7 @@ void Enemy::alert(){
     sf::Sprite sprite;
     sprite.setTexture(texture);
     sprite.setColor(sf::Color(255, 0, 0));
-    this->setSprite(sprite);
+    sprite_ = sprite;
 }
 
 void Enemy::unAlert(){
@@ -188,7 +160,7 @@ void Enemy::unAlert(){
     sf::Sprite sprite;
     sprite.setTexture(texture);
     sprite.setColor(sf::Color(0, 255, 250));
-    this->setSprite(sprite);
+    sprite_ = sprite;
 }
 
 void Enemy::signal(std::map<std::string, std::unique_ptr<Entity>> &entities){
@@ -233,10 +205,6 @@ void Enemy::setPatrolPath(std::vector<std::deque<sf::Vector2f>> paths){
 }
 
 std::vector<std::deque<sf::Vector2f>> Enemy::getPatrolPath(){
-    /*for(int i=0;i<patrolPath_.size();i++){
-        std::cout<<"Enemy.cpp:enemy path: "<<patrolPath_[i].x<<" "<<patrolPath_[i].y<<"\n";
-    }
-    std::cout<<"Enemy.cpp:enemy path inspect complete\n";*/
     return patrol_paths_;
 }
 
@@ -292,7 +260,7 @@ void Enemy::followPatrolPath(){
     sf::Vector2f curNode = patrol_paths_.at(cur_patrol_path).at(cur_patrol_node);
     sf::Vector2f dirVec = sf::Vector2f(curNode.x-getPos().x,curNode.y-getPos().y);
     sf::Vector2f velVec = move_speed_ * (dirVec/vecutil::length(dirVec));
-    setVel(velVec);
+    deliberateMotion(velVec);
     /*
     std::cout<< "CurPos: " << getPos().x << " " << getPos().y  << " " 
     << vecutil::distance(curNode,getPos()) <<" CurNode: " << cur_patrol_node 
@@ -312,7 +280,7 @@ void Enemy::followChasePath(){
         curNode = chase_path_.at(cur_chase_node);
         sf::Vector2f dirVec = sf::Vector2f(curNode.x-getPos().x,curNode.y-getPos().y);
         sf::Vector2f velVec = move_speed_ * (dirVec/vecutil::length(dirVec));
-        setVel(velVec);
+        deliberateMotion(velVec);
         /*
         std::cout<< "Chasing: CurPos: " << getPos().x << " " << getPos().y  << " " 
         << vecutil::distance(curNode,getPos()) <<" CurNode: " << cur_chase_node 
@@ -334,7 +302,7 @@ void Enemy::followReturnPath(){
         curNode = return_path_.at(cur_return_node);
         sf::Vector2f dirVec = sf::Vector2f(curNode.x-getPos().x,curNode.y-getPos().y);
         sf::Vector2f velVec = move_speed_ * (dirVec/vecutil::length(dirVec));
-        setVel(velVec);
+        deliberateMotion(velVec);
         /*
         std::cout<< "Chasing: CurPos: " << getPos().x << " " << getPos().y  << " " 
         << vecutil::distance(curNode,getPos()) <<" CurNode: " << cur_return_node 

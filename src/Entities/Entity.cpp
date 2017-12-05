@@ -1,18 +1,20 @@
 #include "Entities/Entity.hpp"
 
 #include "VecUtil.hpp"
-  
+
+const std::string Entity::DEFAULT_ID = "entity";
+const std::string Entity::CHARACTER_ID = "character";
+const std::string Entity::ENEMY1_ID = "enemy1";
+const std::string Entity::ENEMY2_ID = "enemy2";
+const std::string Entity::LASER_ID = "laser";
+
 Entity::Entity(){};
 
-void Entity::update(float delta, int &logic){};
-
-
-  //Renders entity on window using sprite
-void Entity::render (sf::RenderWindow *window) {
-	//std::cout << sprite_.getPosition().x << "\n";
-	sprite_.setPosition(pos_);
-	window->draw(sprite_);
+std::string Entity::getTypeId() {
+    return Entity::DEFAULT_ID;
 }
+
+void Entity::update(float delta, int &logic){};
 
 // Return the current position
 sf::Vector2f Entity::getPos(){
@@ -44,6 +46,11 @@ sf::Vector2f Entity::getVel(){
 // Set the current velocity
 void Entity::setVel(sf::Vector2f vel){
 	vel_ = vel;
+}
+
+// Deliberately set velocity, affecting the faced direction
+void Entity::deliberateMotion(sf::Vector2f vel) {
+    setVel(vel);
     if ( vecutil::nonZero(vel) != 0 ) {
         dir_ = vecutil::radToDeg(vecutil::angle(vel));
     }
@@ -51,12 +58,6 @@ void Entity::setVel(sf::Vector2f vel){
 
 float Entity::getDirection() {
     return dir_;
-}
-
-void Entity::setSprite(sf::Sprite sprite){
-	sprite_ = sprite;
-    sprite_.setOrigin(sprite_.getGlobalBounds().width / 2.0f,
-                      sprite_.getGlobalBounds().height / 2.0f);
 }
 
 void Entity::attachShape(b2Shape* shape){

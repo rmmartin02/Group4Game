@@ -13,7 +13,11 @@
 class Enemy : public Entity{
 public:
     Enemy();
+    
+    std::string getTypeId() override;
+    
     Enemy(bool isLevel2);
+    bool isLevel2();
     bool isHacked();
     bool isAlerted();
     bool isOffPatrol();
@@ -52,6 +56,7 @@ public:
     void attack();
 
 private:
+    bool is_level_2_;
     bool hacked_;
     bool alerted_;
     bool off_patrol;
