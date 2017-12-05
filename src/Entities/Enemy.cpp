@@ -35,7 +35,7 @@ Enemy::Enemy(){
     alert_radius_ = 5*32;
 
     cur_patrol_node = 1;
-    cur_patrol_dir = 1;
+    cur_patrol_path = 0;
     cur_chase_node = 1;
 
     last_known_character_pos_ = sf::Vector2f(0,0);
@@ -81,7 +81,7 @@ Enemy::Enemy(bool isLevel2){
         alert_radius_ = 5*32;  
     }
     cur_patrol_node = 1;
-    cur_patrol_dir = 1;
+    cur_patrol_path = 0;
     cur_chase_node = 1;
 
     last_known_character_pos_ = sf::Vector2f(0,0);
@@ -135,7 +135,7 @@ sf::Vector2f Enemy::getDestPos(){
 }
 */
 sf::Vector2f Enemy::getCurrentPatrolNode(){
-    return patrol_path_.at(cur_patrol_node);
+    return patrol_paths_.at(cur_patrol_path).at(cur_patrol_node);
 }
 
 
@@ -222,17 +222,17 @@ void Enemy::timer(float deltaTime){
     }
 }
 
-void Enemy::setPatrolPath(std::deque<sf::Vector2f> path){
+void Enemy::setPatrolPath(std::vector<std::deque<sf::Vector2f>> paths){
 //    patrolPath_.clear();
-    patrol_path_=path;
+    patrol_paths_=paths;
 }
 
-std::deque<sf::Vector2f> Enemy::getPatrolPath(){
+std::vector<std::deque<sf::Vector2f>> Enemy::getPatrolPath(){
     /*for(int i=0;i<patrolPath_.size();i++){
         std::cout<<"Enemy.cpp:enemy path: "<<patrolPath_[i].x<<" "<<patrolPath_[i].y<<"\n";
     }
     std::cout<<"Enemy.cpp:enemy path inspect complete\n";*/
-    return patrol_path_;
+    return patrol_paths_;
 }
 
 void Enemy::setChasePath(std::deque<sf::Vector2f> path){
@@ -271,21 +271,18 @@ sf::Vector2f Enemy::getLastKnownCharacterPos(){
 }
 
 void Enemy::followPatrolPath(){
-    sf::Vector2f curNode = patrol_path_.at(cur_patrol_node);
+    sf::Vector2f curNode = patrol_paths_.at(cur_patrol_path).at(cur_patrol_node);
     if(vecutil::distance(curNode,getPos())<1){
-        cur_patrol_node += cur_patrol_dir;
-        if (cur_patrol_node<0){
-            std::cout << "Beginning of Patrol\n";
+        cur_patrol_node += 1;
+        if(cur_patrol_node>=patrol_paths_.at(cur_patrol_path).size()){
             cur_patrol_node = 1;
-            cur_patrol_dir = 1;
+            cur_patrol_path += 1;
+            if(cur_patrol_path>=patrol_paths_.size()){
+                cur_patrol_path = 0;
+            }
         }
-        if (cur_patrol_node>patrol_path_.size()-1){
-            std::cout << "End of Patrol\n";
-            cur_patrol_node = patrol_path_.size()-2;
-            cur_patrol_dir = -1;
-        }
-        curNode = patrol_path_.at(cur_patrol_node);
     }
+    curNode = patrol_paths_.at(cur_patrol_path).at(cur_patrol_node);
     sf::Vector2f dirVec = sf::Vector2f(curNode.x-getPos().x,curNode.y-getPos().y);
     sf::Vector2f velVec = move_speed_ * (dirVec/vecutil::length(dirVec));
     setVel(velVec);

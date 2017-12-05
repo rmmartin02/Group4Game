@@ -213,55 +213,56 @@ void Logic::loadEntities(std::string filename) {
         //start_pos and dest_pos are starting and destination, must not be on the wall
         std::istringstream iss(str);
         int level;
-        float start_x, start_y,dest_x,dest_y;
-        iss >> level >> start_x>> start_y >> dest_x >> dest_y;
-        start_x = start_x*32.0f-16.0f;
-        start_y = start_y*32.0f-16.0f;
-        dest_x = dest_x*32.0f-16.0f;
-        dest_y = dest_y*32.0f-16.0f;
-        std::cout << start_x << " " << start_y << " " << dest_x << " " << dest_y << "\n";
-        if(level==1){
-            addEntity("Enemy"+std::to_string(counter),new Enemy(true));
-            Enemy& e=static_cast<Enemy&>(getEntity("Enemy"+std::to_string(counter)));
-            //e.setStartPos(sf::Vector2f(start_x,start_y));
-            e.setPos(sf::Vector2f(start_x,start_y));
-            //e.setDestPos(sf::Vector2f(dest_x,dest_y));
-
-            e.setPatrolPath(pathFinder(sf::Vector2f(start_x,start_y),sf::Vector2f(dest_x,dest_y)));
-            //set additional enemy 1 var here
-
-        }
-        else if(level==2){
-            addEntity("Enemy"+std::to_string(counter),new Enemy(false));
-
-            Enemy& e=static_cast<Enemy&>(getEntity("Enemy"+std::to_string(counter)));
-            //e.setStartPos(sf::Vector2f(start_x,start_y));
-            e.setPos(sf::Vector2f(start_x,start_y));
-            //e.setDestPos(sf::Vector2f(dest_x,dest_y));
-
-            e.setPatrolPath(pathFinder(sf::Vector2f(start_x,start_y),sf::Vector2f(dest_x,dest_y)));
-            //set additional enemy 2 var here
-
-        }
-        else if(level==0){
+        iss >> level;
+        if(level==0){
+            float start_x, start_y,dest_x,dest_y;
+            iss >> start_x>> start_y >> dest_x >> dest_y;
             addEntity("Laser"+std::to_string(counter),new Laser());
             Laser& l=static_cast<Laser&>(getEntity("Laser"+std::to_string(counter)));
             l.setPos(sf::Vector2f(start_x,start_y));
             l.setDirection(dest_x);
             l.setRotate(dest_x,dest_y);
-
+        }
+        else{
+            float pos_x,pos_y;
+            std::vector<sf::Vector2f> positions;
+            while(iss>>pos_x){
+                iss>>pos_y;
+                pos_x = (pos_x+1.0f)*32.0f-16.0f;
+                pos_y = (pos_y+1.0f)*32.0f-16.0f;
+                positions.push_back(sf::Vector2f(pos_x,pos_y));
+                std::cout << pos_x  << " " << pos_y << "\n";
+            }
+            if(level==1){
+                std::cout << "1\n";
+                addEntity("Enemy"+std::to_string(counter),new Enemy(true));
+                std::cout << "2\n";
+                Enemy& e=static_cast<Enemy&>(getEntity("Enemy"+std::to_string(counter)));
+                std::cout << "3\n";
+                e.setPos(positions.at(0));
+                std::cout << "4\n";
+                e.setPatrolPath(multiPathFinder(positions));
+                std::cout << "5\n";
+            }
+            else if(level==2){
+                addEntity("Enemy"+std::to_string(counter),new Enemy(false));
+                Enemy& e=static_cast<Enemy&>(getEntity("Enemy"+std::to_string(counter)));
+                e.setPos(positions.at(0));
+                e.setPatrolPath(multiPathFinder(positions));
+            }
         }
 
         counter=counter+1;
     }
 
     //testing
-    
+    /*
     std::deque<sf::Vector2f> enemy1path=static_cast<Enemy&> (getEntity("Enemy1")).getPatrolPath();
     for (int i=0;i< enemy1path.size();i++) {
         std::cout<<"logic.cpp::inspect enemyPath" << enemy1path[i].x<<" "<<enemy1path[i].y <<  "\n";
         //std::cout<<"inspect tile path"<<path_[i].first<<" "<<path_[i].second<<"\n";
     }
+    */
 }
 
 void Logic::buildWallShapes() {
@@ -548,4 +549,17 @@ int Logic::computeG(std::pair<int,int> curPair){
 
 int Logic::computeH(std::pair<int,int> curPair,std::pair<int,int> goalPair){
     return std::abs(curPair.first-goalPair.first)+std::abs(curPair.second-goalPair.second);
+}
+
+std::vector<std::deque<sf::Vector2f>> Logic::multiPathFinder(std::vector<sf::Vector2f> positions){
+    std::vector<std::deque<sf::Vector2f>> paths;
+    std::cout << "shawdy\n";
+    for (int i=0;i<positions.size()-1;i++){
+        paths.push_back(pathFinder(positions.at(i),positions.at(i+1)));
+        std::cout << "yeah\n";
+    }
+    std::cout << "no\n";
+    paths.push_back(pathFinder(positions.at(0),positions.at(positions.size()-1)));
+    std::cout << "maybe\n";
+    return paths;
 }

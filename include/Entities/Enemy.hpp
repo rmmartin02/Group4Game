@@ -24,11 +24,11 @@ public:
     //void setDestPos(sf::Vector2f pos);
     void setPathBackTrue();
     void setLastKnownCharacterPos(sf::Vector2f pos);
-    void setPatrolPath(std::deque<sf::Vector2f> path);
+    void setPatrolPath(std::vector<std::deque<sf::Vector2f>> paths);
     void setChasePath(std::deque<sf::Vector2f> path);
     void setReturnPath(std::deque<sf::Vector2f> path);
     std::deque<sf::Vector2f> getChasePath();
-    std::deque<sf::Vector2f> getPatrolPath();
+    std::vector<std::deque<sf::Vector2f>> getPatrolPath();
     std::deque<sf::Vector2f> getReturnPath();
 
     //follows currently set path from cur node to next node
@@ -71,10 +71,10 @@ private:
     sf::Vector2f last_known_character_pos_;
 
     int cur_patrol_node;
-    int cur_patrol_dir;
+    int cur_patrol_path;
     int cur_chase_node;
     int cur_return_node;
-    std::deque<sf::Vector2f> patrol_path_;
+    std::vector<std::deque<sf::Vector2f>> patrol_paths_;
     std::deque<sf::Vector2f> chase_path_;
     std::deque<sf::Vector2f> return_path_;
 };
