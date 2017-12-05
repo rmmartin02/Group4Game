@@ -121,7 +121,7 @@ void GameScreen::renderTiles(sf::RenderWindow *window) {
 
 void GameScreen::renderEntities(sf::RenderWindow *window) {
 	// debug message to test that direction private variable works
-    std::cout << "GameScreen.cpp: character dir: " << logic_->getCharacter().getDirection() << std::endl;
+    //std::cout << "GameScreen.cpp: character dir: " << logic_->getCharacter().getDirection() << std::endl;
 
     for (auto& pair : logic_->getEntities()) {
         pair.second->render(window);

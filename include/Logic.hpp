@@ -116,6 +116,7 @@ private:
     //return: a DEQUE of vector2f(location) from the start to the destination position,
     //          the Vector2f location is the CENTER of the tile
     std::deque<sf::Vector2f> pathFinder(sf::Vector2f startPos, sf::Vector2f destPos);
+    std::vector<std::deque<sf::Vector2f>> multiPathFinder(std::vector<sf::Vector2f> positions);
     std::vector<std::vector<Node>> tileNodeMap_;
 
     std::set< std::pair<int,int>> closedSet_;

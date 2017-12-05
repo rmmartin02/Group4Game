@@ -25,6 +25,8 @@ public:
   // Return the current position
   sf::Vector2f getPos();
 
+  sf::Vector2f getCenterPos();
+
   // Place this entity at a new position
   void setPos(sf::Vector2f pos);
 
@@ -69,6 +71,7 @@ protected:
 
   // Box2D shape object used for collision calculations  
   std::unique_ptr<b2Shape> coll_shape_;
+
 };
 
 #endif // ENTITY_HPP
