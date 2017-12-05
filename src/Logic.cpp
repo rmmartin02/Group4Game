@@ -401,9 +401,12 @@ std::deque<sf::Vector2f> Logic::pathFinder(sf::Vector2f startPos, sf::Vector2f e
     openSet_.clear();
     closedSet_.clear();
     surroundSet_.clear();
+
     path_.clear();
     enemyPath_.clear();
     tileNodeMap_.clear();
+    path_.shrink_to_fit();
+    enemyPath_.shrink_to_fit();
     std::pair<int,int> minPair;
 
     int startRow;
@@ -554,9 +557,13 @@ int Logic::computeH(std::pair<int,int> curPair,std::pair<int,int> goalPair){
 
 std::vector<std::deque<sf::Vector2f>> Logic::multiPathFinder(std::vector<sf::Vector2f> positions){
     std::vector<std::deque<sf::Vector2f>> paths;
+    paths.clear();
+    paths.shrink_to_fit();
     for (int i=0;i<positions.size()-1;i++){
         std::cout << positions.at(i).x << " " << positions.at(i).y << " " << positions.at(i+1).x << " " << positions.at(i+1).y << "\n";
         paths.push_back(pathFinder(positions.at(i),positions.at(i+1)));
     }
+    positions.clear();
+    positions.shrink_to_fit();
     return paths;
 }
