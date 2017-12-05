@@ -63,9 +63,9 @@ void Logic::update(float delta) {
                 }
             }
             if(enemy->isAlerted()){
-                std::cout << "Enemy chasing\n";
+                //std::cout << "Enemy chasing\n";
                 enemy->followChasePath();
-                std::cout << "Followed path";
+                //std::cout << "Followed path";
             }
             else{
                 //return to patrol route/go to next patrol point
@@ -553,13 +553,9 @@ int Logic::computeH(std::pair<int,int> curPair,std::pair<int,int> goalPair){
 
 std::vector<std::deque<sf::Vector2f>> Logic::multiPathFinder(std::vector<sf::Vector2f> positions){
     std::vector<std::deque<sf::Vector2f>> paths;
-    std::cout << "shawdy\n";
     for (int i=0;i<positions.size()-1;i++){
+        std::cout << positions.at(i).x << " " << positions.at(i).y << " " << positions.at(i+1).x << " " << positions.at(i+1).y << "\n";
         paths.push_back(pathFinder(positions.at(i),positions.at(i+1)));
-        std::cout << "yeah\n";
     }
-    std::cout << "no\n";
-    paths.push_back(pathFinder(positions.at(0),positions.at(positions.size()-1)));
-    std::cout << "maybe\n";
     return paths;
 }

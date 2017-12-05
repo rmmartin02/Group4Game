@@ -224,6 +224,11 @@ void Enemy::timer(float deltaTime){
 
 void Enemy::setPatrolPath(std::vector<std::deque<sf::Vector2f>> paths){
 //    patrolPath_.clear();
+    for(int i = 0; i<paths.size(); i++){
+        for(int j = 0; j<paths.at(i).size();j++){ 
+            std::cout << paths.at(i).at(j).x << " " << paths.at(i).at(j).y << "\n";
+        }
+    }
     patrol_paths_=paths;
 }
 
@@ -271,18 +276,20 @@ sf::Vector2f Enemy::getLastKnownCharacterPos(){
 }
 
 void Enemy::followPatrolPath(){
-    sf::Vector2f curNode = patrol_paths_.at(cur_patrol_path).at(cur_patrol_node);
-    if(vecutil::distance(curNode,getPos())<1){
+    if(vecutil::distance(patrol_paths_.at(cur_patrol_path).at(cur_patrol_node),getPos())<1){
         cur_patrol_node += 1;
-        if(cur_patrol_node>=patrol_paths_.at(cur_patrol_path).size()){
+        if(cur_patrol_node == patrol_paths_.at(cur_patrol_path).size()){
+            //std::cout << "Reset node\n";
             cur_patrol_node = 1;
             cur_patrol_path += 1;
-            if(cur_patrol_path>=patrol_paths_.size()){
+            if(cur_patrol_path == patrol_paths_.size()){
+                //std::cout << "Reset path\n";
                 cur_patrol_path = 0;
             }
         }
+        //std::cout << cur_patrol_node << " " << cur_patrol_path << "\n";
     }
-    curNode = patrol_paths_.at(cur_patrol_path).at(cur_patrol_node);
+    sf::Vector2f curNode = patrol_paths_.at(cur_patrol_path).at(cur_patrol_node);
     sf::Vector2f dirVec = sf::Vector2f(curNode.x-getPos().x,curNode.y-getPos().y);
     sf::Vector2f velVec = move_speed_ * (dirVec/vecutil::length(dirVec));
     setVel(velVec);
