@@ -53,12 +53,12 @@ void Game::Loop() {
             
             // Pass events to screen manager
             screenManager->interpretInput(events);
+            screenManager->render(window);
             
             //Don't really like this
             if (screenManager->isOnGameScreen()){
                 logic->update(deltaTime);
                 if(logic->getTimeLeft()<=0){
-
                     screenManager->switchToTimeout(window);
                 }
                 else if(logic->hackEnemy){
@@ -68,13 +68,13 @@ void Game::Loop() {
 
             }
             if (screenManager->isOnMinigameScreen()){
-                std::cout<<"Game.cpp::on minigame screen, getting mouse input\n";
+
                 if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
                     static_cast<MiniGameScreen*>(screenManager->current_screen)->moveOnClick(
                             static_cast<MiniGameScreen*>(screenManager->current_screen)->shuffledPuzzle, sf::Vector2f(sf::Mouse::getPosition(*window)), window);
             }
 
-            screenManager->render(window);
+
             //window->display();
 
             clock.restart();

@@ -474,28 +474,28 @@ MiniGameScreenBackend MiniGameScreenBackend::shuffleBoard(int pathLength) {
         //std::cout << "return this" << std::endl;
         return *this;
 
-    } else if (direction == 0 && this->getValue(row - 1, column) != 0) {
+    } else if (direction == 0 &&row!=0&& this->getValue(row - 1, column) != 0) {
 
         //EMPTY SPACE MOVES UP
         MiniGameScreenBackend newState;
         newState = this->move(row - 1, column, MOVEDOWN);
         return newState.shuffleBoard(pathLength - 1);
 
-    } else if (direction == 1 && this->getValue(row, column + 1) != 0) {
+    } else if (direction == 1 &&column!=2&& this->getValue(row, column + 1) != 0) {
 
         //EMPTY SPACE MOVES RIGHT
         MiniGameScreenBackend newState;
         newState = this->move(row, column + 1, MOVELEFT);
         return newState.shuffleBoard(pathLength - 1);
 
-    } else if (direction == 2 && this->getValue(row + 1, column) != 0) {
+    } else if (direction == 2 &&row!=2&& this->getValue(row + 1, column) != 0) {
 
         //EMPTY SPACE MOVES DOWN
         MiniGameScreenBackend newState;
         newState = this->move(row + 1, column, MOVEUP);
         return newState.shuffleBoard(pathLength - 1);
 
-    } else if (direction == 3 && this->getValue(row, column - 1) != 0) {
+    } else if (direction == 3 &&column!=0&& this->getValue(row, column - 1) != 0) {
 
         //EMPTY SPACE MOVES LEFT
         MiniGameScreenBackend newState;
