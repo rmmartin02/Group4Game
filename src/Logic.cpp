@@ -7,7 +7,7 @@
 
 Logic::Logic() {
     
-    time_left_ = .1 * 60;
+    time_left_ = 10 * 60;
     
     //entities_["Character"] = Character();
     //entities_["Character"].setVel(sf::Vector2f(0,0));
