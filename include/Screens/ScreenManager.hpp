@@ -7,6 +7,7 @@
 #include "Screens/LoadingScreen.hpp"
 #include "Screens/ControlsScreen.hpp"
 #include "Screens/TimeoutScreen.hpp"
+#include "Screens/InfoScreen.hpp"
 
 class ScreenManager{
 
@@ -27,6 +28,7 @@ private:
     GameScreen *game_screen;
     ControlsScreen *controls_screen;
     TimeoutScreen *timeout_screen;
+    InfoScreen *info_screen;
     Logic* logic_;
     sf::RenderWindow* window;
 };

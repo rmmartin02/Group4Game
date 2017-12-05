@@ -7,6 +7,7 @@ ScreenManager::ScreenManager(Logic *logic){
 	menu_screen = new MenuScreen();
 	controls_screen = new ControlsScreen();
     timeout_screen = new TimeoutScreen();
+    info_screen = new InfoScreen();
 	current_screen = menu_screen;
 }
 
@@ -27,8 +28,10 @@ void ScreenManager::interpretInput(std::vector<sf::Event>& events){
                     if(menu_screen->getHighlighted()==0){
                         current_screen = game_screen;
                     }
-                    else{
+                    else if(menu_screen->getHighlighted()==1){
                         current_screen = controls_screen;
+                    }else{
+                        current_screen = info_screen;
                     }
                     eventAccepted = true;
                 }
@@ -46,6 +49,17 @@ void ScreenManager::interpretInput(std::vector<sf::Event>& events){
                     }
                 }
             }
+        }
+        else if(current_screen==info_screen){
+            if (event.type == sf::Event::KeyPressed){
+                if (event.key.code == sf::Keyboard::Return){
+                    current_screen=menu_screen;
+
+                }
+                eventAccepted = true;
+
+            }
+
         }
         //otherwise send event to appropriate screen to interpret
         if(!eventAccepted)
