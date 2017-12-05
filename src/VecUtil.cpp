@@ -21,6 +21,14 @@ float vecutil::dotProd(sf::Vector2f a, sf::Vector2f b) {
     return a.x * b.x + a.y * b.y;
 }
 
+float vecutil::crossProd(sf::Vector2f a, sf::Vector2f b){
+    return a.x*b.y - a.y*b.x;
+}
+
+float vecutil::distance(sf::Vector2f a, sf::Vector2f b){
+    return sqrt(pow(a.x-b.x,2)+pow(a.y-b.y,2));
+}
+
 bool vecutil::nonZero(sf::Vector2f v) {
     return v.x != 0 || v.y != 0;
 }
@@ -30,6 +38,8 @@ float vecutil::length(sf::Vector2f vec) { return sqrt(dotProd(vec, vec)); }
 float vecutil::angle(sf::Vector2f vec) { return atan2(vec.y, vec.x); }
 
 float vecutil::radToDeg(float rad) { return rad * 180.0f / pi(); }
+
+float vecutil::degToRad(float deg){return deg*pi()/180.0f;}
 
 float vecutil::pi() { return 4 * atan(1); }
 

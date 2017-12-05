@@ -29,8 +29,14 @@ bool nonZero(sf::Vector2f v);
 // Returns a dot product of two vectors.
 float dotProd(sf::Vector2f, sf::Vector2f);
 
+//Returns a cross product of two vectors.
+float crossProd(sf::Vector2f, sf::Vector2f);
+
 // Returns the magnitude of the vector.
 float length(sf::Vector2f);
+
+//Returns distance between two vectors
+float distance(sf::Vector2f, sf::Vector2f);
 
 // Returns the polar angle of this vector's direction, in radians.
 // Can return nan or other error-y values for vectors whose angle is uncertain,
@@ -39,6 +45,9 @@ float angle(sf::Vector2f);
 
 // Converts angle in radians to angle in degrees.
 float radToDeg(float rad);
+
+//Converts degree to radians
+float degToRad(float deg);
 
 // Returns an approximate value for pi.
 float pi();

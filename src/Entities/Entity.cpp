@@ -4,7 +4,8 @@
 
 const std::string Entity::DEFAULT_ID = "entity";
 const std::string Entity::CHARACTER_ID = "character";
-const std::string Entity::ENEMY_ID = "enemy";
+const std::string Entity::ENEMY1_ID = "enemy1";
+const std::string Entity::ENEMY2_ID = "enemy2";
 const std::string Entity::LASER_ID = "laser";
 
 Entity::Entity(){};
@@ -18,6 +19,10 @@ void Entity::update(float delta, int &logic){};
 // Return the current position
 sf::Vector2f Entity::getPos(){
 	return pos_;
+}
+
+sf::Vector2f Entity::getCenterPos(){
+	return sf::Vector2f(pos_.x-16.0f,pos_.y-16.0f);
 }
 
 // Place this entity at a new position

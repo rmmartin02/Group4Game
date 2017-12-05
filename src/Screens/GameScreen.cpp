@@ -10,6 +10,12 @@ const std::string GameScreen::TILESET_TEX_NAME = "tileset";
 const std::string GameScreen::CHARACTER_FILENAME = "../resource/Entities/character_sprite.png";
 const std::string GameScreen::CHARACTER_TEX_NAME = "character_sheet";
 
+const std::string GameScreen::ENEMY1_FILENAME = "../resource/Entities/robot_sprite.png";
+const std::string GameScreen::ENEMY1_TEX_NAME = "enemy1_sheet";
+
+const std::string GameScreen::ENEMY2_FILENAME = "../resource/Entities/alien_sprite.png";
+const std::string GameScreen::ENEMY2_TEX_NAME = "enemy2_sheet";
+
 GameScreen::GameScreen(Logic* logic, TextureManager* tex_manager) {
     logic_ = logic;
     tex_manager_ = tex_manager;
@@ -20,6 +26,22 @@ GameScreen::GameScreen(Logic* logic, TextureManager* tex_manager) {
     keys_[2] = sf::Keyboard::Left;
     keys_[3] = sf::Keyboard::Right;
     loadKeys();
+
+    if (!text_font.loadFromFile("../resource/fonts/Adventure.otf"))
+    {
+        // error...
+    }
+    time_left_text.setFont(text_font);
+
+    time_left_text.setString("Time Left: 10:00");
+    time_left_text.setFillColor(sf::Color::White);
+    time_left_text.setCharacterSize(36);
+
+    time_left_background = sf::RectangleShape (sf::Vector2f(time_left_text.getLocalBounds().width, time_left_text.getLocalBounds().height+12));
+    time_left_background.setFillColor(sf::Color(66, 217, 244, 200));
+    time_left_background.setOutlineThickness(5);
+    time_left_background.setOutlineColor(sf::Color(128,128,128,200));
+    time_left_width = time_left_text.getLocalBounds().width;
 }
 
 bool GameScreen::loadTextures() {
@@ -34,6 +56,20 @@ bool GameScreen::loadTextures() {
     success = success && tex_manager_->loadTexture(CHARACTER_TEX_NAME, CHARACTER_FILENAME);
     // texture coordinates for walk animation assigned
     char_walk_ = std::unique_ptr<WalkAnimation>(new WalkAnimation(sf::IntRect(0,0,32,32), 
+                                                                  sf::IntRect(32,0,32,32), 
+                                                                  sf::IntRect(0,32,32,32)));
+    
+    // load character texture
+    success = success && tex_manager_->loadTexture(ENEMY1_TEX_NAME, ENEMY1_FILENAME);
+    // texture coordinates for walk animation assigned
+    enemy1_walk_ = std::unique_ptr<WalkAnimation>(new WalkAnimation(sf::IntRect(0,0,32,32), 
+                                                                  sf::IntRect(32,0,32,32), 
+                                                                  sf::IntRect(0,32,32,32)));
+    
+    // load character texture
+    success = success && tex_manager_->loadTexture(ENEMY2_TEX_NAME, ENEMY2_FILENAME);
+    // texture coordinates for walk animation assigned
+    enemy2_walk_ = std::unique_ptr<WalkAnimation>(new WalkAnimation(sf::IntRect(0,0,32,32), 
                                                                   sf::IntRect(32,0,32,32), 
                                                                   sf::IntRect(0,32,32,32)));
     
@@ -68,7 +104,10 @@ void GameScreen::initializeSprites() {
     sprites_[Entity::DEFAULT_ID] = blank_sprite;
     
     blank_sprite.setColor(sf::Color(0, 255, 250));
-    sprites_[Entity::ENEMY_ID] = blank_sprite;
+    sprites_[Entity::ENEMY1_ID] = blank_sprite;
+
+    blank_sprite.setColor(sf::Color(0, 255, 250));
+    sprites_[Entity::ENEMY2_ID] = blank_sprite;
 
     blank_sprite.setColor(sf::Color(0, 255, 200));
     sprites_[Entity::LASER_ID] = blank_sprite;
@@ -82,6 +121,26 @@ void GameScreen::initializeSprites() {
                       char_sprite.getGlobalBounds().height / 2.0f);
     //blank_sprite.setColor(sf::Color(0, 255, 0));
     sprites_[Entity::CHARACTER_ID] = char_sprite;
+
+    sf::Texture& enemy1_tex = tex_manager_->getRef(ENEMY1_TEX_NAME);
+    sf::Sprite enemy1_sprite;
+    //char_sprite.setColor(sf::Color(0,0,0,0));
+    enemy1_sprite.setTexture(enemy1_tex);
+    enemy1_sprite.setTextureRect(enemy1_walk_->getStandingFrame());
+    enemy1_sprite.setOrigin(enemy1_sprite.getGlobalBounds().width / 2.0f,
+                      enemy1_sprite.getGlobalBounds().height / 2.0f);
+    //blank_sprite.setColor(sf::Color(0, 255, 0));
+    sprites_[Entity::ENEMY1_ID] = enemy1_sprite;
+
+    sf::Texture& enemy2_tex = tex_manager_->getRef(ENEMY2_TEX_NAME);
+    sf::Sprite enemy2_sprite;
+    //char_sprite.setColor(sf::Color(0,0,0,0));
+    enemy2_sprite.setTexture(enemy2_tex);
+    enemy2_sprite.setTextureRect(enemy2_walk_->getStandingFrame());
+    enemy2_sprite.setOrigin(enemy2_sprite.getGlobalBounds().width / 2.0f,
+                      enemy2_sprite.getGlobalBounds().height / 2.0f);
+    //blank_sprite.setColor(sf::Color(0, 255, 0));
+    sprites_[Entity::ENEMY2_ID] = enemy2_sprite;
 }
 
 sf::Sprite& GameScreen::getEntitySprite(Entity* e) {
@@ -183,6 +242,14 @@ void GameScreen::renderEntity(sf::RenderWindow *window, Entity* entity) {
         char_walk_->adjustSprite(sprite, entity);
         sprite.setRotation(entity->getDirection() + 90);
     }
+    if (entity->getTypeId() == Entity::ENEMY1_ID) {
+        enemy1_walk_->adjustSprite(sprite, entity);
+        sprite.setRotation(entity->getDirection() + 90);
+    }
+    if (entity->getTypeId() == Entity::ENEMY2_ID) {
+        enemy2_walk_->adjustSprite(sprite, entity);
+        sprite.setRotation(entity->getDirection() + 90);
+    }
     
     window->draw(sprite);
 }
@@ -200,6 +267,20 @@ void GameScreen::renderParticles(sf::RenderWindow *window) {
     }
 }
 
+void GameScreen::renderTimeLeft(sf::RenderWindow *window){
+    int time = static_cast<int>(logic_->getTimeLeft());
+    int minutes = time/60;
+    int seconds = time%60;
+    if(time==60){
+        time_left_text.setFillColor(sf::Color::Red);
+    }
+    time_left_text.setString("Time Left: " + std::to_string(minutes) + ":" + (seconds>=10 ? std::to_string(seconds) : "0" + std::to_string(seconds)));
+    time_left_text.setPosition(sf::Vector2f(window->getView().getCenter().x - time_left_width/2, 
+        window->getView().getCenter().y-window->getView().getSize().y/2+10));
+    window->draw(time_left_background, time_left_text.getTransform());
+    window->draw(time_left_text);
+}
+
 
 void GameScreen::render(sf::RenderWindow *window) {
     window->clear();
@@ -207,6 +288,8 @@ void GameScreen::render(sf::RenderWindow *window) {
     renderTiles(window);
     renderEntities(window);
     renderParticles(window);
+    centerCameraOnCharacter(window);
+    renderTimeLeft(window);
     window->display();
 }
 

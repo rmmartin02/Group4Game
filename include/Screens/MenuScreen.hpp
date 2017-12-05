@@ -25,8 +25,9 @@ private:
 	sf::Text tagline;
 	sf::Text start;
 	sf::Text options;
+	sf::Text info;
 
-	sf::Text* menu_options[2];
+	sf::Text* menu_options[3];
 	int highlighted = 0;
 	//sf::RectangleShape start;
 };

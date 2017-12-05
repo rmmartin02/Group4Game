@@ -1,6 +1,9 @@
 #ifndef GAMESCREEN_HPP
 #define GAMESCREEN_HPP
 
+#include "Global.hpp"
+#include "Screens/Screen.hpp"
+#include "Logic.hpp"
 #include <sstream>
 #include <fstream>
 
@@ -42,6 +45,16 @@ private:
     static const std::string CHARACTER_FILENAME;
     // Name in texture manager for tile texture file
     static const std::string CHARACTER_TEX_NAME;
+
+    // Filename for character sprite sheet
+    static const std::string ENEMY1_FILENAME;
+    // Name in texture manager for tile texture file
+    static const std::string ENEMY1_TEX_NAME;
+
+    // Filename for character sprite sheet
+    static const std::string ENEMY2_FILENAME;
+    // Name in texture manager for tile texture file
+    static const std::string ENEMY2_TEX_NAME;
     
     sf::Keyboard::Key keys_[4];
     
@@ -55,6 +68,8 @@ private:
     sf::VertexArray tile_vertices_;
     
     std::unique_ptr<WalkAnimation> char_walk_;
+    std::unique_ptr<WalkAnimation> enemy1_walk_;
+    std::unique_ptr<WalkAnimation> enemy2_walk_;
     
     // Create sprites to be used for rendering entities
     void initializeSprites();
@@ -62,14 +77,20 @@ private:
     // Get the sprite to be drawn for an entity
     sf::Sprite& getEntitySprite(Entity* entity);
     
+
+    sf::Font text_font;
+    sf::Text time_left_text;
+    sf::RectangleShape time_left_background;
+    float time_left_width;
+
     // Rendering order is tiles -> entities -> particles
     // If we find exceptions to this, we can restructure how this class orders
     // things. 
     void renderTiles(sf::RenderWindow *window);
     void renderEntities(sf::RenderWindow *window);
     void renderParticles(sf::RenderWindow *window);
-    
     void renderEntity(sf::RenderWindow *window, Entity* entity);
+    void renderTimeLeft(sf::RenderWindow *window);
 
 };
 

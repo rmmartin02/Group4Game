@@ -16,7 +16,7 @@ Game::~Game()
 
 void Game::initialize() {
     // if it can fail, or takes a long time, it shouldn't be in a constructor
-    logic->load("../resource/maps/exMap.csv", "../resource/EntityLevel1.txt");
+    logic->load("../resource/maps/Map1.csv", "../resource/EntityLevel1.txt");
     screenManager->loadTextures();
 }
 
@@ -49,8 +49,14 @@ void Game::Loop() {
             screenManager->interpretInput(events);
             
             //Don't really like this
-            if (screenManager->isOnGameScreen())
+            if (screenManager->isOnGameScreen()){
                 logic->update(deltaTime);
+                if(logic->getTimeLeft()<=0){
+
+                    screenManager->switchToTimeout(window);
+                }
+
+            }
             
             screenManager->render(window);
             //window->display();
