@@ -12,6 +12,10 @@ int boardSize;
 int pathLength;
 
 MiniGameScreenBackend::MiniGameScreenBackend() {
+    
+    for(int i=0;i<10;i++){
+        std::cout<<"generate random"<<rand()%100<<"\n";
+    }
 
     //MiniGameScreenBackend::Operation Operation;
     //int pathLength = 0;
@@ -421,6 +425,7 @@ MiniGameScreenBackend MiniGameScreenBackend::shuffleBoard(int pathLength) {
         if (column == 2 && row == 2) {
 
             int array [] = {0, 3}; //CORNER CASE: Excludes RIGHT & DOWN
+            std::cout<<"line 424"<<sizeof(array)<<"\n";
             direction = this->getRandom(array);
 
         } else if (column == 0 && row == 0) {
@@ -530,7 +535,8 @@ MiniGameScreenBackend* MiniGameScreenBackend::getStateWithShortestPath() {
 int MiniGameScreenBackend::getRandom (int array[]) {
 
     // METHOD TO PULL RANDOM INTEGER FROM A GIVEN ARRAY
-    int randIndex = rand() % sizeof(array);
+
+    int randIndex = rand() % (sizeof(array)/4);
 
     std::cout << "Rand index is: " << randIndex << std::endl;
 

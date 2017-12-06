@@ -5,6 +5,7 @@
 #include "Game.hpp"
 
 Game::Game(){
+    srand(time(NULL));
     window = new sf::RenderWindow(sf::VideoMode(SCREEN_WIDTH,SCREEN_HEIGHT,32), "Agent P: Infiltration");
     logic = new Logic();
     screenManager = new ScreenManager(logic);

@@ -9,6 +9,7 @@
 #include <vector>
 
 
+
 class MiniGameScreenBackend{
 
 public:
@@ -18,6 +19,9 @@ public:
     int boardSize;
 
     int pathLength;
+
+
+    int randIndex;
 
     MiniGameScreenBackend* parentBoard;
 
