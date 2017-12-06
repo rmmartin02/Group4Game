@@ -215,7 +215,14 @@ void Logic::loadEntities(std::string filename) {
         std::istringstream iss(str);
         int level;
         iss >> level;
-        if(level==0){
+        if(level==-1){
+            counter=counter-1;
+
+            float pos_x, pos_y;
+            iss>>pos_x>>pos_y;
+            getCharacter().setPos(sf::Vector2f((pos_x+1.0f)*32.0f-16.0f,(pos_y+1.0f)*32.0f-16.0f));
+        }
+        else if(level==0){
             float start_x, start_y,dest_x,dest_y;
             iss >> start_x>> start_y >> dest_x >> dest_y;
             addEntity("Laser"+std::to_string(counter),new Laser());
