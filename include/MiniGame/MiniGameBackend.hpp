@@ -7,6 +7,9 @@
 #define MINIGAMESCREENBACKEND_HPP
 
 #include <vector>
+#include <vector>
+#include <cmath>
+#include <iostream>
 
 
 class MiniGameScreenBackend{
