@@ -18,14 +18,14 @@ void Game::initialize() {
     // if it can fail, or takes a long time, it shouldn't be in a constructor
     
     level_manager_.addLevel("Level 1", "../resource/maps/Map1.csv", "../resource/EntityLevel1.txt");
-    level_manager_.addLevel("Level 2", "../resource/maps/Map2.csv", "../resource/EntityLevel1.txt");
+    level_manager_.addLevel("Level 2", "../resource/maps/Map2.csv", "../resource/TODO.txt");
 
     //logic->load("Level 1", "../resource/maps/Map1.csv", "../resource/EntityLevel1.txt", 10 * 60);
     
     logic->load(level_manager_.getCurrentLevelName(),
                 level_manager_.getCurrentTileFilename(),
                 level_manager_.getCurrentEntityFilename(),
-                10);
+                10 * 60);
     screenManager->loadTextures();
 }
 
@@ -81,8 +81,7 @@ void Game::Loop() {
                             std::cout << "Game.cpp: next level loaded." << std::endl;
                         }
                         else {
-                            // switch to the final hacking challenge, or an intermediate screen that introduces it
-                            // SWITCHEROO
+                            // TODO switch to the final hacking challenge, or an intermediate screen that introduces it
                         }
                         
                         break;

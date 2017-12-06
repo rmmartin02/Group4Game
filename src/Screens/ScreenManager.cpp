@@ -61,6 +61,15 @@ void ScreenManager::interpretInput(std::vector<sf::Event>& events){
             }
 
         }
+        else if (current_screen == timeout_screen) {
+            if (event.type == sf::Event::KeyPressed) {
+                if (event.key.code == sf::Keyboard::Space) {
+                    std::cout << "ScreenManager: debug: tried to switch back to gamescreen" << std::endl;
+                    current_screen = game_screen;
+                }
+                eventAccepted = true;
+            }
+        }
         //otherwise send event to appropriate screen to interpret
         if(!eventAccepted)
             screen_events.push_back(event);

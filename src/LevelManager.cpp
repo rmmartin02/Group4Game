@@ -29,9 +29,17 @@ std::string LevelManager::getCurrentEntityFilename() {
 }
 
 bool LevelManager::nextLevel() {
-    current_level_++;
-    if (current_level_ == total_levels_) {
+    if (current_level_ >= total_levels_-1) {
         return false;
     }
+    current_level_++;
+    return true;
+}
+
+bool LevelManager::setLevel(int level) {
+    if (level < 0 || level >= total_levels_) {
+        return false;
+    }
+    current_level_ = level;
     return true;
 }

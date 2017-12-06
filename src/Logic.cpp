@@ -14,14 +14,17 @@ Logic::PlayState Logic::getPlayState() {
 }
 
 void Logic::update(float delta) {
+    // check for timeout
+    if (time_left_ < 0) {
+        onTimeExpired();
+        return;
+    }
+    
+    // should this check be here?
     if (state_ == PlayState::PLAYING) {
         // adjust the timer
         time_left_ -= delta;
-        if (time_left_ < 0) {
-            onTimeExpired();
-            return;
-        }
-        
+    
         // update every entity.
         for ( auto& pair : getEntities() ) {
             Entity& e = *(pair.second.get());
@@ -94,6 +97,9 @@ void Logic::update(float delta) {
                 }
             }
         }
+    }
+    else {
+        std::cout << "Logic.cpp: updated logic while not playing" << std::endl;
     }
 }
 
@@ -269,6 +275,7 @@ void Logic::loadEntities(std::string filename) {
                 positions.push_back(sf::Vector2f(pos_x,pos_y));
                 std::cout << pos_x  << " " << pos_y << "\n";
             }
+            
             if(level==1){
                 std::cout << "1\n";
                 addEntity("Enemy"+std::to_string(counter),new Enemy(true));
@@ -377,7 +384,7 @@ bool Logic::coordsInBounds(std::pair<int,int> coords) {
 }
 
 bool Logic::tileIsWall(int tile) {
-    return tile != 4 && tile != 5 && !tileIsExit(tile);
+    return tile != 4 && tile != 5 && tile != 14 && !tileIsExit(tile);
 }
 
 bool Logic::tileIsExit(int tile) {

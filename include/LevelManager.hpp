@@ -23,6 +23,9 @@ public:
     // Increments current level by 1. If there are no more levels, return false.
     // If there are still levels to play, return true.
     bool nextLevel();
+    
+    // Sets current level to a given number. Returns true if successful, false if no such level exists.
+    bool setLevel(int level);
 
 private:
     int current_level_;
