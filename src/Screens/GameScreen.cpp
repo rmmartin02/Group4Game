@@ -27,13 +27,13 @@ GameScreen::GameScreen(Logic* logic, TextureManager* tex_manager) {
     keys_[3] = sf::Keyboard::Right;
     loadKeys();
 
-    if (!text_font.loadFromFile("../resource/fonts/Adventure.otf"))
+    if (!text_font.loadFromFile("../resource/fonts/digital-7-italic.ttf"))
     {
         // error...
     }
     time_left_text.setFont(text_font);
 
-    time_left_text.setString("Time Left: 10:00");
+    time_left_text.setString("Time Left: 10:00:00");
     time_left_text.setFillColor(sf::Color::White);
     time_left_text.setCharacterSize(36);
 
@@ -287,6 +287,7 @@ void GameScreen::renderTimeLeft(sf::RenderWindow *window){
     int time = static_cast<int>(logic_->getTimeLeft());
     int minutes = time/60;
     int seconds = time%60;
+    //int miliSec = time
     if(time==60){
         time_left_text.setFillColor(sf::Color::Red);
     }
