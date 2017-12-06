@@ -44,14 +44,19 @@ void Logic::update(float delta) {
                     //chase player, send out signal
                     enemy->alert();
                     enemy->signal(getEntities());
-                    enemy->setChasePath(pathFinder(enemy->getPos(),getCharacter().getPos()));
-                    //lastKnownCharPos = getCharacter().getPos();
-                    //if close enough attack
                     float dist = vecutil::distance(enemy->getPos(),getCharacter().getPos());
                     if(dist<enemy->getAttackRadius()){
                         //std::cout<<"Logic: Charcter attacked\n";
                         enemy->attack();
+                        enemy->unAlert();
+                    }else{
+                        enemy->setChasePath(pathFinder(enemy->getPos(),getCharacter().getPos()));
                     }
+
+                    //lastKnownCharPos = getCharacter().getPos();
+                    //if close enough attack
+
+
                 }
                 else{
                     //cant see player but is alerted, so countdown
@@ -63,6 +68,8 @@ void Logic::update(float delta) {
                         enemy->timer(delta);
                     }
                 }
+
+
                 if(enemy->isAlerted()){
                     //std::cout << "Enemy chasing\n";
                     enemy->followChasePath();
@@ -405,6 +412,7 @@ bool Logic::sightObstructed(sf::Vector2f src, sf::Vector2f target,
 }
 
 std::deque<sf::Vector2f> Logic::pathFinder(sf::Vector2f startPos, sf::Vector2f endPos){
+
     openSet_.clear();
     closedSet_.clear();
     surroundSet_.clear();
@@ -433,6 +441,12 @@ std::deque<sf::Vector2f> Logic::pathFinder(sf::Vector2f startPos, sf::Vector2f e
 
     endRow=(endPos.y-1)/32;
     endCol=(endPos.x-1)/32;
+
+    if(startRow==endRow && startCol==endCol){
+        path_.push_front(std::make_pair(startRow,startCol));
+        enemyPath_.push_front(sf::Vector2f(startRow*32+16,startCol*32+16));
+        return enemyPath_;
+    }
 
     std::vector<Node> newNodeVec;
 
@@ -474,6 +488,7 @@ std::deque<sf::Vector2f> Logic::pathFinder(sf::Vector2f startPos, sf::Vector2f e
         if(curNode->col<v[0].size()-1 && !tileIsWall(v[curNode->row][curNode->col+1])){
             surroundSet_.insert(std::make_pair(curNode->row,curNode->col+1));
         }
+        std::cout<<"create surrounding set\n";
 
         //iterate surroundingset
         for(auto elem : surroundSet_){
@@ -482,6 +497,7 @@ std::deque<sf::Vector2f> Logic::pathFinder(sf::Vector2f startPos, sf::Vector2f e
             }
             else if(openSet_.count(elem)){
                 int curG=computeG(elem);
+                std::cout<<"G computed"<<curG<<"\n";
                 if (curG < tileNodeMap_[elem.first][elem.second].g){
                     tileNodeMap_[elem.first][elem.second].parent = curNode;
                     tileNodeMap_[elem.first][elem.second].g=curG;
@@ -524,8 +540,9 @@ std::deque<sf::Vector2f> Logic::pathFinder(sf::Vector2f startPos, sf::Vector2f e
         closedSet_.insert(minPair);
 
 
-    }
-    while(curNode->row!=endRow || curNode->col!=endCol);
+    }while(curNode->row!=endRow || curNode->col!=endCol);
+
+
 
     //create a deque of Nodes,represented by int pairs, from start to finish
 
@@ -552,6 +569,9 @@ std::deque<sf::Vector2f> Logic::pathFinder(sf::Vector2f startPos, sf::Vector2f e
 }
 
 int Logic::computeG(std::pair<int,int> curPair){
+    std::cout<<"computing G for: "<<curPair.first<<" "<<curPair.second<<"\n";
+    std::cout<<"whose parents is "<<tileNodeMap_[curPair.first][curPair.second].parent->row
+             <<" "<<tileNodeMap_[curPair.first][curPair.second].parent->col<<"\n";
 
     return tileNodeMap_[curPair.first][curPair.second].parent->g+1;
 
