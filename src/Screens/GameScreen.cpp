@@ -234,21 +234,19 @@ void GameScreen::renderEntities(sf::RenderWindow *window) {
 void GameScreen::renderEntity(sf::RenderWindow *window, Entity* entity) {
     sf::Sprite& sprite = getEntitySprite(entity);
     sprite.setPosition(entity->getPos());
-    
+    sprite.setRotation(entity->getDirection() + 90);
     // perform any needed transformations to the entity's sprite
     // switch out / shift texture to different coordinates if needed
-    
-    if (entity->getTypeId() == Entity::CHARACTER_ID) {
-        char_walk_->adjustSprite(sprite, entity);
-        sprite.setRotation(entity->getDirection() + 90);
-    }
-    if (entity->getTypeId() == Entity::ENEMY1_ID) {
-        enemy1_walk_->adjustSprite(sprite, entity);
-        sprite.setRotation(entity->getDirection() + 90);
-    }
-    if (entity->getTypeId() == Entity::ENEMY2_ID) {
-        enemy2_walk_->adjustSprite(sprite, entity);
-        sprite.setRotation(entity->getDirection() + 90);
+    if (logic_->getPlayState() == Logic::PlayState::PLAYING) {
+        if (entity->getTypeId() == Entity::CHARACTER_ID) {
+            char_walk_->adjustSprite(sprite, entity);
+        }
+        if (entity->getTypeId() == Entity::ENEMY1_ID) {
+            enemy1_walk_->adjustSprite(sprite, entity);
+        }
+        if (entity->getTypeId() == Entity::ENEMY2_ID) {
+            enemy2_walk_->adjustSprite(sprite, entity);
+        }
     }
     
     window->draw(sprite);

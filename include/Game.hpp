@@ -8,6 +8,7 @@
 #include "Global.hpp"
 #include "Logic.hpp"
 #include "Screens/ScreenManager.hpp"
+#include "LevelManager.hpp"
 
 class Game
 {
@@ -24,6 +25,8 @@ private:
     sf::RenderWindow *window;
     Logic *logic;
     ScreenManager *screenManager;
+    
+    LevelManager level_manager_;
 };
 
 #endif // GAME_HPP

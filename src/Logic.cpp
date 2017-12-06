@@ -5,9 +5,7 @@
 
 #include "VecUtil.hpp"
 
-Logic::Logic(float time_limit) {
-    time_left_ = time_limit;
-    level_start_time_ = time_limit;
+Logic::Logic() {
     state_ = PlayState::UNLOADED;
 }
 
@@ -114,10 +112,12 @@ void Logic::onExitReached() {
     state_ = PlayState::WON;
 }
 
-void Logic::load(std::string level_name, std::string mapfilename, std::string enemyfilename) {
-    level_name_ = level_name;
-    level_tile_filename_ = mapfilename;
-    level_entity_filename_ = enemyfilename;
+void Logic::load(std::string level_name, std::string mapfilename, std::string enemyfilename, float time) {
+    std::cout << "Logic.cpp: Loading level: " << level_name << std::endl;
+    level_name_             = level_name;
+    level_tile_filename_    = mapfilename;
+    level_entity_filename_  = enemyfilename;
+    level_time_limit_ = time;
     reload();
 }
 
@@ -130,6 +130,10 @@ void Logic::reload() {
     std::cout<<"character pos"<<getCharacter().getPos().x<<" "<<getCharacter().getPos().y<<"\n";
     std::cout << "Logic.cpp: Map size: " << getMapSize().first 
               << "," << getMapSize().second << std::endl;
+              
+    // reset timer to the amount of time we had when we first loaded the level
+    time_left_ = level_time_limit_;
+    
     // once loaded, should be ready to play; but updates won't happen until Game.cpp allows it (switched to GameScreen)
     state_ = PlayState::PLAYING;
 }
@@ -170,7 +174,9 @@ Character& Logic::getCharacter(){
 }
 
 void Logic::registerMoveInput(sf::Vector2f dir) {
-    getCharacter().onMoveInput(dir);
+    if (getPlayState() == PlayState::PLAYING) {
+        getCharacter().onMoveInput(dir);
+    }
 }
 
 bool Logic::getDebugInfo(sf::Vector2f& p1, sf::Vector2f& p2) {
@@ -445,6 +451,8 @@ bool Logic::sightObstructed(sf::Vector2f src, sf::Vector2f target,
 }
 
 std::deque<sf::Vector2f> Logic::pathFinder(sf::Vector2f startPos, sf::Vector2f endPos){
+    std::cout << "Logic.cpp: path finding " << std::endl;
+    
     openSet_.clear();
     closedSet_.clear();
     surroundSet_.clear();

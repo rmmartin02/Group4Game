@@ -42,16 +42,16 @@ public:
     // This is used when loading tiles and building box2d shapes for them.
     static const int TILE_SIZE = 32;
 
-    Logic(float time_limit);
+    Logic();
     void update(float delta);
     
     // Return the current state of play. See PlayState enum above.
     PlayState getPlayState();
     
-    // Loads a level from a file
-    void load(std::string level_name, std::string mapfilename, std::string enemyfilename);
+    // Loads a level from a file, and sets the time limit to complete it
+    void load(std::string level_name, std::string mapfilename, std::string enemyfilename, float time);
     
-    // Reload the current level
+    // Reload the current level, reset the timer to its limit
     void reload();
     
     // Return the numbers of rows and columns in the loaded tile map
@@ -93,7 +93,7 @@ public:
 
 private:
     float time_left_;
-    float level_start_time_;
+    float level_time_limit_;
     
     std::string level_name_;
     std::string level_tile_filename_;
