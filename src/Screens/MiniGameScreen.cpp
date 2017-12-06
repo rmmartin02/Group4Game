@@ -3,7 +3,6 @@
 //
 
 #include "Screens/MiniGameScreen.hpp"
-#include <vector>
 
 //const std::string MiniGameScreen::bg = "../MiniGame/circuit-board.png";
 
@@ -84,9 +83,10 @@ std::vector<sf::Sprite> MiniGameScreen::createSpriteBoard(int difficulty) {
 
 }
 
-std::vector<sf::Sprite> MiniGameScreen::orderSpriteBoard(std::vector<sf::Sprite> spriteBoard, MiniGameScreenBackend puzzleIn) {
+//std::vector<sf::Sprite> MiniGameScreen::orderSpriteBoard(std::vector<sf::Sprite>& spriteBoard, MiniGameScreenBackend puzzleIn) {
+void MiniGameScreen::orderSpriteBoard(std::vector<sf::Sprite>& spriteBoard, MiniGameScreenBackend puzzleIn) {
 
-    std::vector<sf::Sprite> tiles = spriteBoard;
+    //std::vector<sf::Sprite> tiles = spriteBoard;
     std::vector<sf::Sprite> finalTiles(difficulty * difficulty);
 
     if (difficulty == 3) {
@@ -108,9 +108,9 @@ std::vector<sf::Sprite> MiniGameScreen::orderSpriteBoard(std::vector<sf::Sprite>
                 if (y == 0)
                     y = 9;
 
-                tiles[y-1].setPosition(x_pos,y_pos);
-
-                finalTiles[y] = tiles[y]; //uncomment
+                spriteBoard[y-1].setPosition(x_pos,y_pos);
+                //MIDIFIED THIS, ORIGINAL:
+                //finalTiles[y-1] = spriteBoard[y-1]; //uncomment
 
                 count ++;
 
@@ -127,7 +127,8 @@ std::vector<sf::Sprite> MiniGameScreen::orderSpriteBoard(std::vector<sf::Sprite>
         }
 
         tilesOrdered = true;
-        return tiles; //change back to finaltiles
+        std::cout<<"MINIGAMESCREEN 129\n";
+      //  return spriteBoard; //change back to finaltiles
 
     }
 
@@ -161,10 +162,10 @@ int MiniGameScreen::moveOnClick(MiniGameScreenBackend puzzle, sf::Vector2<float>
     int column;
     int sprite_size = 200;
 
-    if (orderedTiles[0].getGlobalBounds().contains(window->mapPixelToCoords(sf::Vector2i(coordinates)))) {
-        column = (orderedTiles[0].getPosition().x - 100)/sprite_size;
-        if (orderedTiles[0].getPosition().y != 0)
-            row = orderedTiles[0].getPosition().y/sprite_size;
+    if (tiles[0].getGlobalBounds().contains(window->mapPixelToCoords(sf::Vector2i(coordinates)))) {
+        column = (tiles[0].getPosition().x - 100)/sprite_size;
+        if (tiles[0].getPosition().y != 0)
+            row = tiles[0].getPosition().y/sprite_size;
         else
             row = 0;
 
@@ -172,80 +173,80 @@ int MiniGameScreen::moveOnClick(MiniGameScreenBackend puzzle, sf::Vector2<float>
 
     } else
 
-    if (orderedTiles[1].getGlobalBounds().contains(window->mapPixelToCoords(sf::Vector2i(coordinates)))) {
-        column = (orderedTiles[1].getPosition().x - 100)/sprite_size;
-        if (orderedTiles[1].getPosition().y != 0)
-            row = orderedTiles[1].getPosition().y/sprite_size;
+    if (tiles[1].getGlobalBounds().contains(window->mapPixelToCoords(sf::Vector2i(coordinates)))) {
+        column = (tiles[1].getPosition().x - 100)/sprite_size;
+        if (tiles[1].getPosition().y != 0)
+            row = tiles[1].getPosition().y/sprite_size;
         else
             row = 0;
 
         std::cout << "Tile 2 hit" << std::endl;
     } else
 
-    if (orderedTiles[2].getGlobalBounds().contains(window->mapPixelToCoords(sf::Vector2i(coordinates)))) {
-        column = (orderedTiles[2].getPosition().x - 100)/sprite_size;
-        if (orderedTiles[2].getPosition().y != 0)
-            row = orderedTiles[2].getPosition().y/sprite_size;
+    if (tiles[2].getGlobalBounds().contains(window->mapPixelToCoords(sf::Vector2i(coordinates)))) {
+        column = (tiles[2].getPosition().x - 100)/sprite_size;
+        if (tiles[2].getPosition().y != 0)
+            row = tiles[2].getPosition().y/sprite_size;
         else
             row = 0;
 
         std::cout << "Tile 3 hit" << std::endl;
     } else
 
-    if (orderedTiles[3].getGlobalBounds().contains(window->mapPixelToCoords(sf::Vector2i(coordinates)))) {
-        column = (orderedTiles[3].getPosition().x - 100)/sprite_size;
-        if (orderedTiles[3].getPosition().y != 0)
-            row = orderedTiles[3].getPosition().y/sprite_size;
+    if (tiles[3].getGlobalBounds().contains(window->mapPixelToCoords(sf::Vector2i(coordinates)))) {
+        column = (tiles[3].getPosition().x - 100)/sprite_size;
+        if (tiles[3].getPosition().y != 0)
+            row = tiles[3].getPosition().y/sprite_size;
         else
             row = 0;
 
         std::cout << "Tile 4 hit" << std::endl;
     } else
 
-    if (orderedTiles[4].getGlobalBounds().contains(window->mapPixelToCoords(sf::Vector2i(coordinates)))) {
-        column = (orderedTiles[4].getPosition().x - 100)/sprite_size;
-        if (orderedTiles[4].getPosition().y != 0)
-            row = orderedTiles[4].getPosition().y/sprite_size;
+    if (tiles[4].getGlobalBounds().contains(window->mapPixelToCoords(sf::Vector2i(coordinates)))) {
+        column = (tiles[4].getPosition().x - 100)/sprite_size;
+        if (tiles[4].getPosition().y != 0)
+            row = tiles[4].getPosition().y/sprite_size;
         else
             row = 0;
 
         std::cout << "Tile 5 hit" << std::endl;
     } else
 
-    if (orderedTiles[5].getGlobalBounds().contains(window->mapPixelToCoords(sf::Vector2i(coordinates)))) {
-        column = (orderedTiles[5].getPosition().x - 100)/sprite_size;
-        if (orderedTiles[5].getPosition().y != 0)
-            row = orderedTiles[5].getPosition().y/sprite_size;
+    if (tiles[5].getGlobalBounds().contains(window->mapPixelToCoords(sf::Vector2i(coordinates)))) {
+        column = (tiles[5].getPosition().x - 100)/sprite_size;
+        if (tiles[5].getPosition().y != 0)
+            row = tiles[5].getPosition().y/sprite_size;
         else
             row = 0;
 
         std::cout << "Tile 6 hit" << std::endl;
     } else
 
-    if (orderedTiles[6].getGlobalBounds().contains(window->mapPixelToCoords(sf::Vector2i(coordinates)))) {
-        column = (orderedTiles[6].getPosition().x - 100)/sprite_size;
-        if (orderedTiles[6].getPosition().y != 0)
-            row = orderedTiles[6].getPosition().y/sprite_size;
+    if (tiles[6].getGlobalBounds().contains(window->mapPixelToCoords(sf::Vector2i(coordinates)))) {
+        column = (tiles[6].getPosition().x - 100)/sprite_size;
+        if (tiles[6].getPosition().y != 0)
+            row = tiles[6].getPosition().y/sprite_size;
         else
             row = 0;
 
         std::cout << "Tile 7 hit" << std::endl;
     } else
 
-    if (orderedTiles[7].getGlobalBounds().contains(window->mapPixelToCoords(sf::Vector2i(coordinates)))) {
-        column = (orderedTiles[7].getPosition().x - 100)/sprite_size;
-        if (orderedTiles[7].getPosition().y != 0)
-            row = orderedTiles[7].getPosition().y/sprite_size;
+    if (tiles[7].getGlobalBounds().contains(window->mapPixelToCoords(sf::Vector2i(coordinates)))) {
+        column = (tiles[7].getPosition().x - 100)/sprite_size;
+        if (tiles[7].getPosition().y != 0)
+            row = tiles[7].getPosition().y/sprite_size;
         else
             row = 0;
 
         std::cout << "Tile 8 hit" << std::endl;
     } else
 
-    if (orderedTiles[8].getGlobalBounds().contains(window->mapPixelToCoords(sf::Vector2i(coordinates)))) {
-        column = (orderedTiles[8].getPosition().x - 100)/sprite_size;
-        if (orderedTiles[8].getPosition().y != 0)
-            row = orderedTiles[8].getPosition().y/sprite_size;
+    if (tiles[8].getGlobalBounds().contains(window->mapPixelToCoords(sf::Vector2i(coordinates)))) {
+        column = (tiles[8].getPosition().x - 100)/sprite_size;
+        if (tiles[8].getPosition().y != 0)
+            row = tiles[8].getPosition().y/sprite_size;
         else
             row = 0;
 
@@ -522,20 +523,32 @@ void MiniGameScreen::render(sf::RenderWindow *window) {
     }
 
 
-    if (!tilesOrdered)
-        orderedTiles = MiniGameScreen::orderSpriteBoard(tiles, puzzle);
-    else
-        orderedTiles = MiniGameScreen::orderSpriteBoard(orderedTiles, shuffledPuzzle);
+    if (!tilesOrdered){
+      std::cout<<"MINIGAME REACHED 525\n";
+      //orderedTiles = MiniGameScreen::orderSpriteBoard(tiles, puzzle);
+      MiniGameScreen::orderSpriteBoard(tiles, puzzle);
+      std::cout<<"MINIGAME REACHED 527\n";
+    }
+
+    else{
+
+      //orderedTiles = MiniGameScreen::orderSpriteBoard(orderedTiles, shuffledPuzzle);
+      MiniGameScreen::orderSpriteBoard(tiles, shuffledPuzzle);
+
+    }
+
+
 
 
 
     for (int i = 0; i < difficulty; i ++) {
         for (int m = 0; m < difficulty; m ++) {
 
-            //std::cout << "value is: " << shuffledPuzzle.getValue(i,m) << std::endl;
+            std::cout << "value is: " << shuffledPuzzle.getValue(i,m) << std::endl;
 
 
-            window->draw(orderedTiles[shuffledPuzzle.getValue(i,m)]);
+          //  window->draw(orderedTiles[shuffledPuzzle.getValue(i,m)]);
+          window->draw(tiles[shuffledPuzzle.getValue(i,m)]);
 
         }
 

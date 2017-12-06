@@ -4,10 +4,11 @@
 
 #ifndef CSCI437_MINIGAMESCREEN_HPP
 #define CSCI437_MINIGAMESCREEN_HPP
-
+#include "Global.hpp"
 #include "Screens/Screen.hpp"
 #include "Logic.hpp"
-#include "../src/MiniGame/MiniGameBackend.hpp"
+#include <vector>
+#include "MiniGame/MiniGameBackend.hpp"
 
 class MiniGameScreen : public Screen {
 
@@ -60,7 +61,8 @@ public:
 
     std::vector<sf::Sprite> createSpriteBoard(int difficulty);
 
-    std::vector<sf::Sprite> orderSpriteBoard(std::vector<sf::Sprite> spriteBoard, MiniGameScreenBackend puzzleIn);
+  //  std::vector<sf::Sprite> orderSpriteBoard(std::vector<sf::Sprite> spriteBoard, MiniGameScreenBackend puzzleIn);
+    void orderSpriteBoard(std::vector<sf::Sprite>& spriteBoard, MiniGameScreenBackend puzzleIn);
 
     void render(sf::RenderWindow *window) override;
 

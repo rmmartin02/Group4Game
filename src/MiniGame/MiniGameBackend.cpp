@@ -3,9 +3,6 @@
 //
 
 #include "MiniGame/MiniGameBackend.hpp"
-#include <vector>
-#include <cmath>
-#include <iostream>
 
 int boardSize;
 
@@ -539,6 +536,3 @@ int MiniGameScreenBackend::getRandom (int array[]) {
     return array[randIndex];
 
 };
-
-
-
