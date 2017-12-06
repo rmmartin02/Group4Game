@@ -8,16 +8,10 @@
 
 
 
-void MiniGameScreen::setPuzzle(int size, int numberOfEmptySlots) {
 
-    difficulty = size;
-
-    puzzle.setCurrentBoard(size);
-    puzzle.setToInitialState(numberOfEmptySlots);
-
-}
 
 MiniGameScreen::MiniGameScreen() {
+
     //Background
     if (!background.loadFromFile("../resource/MiniGame/minigame-bg.jpg")) {
         // error...
@@ -37,6 +31,14 @@ MiniGameScreen::MiniGameScreen() {
     bufferSlide.loadFromFile("../resource/MiniGame/click.flac");
     slideSound.setBuffer(bufferSlide);
 
+
+}
+
+void MiniGameScreen::setPuzzle(int size, int numberOfEmptySlots) {
+    difficulty = size;
+
+    puzzle.setCurrentBoard(size);
+    puzzle.setToInitialState(numberOfEmptySlots);
 
 }
 
@@ -87,7 +89,7 @@ std::vector<sf::Sprite> MiniGameScreen::createSpriteBoard(int difficulty) {
 void MiniGameScreen::orderSpriteBoard(std::vector<sf::Sprite>& spriteBoard, MiniGameScreenBackend puzzleIn) {
 
     //std::vector<sf::Sprite> tiles = spriteBoard;
-    std::vector<sf::Sprite> finalTiles(difficulty * difficulty);
+    //std::vector<sf::Sprite> finalTiles(difficulty * difficulty);
 
     if (difficulty == 3) {
 
@@ -516,7 +518,7 @@ void MiniGameScreen::render(sf::RenderWindow *window) {
         //set second parameter to zero to NOT shuffle
         // 40 is a good diff
 
-        shuffledPuzzle = MiniGameScreen::shufflePuzzle(puzzle,40);
+        shuffledPuzzle = MiniGameScreen::shufflePuzzle(puzzle,shuffleLengthVar);
 
         std::cout << "shuffled" << std::endl;
 
@@ -576,4 +578,8 @@ void MiniGameScreen::render(sf::RenderWindow *window) {
 
 void MiniGameScreen::interpretInput(std::vector<sf::Event>& events){
 
+}
+
+void MiniGameScreen::setShuffleLength(int len){
+  shuffleLengthVar=len;
 }

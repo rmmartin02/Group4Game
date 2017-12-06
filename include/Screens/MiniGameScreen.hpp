@@ -66,6 +66,10 @@ public:
 
     void render(sf::RenderWindow *window) override;
 
+    int shuffleLengthVar;
+
+    void setShuffleLength(int len);
+
 
 
 private:

@@ -8,6 +8,7 @@ ScreenManager::ScreenManager(Logic *logic){
 	controls_screen = new ControlsScreen();
     timeout_screen = new TimeoutScreen();
     minigame_screen = new MiniGameScreen();
+		minigame_screen->setShuffleLength(40);
     info_screen = new InfoScreen();
 	current_screen = menu_screen;
 }
@@ -24,7 +25,7 @@ void ScreenManager::interpretInput(std::vector<sf::Event>& events){
         if(current_screen == menu_screen){
             if (event.type == sf::Event::KeyPressed){
                 if (event.key.code == sf::Keyboard::Return){
-                    std::cout << "ScreenManager: menu screen has highlighted " 
+                    std::cout << "ScreenManager: menu screen has highlighted "
                               << menu_screen->getHighlighted() << std::endl;
                     if(menu_screen->getHighlighted()==0){
                         current_screen = game_screen;
