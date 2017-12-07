@@ -27,7 +27,7 @@ GameScreen::GameScreen(Logic* logic, TextureManager* tex_manager) {
     keys_[3] = sf::Keyboard::Right;
     loadKeys();
 
-    if (!text_font.loadFromFile("../resource/fonts/Adventure.otf"))
+    if (!text_font.loadFromFile("../resource/fonts/digital-7-italic.ttf"))
     {
         // error...
     }
@@ -234,7 +234,7 @@ void GameScreen::renderEntities(sf::RenderWindow *window) {
 void GameScreen::renderEntity(sf::RenderWindow *window, Entity* entity) {
     sf::Sprite& sprite = getEntitySprite(entity);
     sprite.setPosition(entity->getPos());
-    
+    sprite.setColor(sf::Color::White);
     // perform any needed transformations to the entity's sprite
     // switch out / shift texture to different coordinates if needed
     
@@ -242,15 +242,31 @@ void GameScreen::renderEntity(sf::RenderWindow *window, Entity* entity) {
         char_walk_->adjustSprite(sprite, entity);
         sprite.setRotation(entity->getDirection() + 90);
     }
-    if (entity->getTypeId() == Entity::ENEMY1_ID) {
-        enemy1_walk_->adjustSprite(sprite, entity);
-        sprite.setRotation(entity->getDirection() + 90);
+    if (Enemy* enemy = dynamic_cast<Enemy*>(entity)){
+        sprite.setColor(sf::Color(255,255,255));
+        if(enemy->isAlerted()){
+            sprite.setColor(sf::Color::Red);
+        }
+        if(enemy->isHacked()){
+            sprite.setColor(sf::Color::Black);
+        }
+        if (entity->getTypeId() == Entity::ENEMY1_ID) {
+            enemy1_walk_->adjustSprite(sprite, entity);
+            sprite.setRotation(entity->getDirection() + 90);
+        }
+        if (entity->getTypeId() == Entity::ENEMY2_ID) {
+            enemy2_walk_->adjustSprite(sprite, entity);
+            sprite.setRotation(entity->getDirection() + 90);
+        }
     }
-    if (entity->getTypeId() == Entity::ENEMY2_ID) {
-        enemy2_walk_->adjustSprite(sprite, entity);
-        sprite.setRotation(entity->getDirection() + 90);
+    if (Enemy* enemy = dynamic_cast<Enemy*>(entity)){
+        if(enemy->isAlerted()){
+            sprite.setColor(sf::Color::Red);
+        }
+        if(enemy->isHacked()){
+            sprite.setColor(sf::Color::Black);
+        }
     }
-    
     window->draw(sprite);
 }
 
@@ -271,14 +287,17 @@ void GameScreen::renderTimeLeft(sf::RenderWindow *window){
     int time = static_cast<int>(logic_->getTimeLeft());
     int minutes = time/60;
     int seconds = time%60;
+
     if(time==60){
         time_left_text.setFillColor(sf::Color::Red);
     }
-    time_left_text.setString("Time Left: " + std::to_string(minutes) + ":" + (seconds>=10 ? std::to_string(seconds) : "0" + std::to_string(seconds)));
+    time_left_text.setString("Time Left: " + std::to_string(minutes) + ":" +
+                                     (seconds>=10 ? std::to_string(seconds) : "0" + std::to_string(seconds)));
     time_left_text.setPosition(sf::Vector2f(window->getView().getCenter().x - time_left_width/2, 
         window->getView().getCenter().y-window->getView().getSize().y/2+10));
     window->draw(time_left_background, time_left_text.getTransform());
     window->draw(time_left_text);
+
 }
 
 
