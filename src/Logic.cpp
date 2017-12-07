@@ -6,109 +6,149 @@
 #include "VecUtil.hpp"
 
 Logic::Logic() {
-    
-    time_left_ = 10 * 60;
-    
-    //entities_["Character"] = Character();
-    //entities_["Character"].setVel(sf::Vector2f(0,0));
-    tiles_ = { 
-        { -1, -1, 1, 1, 1 },
-        {  1, 1, -1, -1, 1},
-        {  1, 1, 1, 1, 1 },
-        { -1, -1, -1, -1, 1},
-        {  2,  1,  2,  1,  1},
-        { 1,  2,  1,  1,  1}
-    };
-    
-    b2Vec2 gravity(0.0f, 0.0f); // no gravity
-    b2World world(gravity);
-    
+    state_ = PlayState::UNLOADED;
+}
+
+Logic::PlayState Logic::getPlayState() {
+    return state_;
+}
+
+void Logic::setPlayState(Logic::PlayState state){
+    state_ = state;
 }
 
 void Logic::update(float delta) {
-    // update every entity.
-    for ( auto& pair : getEntities() ) {
-        Entity& e = *(pair.second.get());
-        if (e.canWallCollide()){
-            handleWallCollisions(e);
-        }
-        e.move(e.getVel());
+    // adjust the timer
+    time_left_ -= delta;
+    // check for timeout
+    if (time_left_ < 0) {
+        onTimeExpired();
+        return;
+    }
+    
+    // should this check be here?
+    if (state_ == PlayState::PLAYING) {
+    
+        // update every entity.
+        for ( auto& pair : getEntities() ) {
+            Entity& e = *(pair.second.get());
+            
+            // check if exit is reached and level is beaten
+            if (e.getTypeId() == Entity::CHARACTER_ID) {
+                if (tileIsExit(getTileAt(getGridCoords(e.getPos())))) {
+                    onExitReached();
+                }
+            }
+            
+            if (e.canWallCollide()){
+                handleWallCollisions(e);
+            }
+            e.move(e.getVel());
 
-        //check if character is in enemies line of sight
-        if (Enemy* enemy = dynamic_cast<Enemy*>(&e)){
-            sf::Vector2f hit;
-            sf::Vector2f lastKnownCharPos;
-            if(enemy->canSeePlayer(getCharacter().getPos()) && !sightObstructed(enemy->getPos(), getCharacter().getPos(), hit)){
-                //std::cout<<"Logic: Charcter in line of sight\n";
-                //chase player, send out signal
-                enemy->alert();
-                enemy->signal(getEntities());
-                enemy->setChasePath(pathFinder(enemy->getPos(),getCharacter().getPos()));
-                //lastKnownCharPos = getCharacter().getPos();
-                //if close enough attack
-                float dist = vecutil::distance(enemy->getPos(),getCharacter().getPos());
-                if(dist<enemy->getAttackRadius()){
-                    //std::cout<<"Logic: Charcter attacked\n";
-                    enemy->attack();
-                }
-            }
-            else{
-                //cant see player but is alerted, so countdown
-                if(enemy->isAlerted()){
-                    if(!enemy->hasChasePath() || vecutil::distance(getCharacter().getPos(),enemy->getChaseEndPos())>32){
-                        enemy->setChasePath(pathFinder(enemy->getPos(),getCharacter().getPos()));
-                    }
-                    //std::cout<<"Logic: Enemy Timer\n";
-                    enemy->timer(delta);
-                }
-            }
-            if(enemy->isAlerted()){
-                //std::cout << "Enemy chasing\n";
-                enemy->followChasePath();
-                //std::cout << "Followed path";
-            }
-            else{
-                //return to patrol route/go to next patrol point
-                //std::cout<<"Logic: Return to patrol\n";
-                if(enemy->isOffPatrol()){
-                    if(!enemy->hasPathBack()){
-                        std::cout << "set return path\n";
-                        enemy->setReturnPath(pathFinder(enemy->getPos(),enemy->getCurrentPatrolNode()));
-                        enemy->setPathBackTrue();
-                    }
-                    else{
-                        //std::cout << "follow return path\n";
-                        enemy->followReturnPath();
+            //check if character is in enemies line of sight
+            if (Enemy* enemy = dynamic_cast<Enemy*>(&e)){
+                sf::Vector2f hit;
+                sf::Vector2f lastKnownCharPos;
+                if(!enemy->isHacked() && enemy->canSeePlayer(getCharacter().getPos()) && !sightObstructed(enemy->getPos(), getCharacter().getPos(), hit)){
+                    //std::cout<<"Logic: Charcter in line of sight\n";
+                    //chase player, send out signal
+                    enemy->alert();
+                    enemy->signal(getEntities());
+                    enemy->setChasePath(pathFinder(enemy->getPos(),getCharacter().getPos()));
+                    //lastKnownCharPos = getCharacter().getPos();
+                    //if close enough attack
+                    float dist = vecutil::distance(enemy->getPos(),getCharacter().getPos());
+                    if(dist<enemy->getAttackRadius()){
+                        std::cout<<"Logic: Charcter attacked\n";
+                        state_ = PlayState::MINIGAME;
+                        enemy->attack();
+                        enemy->setVel(sf::Vector2f(0,0));
+                        // I don't see this getting reached yet.
+                        //onEnemyAttack(enemy);
                     }
                 }
                 else{
-                    //std::cout << "follow patrol path\n";
-                    enemy->followPatrolPath();
+                    //cant see player but is alerted, so countdown
+                    if(enemy->isAlerted() && !enemy->isHacked()){
+                        if(!enemy->hasChasePath() || vecutil::distance(getCharacter().getPos(),enemy->getChaseEndPos())>32){
+                            enemy->setChasePath(pathFinder(enemy->getPos(),getCharacter().getPos()));
+                        }
+                        //std::cout<<"Logic: Enemy Timer\n";
+                        enemy->timer(delta);
+                    }
+                }
+                if(enemy->isAlerted() && !enemy->isHacked()){
+                    //std::cout << "Enemy chasing\n";
+                    enemy->followChasePath();
+                    //std::cout << "Followed path";
+                }
+                else if (!enemy->isHacked()){
+                    //return to patrol route/go to next patrol point
+                    //std::cout<<"Logic: Return to patrol\n";
+                    if(enemy->isOffPatrol()){
+                        if(!enemy->hasPathBack()){
+                            std::cout << "set return path\n";
+                            enemy->setReturnPath(pathFinder(enemy->getPos(),enemy->getCurrentPatrolNode()));
+                            enemy->setPathBackTrue();
+                        }
+                        else{
+                            //std::cout << "follow return path\n";
+                            enemy->followReturnPath();
+                        }
+                    }
+                    else{
+                        //std::cout << "follow patrol path\n";
+                        enemy->followPatrolPath();
+                    }
                 }
             }
         }
     }
-
-
-    
-    // adjust the timer
-    time_left_ -= delta;
-    if (time_left_ < 0) {
-        std::cout << "Logic.cpp: Ran out of time!" << std::endl;
+    else {
+        std::cout << "Logic.cpp: updated logic while not playing" << std::endl;
     }
-
-
-
 }
 
-void Logic::load(std::string mapfilename,std::string enemyfilename) {
+
+void Logic::onEnemyAttack(Enemy* enemy) {
+    std::cout << "Logic.cpp: Enemy attacked!" << std::endl;
+    state_ = PlayState::MINIGAME;
+}
+
+void Logic::onTimeExpired() {
+    std::cout << "Logic.cpp: Ran out of time!" << std::endl;
+    state_ = PlayState::LOST;
+}
+
+void Logic::onExitReached() {
+    std::cout << "Logic.cpp: Reached the exit!" << std::endl;
+    state_ = PlayState::WON;
+}
+
+void Logic::load(std::string level_name, std::string mapfilename, std::string enemyfilename, float time) {
+    std::cout << "Logic.cpp: Loading level: " << level_name << std::endl;
+    level_name_             = level_name;
+    level_tile_filename_    = mapfilename;
+    level_entity_filename_  = enemyfilename;
+    level_time_limit_ = time;
+    reload();
+}
+
+void Logic::reload() {
+    state_ = PlayState::UNLOADED;
     clearLevel();
-    loadTiles(mapfilename);
-    loadEntities(enemyfilename);
+    loadTiles(level_tile_filename_);
+    loadEntities(level_entity_filename_);
     //pathFinder(sf::Vector2f(40,160),sf::Vector2f(200,160));//40 160 200 160
     std::cout<<"character pos"<<getCharacter().getPos().x<<" "<<getCharacter().getPos().y<<"\n";
     std::cout << "Logic.cpp: Map size: " << getMapSize().first 
               << "," << getMapSize().second << std::endl;
+              
+    // reset timer to the amount of time we had when we first loaded the level
+    time_left_ = level_time_limit_;
+    
+    // once loaded, should be ready to play; but updates won't happen until Game.cpp allows it (switched to GameScreen)
+    state_ = PlayState::PLAYING;
 }
 
 std::pair<int, int> Logic::getMapSize() {
@@ -123,7 +163,15 @@ std::vector<std::vector<int>>& Logic::getTiles() {
     return tiles_;
 }
 
+int Logic::getTileAt(std::pair<int,int> coords) {
+    if (!coordsInBounds(coords)) {
+        return -1;
+    }
+    return tiles_[coords.first][coords.second];
+}
+
 void Logic::addEntity(std::string id, Entity* e) {
+    std::cout << id;
     entities_[id] = std::unique_ptr<Entity>(e);
 }
 
@@ -140,7 +188,9 @@ Character& Logic::getCharacter(){
 }
 
 void Logic::registerMoveInput(sf::Vector2f dir) {
-    getCharacter().onMoveInput(dir);
+    if (getPlayState() == PlayState::PLAYING) {
+        getCharacter().onMoveInput(dir);
+    }
 }
 
 bool Logic::getDebugInfo(sf::Vector2f& p1, sf::Vector2f& p2) {
@@ -214,7 +264,14 @@ void Logic::loadEntities(std::string filename) {
         std::istringstream iss(str);
         int level;
         iss >> level;
-        if(level==0){
+        if(level==-1){
+            counter=counter-1;
+
+            float pos_x, pos_y;
+            iss>>pos_x>>pos_y;
+            getCharacter().setPos(sf::Vector2f((pos_x+1.0f)*32.0f-16.0f,(pos_y+1.0f)*32.0f-16.0f));
+        }
+        else if(level==0){
             float start_x, start_y,dest_x,dest_y;
             iss >> start_x>> start_y >> dest_x >> dest_y;
             addEntity("Laser"+std::to_string(counter),new Laser());
@@ -231,21 +288,17 @@ void Logic::loadEntities(std::string filename) {
                 pos_x = (pos_x+1.0f)*32.0f-16.0f;
                 pos_y = (pos_y+1.0f)*32.0f-16.0f;
                 positions.push_back(sf::Vector2f(pos_x,pos_y));
-                std::cout << pos_x  << " " << pos_y << "\n";
+                //std::cout << pos_x  << " " << pos_y << "\n";
             }
+            
             if(level==1){
-                std::cout << "1\n";
-                addEntity("Enemy"+std::to_string(counter),new Enemy(true));
-                std::cout << "2\n";
+                addEntity("Enemy"+std::to_string(counter),new Enemy(false));
                 Enemy& e=static_cast<Enemy&>(getEntity("Enemy"+std::to_string(counter)));
-                std::cout << "3\n";
                 e.setPos(positions.at(0));
-                std::cout << "4\n";
                 e.setPatrolPath(multiPathFinder(positions));
-                std::cout << "5\n";
             }
             else if(level==2){
-                addEntity("Enemy"+std::to_string(counter),new Enemy(false));
+                addEntity("Enemy"+std::to_string(counter),new Enemy(true));
                 Enemy& e=static_cast<Enemy&>(getEntity("Enemy"+std::to_string(counter)));
                 e.setPos(positions.at(0));
                 e.setPatrolPath(multiPathFinder(positions));
@@ -326,8 +379,26 @@ int Logic::buildAxisWalls(bool vertical) {
     }
 }
 
+// Return the grid coordinates of a world position
+std::pair<int,int> Logic::getGridCoords(sf::Vector2f position) {
+    int r = (position.y-1) / 32;
+    int c = (position.x-1) / 32;
+    return std::make_pair(r,c);
+}
+    
+// Checks if grid coordinates lie within space covered by our tile data
+bool Logic::coordsInBounds(std::pair<int,int> coords) {
+    auto map_size = getMapSize();
+    return coords.first >= 0 && coords.second >= 0 &&
+           coords.first < map_size.first && coords.second < map_size.second;
+}
+
 bool Logic::tileIsWall(int tile) {
-    return tile != 4 && tile!= 5;
+    return tile != 4 && tile != 5 && tile != 14 && !tileIsExit(tile);
+}
+
+bool Logic::tileIsExit(int tile) {
+    return tile == 15;
 }
 
 bool Logic::handleWallCollisions(Entity& e) {
@@ -397,12 +468,18 @@ bool Logic::sightObstructed(sf::Vector2f src, sf::Vector2f target,
 }
 
 std::deque<sf::Vector2f> Logic::pathFinder(sf::Vector2f startPos, sf::Vector2f endPos){
+
+    //std::cout << "Logic.cpp: path finding " << std::endl;
+    
     openSet_.clear();
     closedSet_.clear();
     surroundSet_.clear();
+
     path_.clear();
     enemyPath_.clear();
     tileNodeMap_.clear();
+    path_.shrink_to_fit();
+    enemyPath_.shrink_to_fit();
     std::pair<int,int> minPair;
 
     int startRow;
@@ -422,6 +499,12 @@ std::deque<sf::Vector2f> Logic::pathFinder(sf::Vector2f startPos, sf::Vector2f e
 
     endRow=(endPos.y-1)/32;
     endCol=(endPos.x-1)/32;
+
+    if(startRow==endRow && startCol==endCol){
+        path_.push_front(std::make_pair(startRow,startCol));
+        enemyPath_.push_front(sf::Vector2f(startRow*32+16,startCol*32+16));
+        return enemyPath_;
+    }
 
     std::vector<Node> newNodeVec;
 
@@ -463,6 +546,7 @@ std::deque<sf::Vector2f> Logic::pathFinder(sf::Vector2f startPos, sf::Vector2f e
         if(curNode->col<v[0].size()-1 && !tileIsWall(v[curNode->row][curNode->col+1])){
             surroundSet_.insert(std::make_pair(curNode->row,curNode->col+1));
         }
+        //std::cout<<"create surrounding set\n";
 
         //iterate surroundingset
         for(auto elem : surroundSet_){
@@ -471,6 +555,7 @@ std::deque<sf::Vector2f> Logic::pathFinder(sf::Vector2f startPos, sf::Vector2f e
             }
             else if(openSet_.count(elem)){
                 int curG=computeG(elem);
+                //std::cout<<"G computed"<<curG<<"\n";
                 if (curG < tileNodeMap_[elem.first][elem.second].g){
                     tileNodeMap_[elem.first][elem.second].parent = curNode;
                     tileNodeMap_[elem.first][elem.second].g=curG;
@@ -513,8 +598,9 @@ std::deque<sf::Vector2f> Logic::pathFinder(sf::Vector2f startPos, sf::Vector2f e
         closedSet_.insert(minPair);
 
 
-    }
-    while(curNode->row!=endRow || curNode->col!=endCol);
+    }while(curNode->row!=endRow || curNode->col!=endCol);
+
+
 
     //create a deque of Nodes,represented by int pairs, from start to finish
 
@@ -541,6 +627,9 @@ std::deque<sf::Vector2f> Logic::pathFinder(sf::Vector2f startPos, sf::Vector2f e
 }
 
 int Logic::computeG(std::pair<int,int> curPair){
+    //std::cout<<"computing G for: "<<curPair.first<<" "<<curPair.second<<"\n";
+    //std::cout<<"whose parents is "<<tileNodeMap_[curPair.first][curPair.second].parent->row
+            // <<" "<<tileNodeMap_[curPair.first][curPair.second].parent->col<<"\n";
 
     return tileNodeMap_[curPair.first][curPair.second].parent->g+1;
 
@@ -553,9 +642,13 @@ int Logic::computeH(std::pair<int,int> curPair,std::pair<int,int> goalPair){
 
 std::vector<std::deque<sf::Vector2f>> Logic::multiPathFinder(std::vector<sf::Vector2f> positions){
     std::vector<std::deque<sf::Vector2f>> paths;
+    paths.clear();
+    paths.shrink_to_fit();
     for (int i=0;i<positions.size()-1;i++){
-        std::cout << positions.at(i).x << " " << positions.at(i).y << " " << positions.at(i+1).x << " " << positions.at(i+1).y << "\n";
+        //std::cout << positions.at(i).x << " " << positions.at(i).y << " " << positions.at(i+1).x << " " << positions.at(i+1).y << "\n";
         paths.push_back(pathFinder(positions.at(i),positions.at(i+1)));
     }
+    positions.clear();
+    positions.shrink_to_fit();
     return paths;
 }

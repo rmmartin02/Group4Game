@@ -17,6 +17,7 @@ Enemy::Enemy(){
     has_path_back_= false;
     has_chase_path_ = false;
     //change based on level?
+    attack_radius_ = 1*32;
     move_speed_ = 1;
     sight_distance_ = 5*32;
     //half
@@ -24,6 +25,7 @@ Enemy::Enemy(){
     alert_time_ = 10;
     alert_time_left_ = 10;
     alert_radius_ = 5*32;
+    attack_radius_=44;
 
     cur_patrol_node = 1;
     cur_patrol_path = 0;
@@ -44,24 +46,33 @@ Enemy::Enemy(bool isLevel2){
     has_path_back_= false;
     has_chase_path_ = false;
     if(isLevel2){
+        attack_radius_ = 1.5*32;
         is_level_2_ = true;
         move_speed_ = 1.5;
         sight_distance_ = 5*32;
+        attack_radius_ = 1.5*32;
         //half
+        sight_angle_ = 40;
+        alert_time_ = 10;
+        alert_time_left_ = 10;
+        alert_radius_ = 5*32;
+        attack_radius_=44;
+    }
+    else{
+        attack_radius_ = 1*32;
+        is_level_2_ = false;
+        move_speed_ = 1;
+        sight_distance_ = 4*32;
+        //half
+        sight_angle_ = 30;
+        alert_time_ = 7.5;
+        alert_time_left_ = 7.5;
+
         sight_angle_ = 15;
         alert_time_ = 10;
         alert_time_left_ = 10;
         alert_radius_ = 5*32;
-    }
-    else{
-        is_level_2_ = false;
-        move_speed_ = 1;
-        sight_distance_ = 5*32;
-        //half
-        sight_angle_ = 15;
-        alert_time_ = 10;
-        alert_time_left_ = 10;
-        alert_radius_ = 5*32;  
+        attack_radius_=44;
     }
     cur_patrol_node = 1;
     cur_patrol_path = 0;
@@ -72,9 +83,9 @@ Enemy::Enemy(bool isLevel2){
 
 std::string Enemy::getTypeId() {
     if(is_level_2_){
-        return Entity::ENEMY1_ID;
+        return Entity::ENEMY2_ID;
     }
-    return Entity::ENEMY2_ID;
+    return Entity::ENEMY1_ID;
 }
 
 bool Enemy::isHacked(){
@@ -102,6 +113,7 @@ void Enemy::setPathBackTrue(){
 }
 
 float Enemy::getAttackRadius(){
+    //std::cout<<"Enemy::attack radius "<<attack_radius_<<"\n";
     return attack_radius_;
 }
 
@@ -165,13 +177,13 @@ void Enemy::unAlert(){
 
 void Enemy::signal(std::map<std::string, std::unique_ptr<Entity>> &entities){
     //alert enemies within radius
-    std::cout << "Signal\n";
+    //std::cout << "Signal\n";
     for ( auto& pair : entities ) {
         Entity& e = *(pair.second.get());
         if (Enemy* enemy = dynamic_cast<Enemy*>(&e)){
             float dist = sqrt(pow(getPos().x-enemy->getPos().x,2)+pow(getPos().y-enemy->getPos().y,2));
             if (dist<alert_radius_){
-                std::cout << "Signal Alert\n";
+                //std::cout << "Signal Alert\n";
                 enemy->alert();
             }
         }
@@ -181,6 +193,7 @@ void Enemy::signal(std::map<std::string, std::unique_ptr<Entity>> &entities){
 void Enemy::attack(){
 //switch to minigame screen
     std::cout << "attack\n";
+    hacked_ = true;
 //if player fails minigame, damage?
 //else player wins minigame, enemy hacked
 }
@@ -195,13 +208,16 @@ void Enemy::timer(float deltaTime){
 }
 
 void Enemy::setPatrolPath(std::vector<std::deque<sf::Vector2f>> paths){
-//    patrolPath_.clear();
+    patrol_paths_.clear();
+    patrol_paths_.shrink_to_fit();
     for(int i = 0; i<paths.size(); i++){
         for(int j = 0; j<paths.at(i).size();j++){ 
             std::cout << paths.at(i).at(j).x << " " << paths.at(i).at(j).y << "\n";
         }
     }
     patrol_paths_=paths;
+    paths.clear();
+    paths.shrink_to_fit();
 }
 
 std::vector<std::deque<sf::Vector2f>> Enemy::getPatrolPath(){
@@ -211,7 +227,11 @@ std::vector<std::deque<sf::Vector2f>> Enemy::getPatrolPath(){
 void Enemy::setChasePath(std::deque<sf::Vector2f> path){
     has_chase_path_ = true;
     cur_chase_node = 1;
+    chase_path_.clear();
+    chase_path_.shrink_to_fit();
     chase_path_=path;
+    path.clear();
+    path.shrink_to_fit();
 }
 
 bool Enemy::hasFinishedChase(){
@@ -228,7 +248,11 @@ std::deque<sf::Vector2f> Enemy::getChasePath(){
 
 void Enemy::setReturnPath(std::deque<sf::Vector2f> path){
     cur_return_node = 1;
+    return_path_.clear();
+    return_path_.shrink_to_fit();
     return_path_=path;
+    path.clear();
+    path.shrink_to_fit();
 }
 
 std::deque<sf::Vector2f> Enemy::getReturnPath(){

@@ -27,7 +27,14 @@ struct Node{
 
 class Logic {
 public:
-
+    // Possible gameplay states. 
+    enum PlayState {
+        UNLOADED    = -1, // level not yet loaded
+        PLAYING     = 0, // normal gameplay
+        MINIGAME    = 1, // mini-game in progress; paused here, should be switched away from GameScreen
+        LOST        = 2, // should switch screens to reflect failure
+        WON         = 3, // should switch screens to reflect success (and load the next level?)
+    };
 
     // Represents the size of a tile, in pixels on the tileset file,
     // and in SFML's drawing units. We may want to separate the two
@@ -38,14 +45,26 @@ public:
     Logic();
     void update(float delta);
     
-    // Loads a level from a file
-    void load(std::string mapfilename,std::string enemyfilename);
+    // Return the current state of play. See PlayState enum above.
+    PlayState getPlayState();
+
+    void setPlayState(PlayState);
+    
+    // Loads a level from a file, and sets the time limit to complete it
+    void load(std::string level_name, std::string mapfilename, std::string enemyfilename, float time);
+    
+    // Reload the current level, reset the timer to its limit
+    void reload();
     
     // Return the numbers of rows and columns in the loaded tile map
     std::pair<int, int> getMapSize();
     
     // Returns reference to 2D vector of tile data
     std::vector<std::vector<int>>& getTiles();
+    
+    // Returns the ID number of a tile at a row,col coordinate in the map
+    // If coordinate is not valid / out of bounds, returns -1
+    int getTileAt(std::pair<int,int>);
     
     // Add an entity
     void addEntity(std::string id, Entity* e);
@@ -76,6 +95,13 @@ public:
 
 private:
     float time_left_;
+    float level_time_limit_;
+    
+    std::string level_name_;
+    std::string level_tile_filename_;
+    std::string level_entity_filename_;
+    
+    PlayState state_;
     
     std::vector<std::vector<int>> tiles_;
 
@@ -99,15 +125,34 @@ private:
     // Returns number of shapes created
     int buildAxisWalls(bool vertical);
     
+    // Return the grid coordinates of a world position
+    std::pair<int,int> getGridCoords(sf::Vector2f position);
+    
+    // Checks if grid coordinates lie within space covered by our tile data
+    bool coordsInBounds(std::pair<int,int>);
+    
     // Returns true if the given tile value represents a wall
     // (should block line of sight and movement), false otherwise
     bool tileIsWall(int tile);
+    
+    // Returns true if the given tile value represents a level exit
+    // (level is beaten when the character reaches the tile)
+    bool tileIsExit(int tile);
     
     // Checks if an entity is colliding with any wall shape and deals with effects
     bool handleWallCollisions(Entity& e); 
     
     // Handle an entity's collision with a wall shape
     void onWallCollision(Entity& e, b2Vec2 point, b2Vec2 normal);
+    
+    // Handle an enemy landing an attack on the player (enter mini-game?)
+    void onEnemyAttack(Enemy*);
+    
+    // Handle time running out (lose!)
+    void onTimeExpired();
+    
+    // Handle the level being beaten (win!)
+    void onExitReached();
 
     //pathfinding var and methods
     //pathFinder:
