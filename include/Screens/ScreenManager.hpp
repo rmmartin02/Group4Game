@@ -9,6 +9,8 @@
 #include "Screens/MiniGameScreen.hpp"
 #include "Screens/TimeoutScreen.hpp"
 #include "Screens/InfoScreen.hpp"
+#include "Screens/TransitScreen.hpp"
+#include "Screens/WinScreen.hpp"
 
 class ScreenManager{
 
@@ -38,6 +40,8 @@ private:
     TimeoutScreen *timeout_screen;
     MiniGameScreen *minigame_screen;
     InfoScreen *info_screen;
+    WinScreen *win_screen;
+    TransitScreen *transit_screen;
     Logic* logic_;
     sf::RenderWindow* window;
 };

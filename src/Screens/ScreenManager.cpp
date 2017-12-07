@@ -10,7 +10,9 @@ ScreenManager::ScreenManager(Logic *logic){
     minigame_screen = new MiniGameScreen();
 	minigame_screen->setShuffleLength(40);
     info_screen = new InfoScreen();
-	current_screen = menu_screen;
+    transit_screen = new TransitScreen();
+    win_screen = new WinScreen();
+	current_screen = win_screen;
 }
 
 void ScreenManager::render(sf::RenderWindow *window){
