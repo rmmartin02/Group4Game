@@ -241,12 +241,6 @@ void GameScreen::renderEntity(sf::RenderWindow *window, Entity* entity) {
         if (entity->getTypeId() == Entity::CHARACTER_ID) {
             char_walk_->adjustSprite(sprite, entity);
         }
-        if (entity->getTypeId() == Entity::ENEMY1_ID) {
-            enemy1_walk_->adjustSprite(sprite, entity);
-        }
-        if (entity->getTypeId() == Entity::ENEMY2_ID) {
-            enemy2_walk_->adjustSprite(sprite, entity);
-        }
     }
     sprite.setColor(sf::Color::White);
     // perform any needed transformations to the entity's sprite
