@@ -28,7 +28,7 @@ void Game::initialize() {
     logic->load(level_manager_.getCurrentLevelName(),
                 level_manager_.getCurrentTileFilename(),
                 level_manager_.getCurrentEntityFilename(),
-                0.2 * 60);
+                10 * 60);
     screenManager->loadTextures();
 }
 
