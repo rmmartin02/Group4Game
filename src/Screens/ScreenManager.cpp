@@ -7,7 +7,7 @@ ScreenManager::ScreenManager(Logic *logic){
 	menu_screen = new MenuScreen();
 	controls_screen = new ControlsScreen();
     timeout_screen = new TimeoutScreen();
-    minigame_screen = new MiniGameScreen();
+    minigame_screen = new MiniGameScreen(logic);
 	minigame_screen->setShuffleLength(40);
     info_screen = new InfoScreen();
     transit_screen = new TransitScreen();
