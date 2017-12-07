@@ -102,7 +102,8 @@ void ScreenManager::switchToTimeout(sf::RenderWindow* window){
 
 void ScreenManager::switchToGameScreen(){
     minigame_screen->gameWon = false;
-    minigame_screen->shufflePuzzle(minigame_screen->shuffledPuzzle,10);
+    minigame_screen->spriteBoardCreated = false;
+    minigame_screen->shuffled = false;
     logic_->setPlayState(Logic::PLAYING);
     current_screen=game_screen;
 }
