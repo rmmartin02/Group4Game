@@ -64,10 +64,6 @@ void InfoScreen::render(sf::RenderWindow *window){
 
 }
 void InfoScreen::interpretInput(std::vector<sf::Event>& events){
-    for (auto event : events) {
-
-    }
-
 
 }
 
