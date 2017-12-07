@@ -18,7 +18,8 @@ void Game::initialize() {
     // if it can fail, or takes a long time, it shouldn't be in a constructor
     
     level_manager_.addLevel("Level 1", "../resource/maps/Map1.csv", "../resource/EntityLevel1.txt");
-    level_manager_.addLevel("Level 2", "../resource/maps/Map2.csv", "../resource/TODO.txt");
+    level_manager_.addLevel("Level 2", "../resource/maps/Map2.csv", "../resource/EntityLevel2.txt");
+    level_manager_.addLevel("Level 3", "../resource/maps/Map3.csv", "../resource/EntityLevel3.txt");
 
     //logic->load("Level 1", "../resource/maps/Map1.csv", "../resource/EntityLevel1.txt", 10 * 60);
     
@@ -58,7 +59,7 @@ void Game::Loop() {
             screenManager->interpretInput(events);
             
             if (screenManager->isOnGameScreen()){
-                //std::cout << "Logic update " << std::endl;
+                std::cout << "Logic update " << std::endl;
                 logic->update(deltaTime);
                 switch( logic->getPlayState() ) {
                     case Logic::PlayState::LOST:

@@ -6,7 +6,7 @@
 
 #include "VecUtil.hpp"
 
-const float Character::MAX_SPEED = 6.0f;
+const float Character::MAX_SPEED = 2.0f;
 const float Character::ACCELERATION = 0.4f;
 const float Character::COLLISION_SIZE = 16.0f;
 
