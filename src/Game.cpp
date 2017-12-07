@@ -9,7 +9,6 @@ Game::Game(){
     window = new sf::RenderWindow(sf::VideoMode(SCREEN_WIDTH,SCREEN_HEIGHT,32), "Agent P: Infiltration");
     logic = new Logic();
     screenManager = new ScreenManager(logic);
-    miniGameSong.openFromFile("../resource/minigamesong.wav");
 }
 
 Game::~Game()
@@ -18,6 +17,8 @@ Game::~Game()
 
 void Game::initialize() {
     // if it can fail, or takes a long time, it shouldn't be in a constructor
+    
+    miniGameSong.openFromFile("../resource/minigamesong.wav");
     
     level_manager_.addLevel("Level 1", "../resource/maps/Map1.csv", "../resource/EntityLevel1.txt");
     level_manager_.addLevel("Level 2", "../resource/maps/Map2.csv", "../resource/EntityLevel2.txt");
@@ -98,11 +99,11 @@ void Game::Loop() {
                         screenManager->switchToTimeout(window);
                         break;
                     case Logic::PlayState::WON:
-                        std::cout << "Game.cpp: detected game logic WON state" << std::endl;
+                        //std::cout << "Game.cpp: detected game logic WON state" << std::endl;
                         // switch to intermediate / loading screen
                         
                         screenManager->switchToTransit(window);
-                        std::cout << "Game.cpp: switched to timeout?" << std::endl;
+                        //std::cout << "Game.cpp: switched to transition" << std::endl;
                         
                         // if we have another level
                         if (level_manager_.nextLevel()) {
@@ -111,7 +112,7 @@ void Game::Loop() {
                                         level_manager_.getCurrentTileFilename(),
                                         level_manager_.getCurrentEntityFilename(),
                                         logic->getTimeLeft());
-                            std::cout << "Game.cpp: next level loaded." << std::endl;
+                            //std::cout << "Game.cpp: next level loaded." << std::endl;
                         }
                         else {
                             if(screenManager->isMinigameFinal()==false){
