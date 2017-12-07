@@ -9,7 +9,8 @@ ScreenManager::ScreenManager(Logic *logic){
     timeout_screen = new TimeoutScreen();
     info_screen = new InfoScreen();
     transit_screen = new TransitScreen();
-	current_screen = transit_screen;
+    win_screen = new WinScreen();
+	current_screen = win_screen;
 }
 
 void ScreenManager::render(sf::RenderWindow *window){

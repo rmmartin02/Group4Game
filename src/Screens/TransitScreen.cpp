@@ -20,7 +20,7 @@ TransitScreen::TransitScreen(){
     message.setPosition(sf::Vector2f(SCREEN_WIDTH/2-message.getLocalBounds().width/2,200));
 
     enter.setFont(textFont);
-    enter.setString("Press Enter to play the next level");
+    enter.setString("Press Space to play the next level");
     enter.setCharacterSize(30);
     enter.setFillColor(sf::Color::White);
     enter.setPosition(sf::Vector2f(SCREEN_WIDTH/2-enter.getLocalBounds().width/2,200+message.getLocalBounds().height+30));
