@@ -32,8 +32,8 @@ InfoScreen::InfoScreen(){
     story.setPosition(20,20);
 
     rules.setString("As Agent P, you have 10 minutes to disable the missile. You should avoid\n"
-                    "being detected by the lasers and aliens in the spacecraft.\n"
-                    "Getting detected by the laser would get aliens alerted. When an alien\n"
+                    "being detected by aliens in the spacecraft.\n"
+                    "Getting detected by the aliens would get aliens alerted. When an alien\n"
                     "catches you, you could hack them. Hacking is a process of solving a\n"
                     "sliding puzzle on the screen.");
     rules.setCharacterSize(25);
