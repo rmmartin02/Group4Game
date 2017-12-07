@@ -28,7 +28,7 @@ void Game::initialize() {
     logic->load(level_manager_.getCurrentLevelName(),
                 level_manager_.getCurrentTileFilename(),
                 level_manager_.getCurrentEntityFilename(),
-                10 * 60);
+                0.2 * 60);
     screenManager->loadTextures();
 }
 
@@ -72,9 +72,14 @@ void Game::Loop() {
 
                 }
 
-                else if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+                else if (sf::Mouse::isButtonPressed(sf::Mouse::Left)){
                     screenManager->passInputToMinigame(sf::Vector2f(sf::Mouse::getPosition(*window)), window);
-                    logic->update(deltaTime);
+                }
+                logic->update(deltaTime);
+                if(logic->getTimeLeft()<=0){
+                    screenManager->switchToTimeout(window);
+                }
+
             }
             else{
                 // Pass events to screen manager
@@ -95,7 +100,7 @@ void Game::Loop() {
                     case Logic::PlayState::WON:
                         std::cout << "Game.cpp: detected game logic WON state" << std::endl;
                         // switch to intermediate / loading screen
-                        // TODO; make this a win instead of a timeout
+                        
                         screenManager->switchToTransit(window);
                         std::cout << "Game.cpp: switched to timeout?" << std::endl;
                         
