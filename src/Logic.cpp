@@ -394,7 +394,7 @@ bool Logic::coordsInBounds(std::pair<int,int> coords) {
 }
 
 bool Logic::tileIsWall(int tile) {
-    return tile != 4 && tile != 5 && tile != 14 && !tileIsExit(tile);
+    return tile != 4 && tile != 5 && !tileIsExit(tile);
 }
 
 bool Logic::tileIsExit(int tile) {
