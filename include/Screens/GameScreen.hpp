@@ -33,6 +33,8 @@ public:
     //loads current key bindings
     bool loadKeys();
 
+    void renderTimeLeft(sf::RenderWindow *window);
+
 private:
     // Name in texture manager for small blank texture
     static const std::string BLANK_TEX_NAME;
@@ -90,7 +92,7 @@ private:
     void renderEntities(sf::RenderWindow *window);
     void renderParticles(sf::RenderWindow *window);
     void renderEntity(sf::RenderWindow *window, Entity* entity);
-    void renderTimeLeft(sf::RenderWindow *window);
+
 
 };
 

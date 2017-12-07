@@ -6,6 +6,7 @@
 #define CSCI437_MINIGAMESCREEN_HPP
 #include "Global.hpp"
 #include "Screens/Screen.hpp"
+#include "Screens/GameScreen.hpp"
 #include "Logic.hpp"
 #include <vector>
 #include "MiniGame/MiniGameBackend.hpp"
@@ -15,7 +16,9 @@ class MiniGameScreen : public Screen {
 public:
 
 
-    MiniGameScreen();
+    MiniGameScreen(Logic *logic);
+
+    Logic* logic_;
 
     bool shuffled = false;
 
@@ -76,11 +79,18 @@ public:
 
     bool isFinal=false;
 
+    void renderTimeLeft(sf::RenderWindow *window);
+
+    sf::Font text_font;
+    sf::Text time_left_text;
+    sf::RectangleShape time_left_background;
+    float time_left_width;
+
 
 
 private:
 
-    Logic* logic_;
+    //Logic* logic_;
 
 
 
