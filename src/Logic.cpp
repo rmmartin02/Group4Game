@@ -503,6 +503,8 @@ std::deque<sf::Vector2f> Logic::pathFinder(sf::Vector2f startPos, sf::Vector2f e
     if(startRow==endRow && startCol==endCol){
         path_.push_front(std::make_pair(startRow,startCol));
         enemyPath_.push_front(sf::Vector2f(startRow*32+16,startCol*32+16));
+        path_.push_front(std::make_pair(startRow,startCol));
+        enemyPath_.push_front(sf::Vector2f(startRow*32+16,startCol*32+16));
         return enemyPath_;
     }
 
