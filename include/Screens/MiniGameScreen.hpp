@@ -70,6 +70,12 @@ public:
 
     void setShuffleLength(int len);
 
+    void setMinigameFinal();
+
+    bool getMinigameFinal();
+
+    bool isFinal=false;
+
 
 
 private:

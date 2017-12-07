@@ -583,3 +583,11 @@ void MiniGameScreen::interpretInput(std::vector<sf::Event>& events){
 void MiniGameScreen::setShuffleLength(int len){
   shuffleLengthVar=len;
 }
+
+void MiniGameScreen::setMinigameFinal(){
+    isFinal=true;
+}
+
+bool MiniGameScreen::getMinigameFinal(){
+        return isFinal;
+}
