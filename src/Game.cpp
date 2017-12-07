@@ -5,9 +5,11 @@
 #include "Game.hpp"
 
 Game::Game(){
+    srand(time(NULL));
     window = new sf::RenderWindow(sf::VideoMode(SCREEN_WIDTH,SCREEN_HEIGHT,32), "Agent P: Infiltration");
     logic = new Logic();
     screenManager = new ScreenManager(logic);
+    miniGameSong.openFromFile("../resource/minigamesong.wav");
 }
 
 Game::~Game()
@@ -34,6 +36,11 @@ void Game::Loop() {
     sf::Clock clock;
     //window->clear();
     while (window->isOpen()) {
+        if (!miniGameSongStarted) {
+            miniGameSong.setLoop(true);
+            miniGameSong.play();
+            miniGameSongStarted = true;
+        }
  
         float deltaTime = clock.getElapsedTime().asSeconds();
         if (deltaTime >= 1.0f / 60.0f) {
@@ -54,14 +61,27 @@ void Game::Loop() {
                 
                 events.push_back(event);
             }
-            
-            // Pass events to screen manager
-            screenManager->interpretInput(events);
+            if (screenManager->isOnMinigameScreen()){
+                if(screenManager->isMinigameOver()){
+                    screenManager->switchToGameScreen();
+                }
+                else if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+                    screenManager->passInputToMinigame(sf::Vector2f(sf::Mouse::getPosition(*window)), window);
+                    logic->update(deltaTime);
+            }
+            else{
+                // Pass events to screen manager
+                screenManager->interpretInput(events);
+            }
+            screenManager->render(window);
             
             if (screenManager->isOnGameScreen()){
-                std::cout << "Logic update " << std::endl;
+                //std::cout << "Logic update " << std::endl;
                 logic->update(deltaTime);
                 switch( logic->getPlayState() ) {
+                    case Logic::PlayState::MINIGAME:
+                        screenManager->switchToMinigame(window);
+                        break;
                     case Logic::PlayState::LOST:
                         screenManager->switchToTimeout(window);
                         break;
@@ -90,8 +110,7 @@ void Game::Loop() {
                         break;
                 }
             }
-            
-            screenManager->render(window);
+
             //window->display();
 
             clock.restart();

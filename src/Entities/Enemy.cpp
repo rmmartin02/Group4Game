@@ -25,6 +25,7 @@ Enemy::Enemy(){
     alert_time_ = 10;
     alert_time_left_ = 10;
     alert_radius_ = 5*32;
+    attack_radius_=44;
 
     cur_patrol_node = 1;
     cur_patrol_path = 0;
@@ -55,6 +56,7 @@ Enemy::Enemy(bool isLevel2){
         alert_time_ = 10;
         alert_time_left_ = 10;
         alert_radius_ = 5*32;
+        attack_radius_=44;
     }
     else{
         attack_radius_ = 1*32;
@@ -69,7 +71,8 @@ Enemy::Enemy(bool isLevel2){
         sight_angle_ = 15;
         alert_time_ = 10;
         alert_time_left_ = 10;
-        alert_radius_ = 5*32;  
+        alert_radius_ = 5*32;
+        attack_radius_=44;
     }
     cur_patrol_node = 1;
     cur_patrol_path = 0;
@@ -110,6 +113,7 @@ void Enemy::setPathBackTrue(){
 }
 
 float Enemy::getAttackRadius(){
+    //std::cout<<"Enemy::attack radius "<<attack_radius_<<"\n";
     return attack_radius_;
 }
 
@@ -173,13 +177,13 @@ void Enemy::unAlert(){
 
 void Enemy::signal(std::map<std::string, std::unique_ptr<Entity>> &entities){
     //alert enemies within radius
-    std::cout << "Signal\n";
+    //std::cout << "Signal\n";
     for ( auto& pair : entities ) {
         Entity& e = *(pair.second.get());
         if (Enemy* enemy = dynamic_cast<Enemy*>(&e)){
             float dist = sqrt(pow(getPos().x-enemy->getPos().x,2)+pow(getPos().y-enemy->getPos().y,2));
             if (dist<alert_radius_){
-                std::cout << "Signal Alert\n";
+                //std::cout << "Signal Alert\n";
                 enemy->alert();
             }
         }

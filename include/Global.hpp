@@ -15,6 +15,7 @@
 #include <cmath>
 #include <vector>
 #include <time.h>
+#include <ctime>
 
 
 // Constants

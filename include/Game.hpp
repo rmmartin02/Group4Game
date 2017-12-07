@@ -27,6 +27,8 @@ private:
     ScreenManager *screenManager;
     
     LevelManager level_manager_;
+    bool miniGameSongStarted=false;
+    sf::Music miniGameSong;
 };
 
 #endif // GAME_HPP

@@ -7,6 +7,8 @@ ScreenManager::ScreenManager(Logic *logic){
 	menu_screen = new MenuScreen();
 	controls_screen = new ControlsScreen();
     timeout_screen = new TimeoutScreen();
+    minigame_screen = new MiniGameScreen();
+	minigame_screen->setShuffleLength(40);
     info_screen = new InfoScreen();
     transit_screen = new TransitScreen();
     win_screen = new WinScreen();
@@ -25,7 +27,7 @@ void ScreenManager::interpretInput(std::vector<sf::Event>& events){
         if(current_screen == menu_screen){
             if (event.type == sf::Event::KeyPressed){
                 if (event.key.code == sf::Keyboard::Return){
-                    std::cout << "ScreenManager: menu screen has highlighted " 
+                    std::cout << "ScreenManager: menu screen has highlighted "
                               << menu_screen->getHighlighted() << std::endl;
                     if(menu_screen->getHighlighted()==0){
                         current_screen = game_screen;
@@ -36,6 +38,10 @@ void ScreenManager::interpretInput(std::vector<sf::Event>& events){
                         current_screen = info_screen;
                     }
                     eventAccepted = true;
+                }
+                if(event.key.code==sf::Keyboard::M){
+                    current_screen = minigame_screen;
+
                 }
             }
         }
@@ -88,10 +94,37 @@ bool ScreenManager::isOnGameScreen(){
 }
 
 void ScreenManager::switchToTimeout(sf::RenderWindow* window){
-   // view.setCenter(sf::Vector2f(400,300));
     sf::View camera = window->getView();
+
     camera.setCenter(sf::Vector2f(400,300));
     window->setView(camera);
     current_screen=timeout_screen;
+
 }
 
+void ScreenManager::switchToGameScreen(){
+    minigame_screen->gameWon = false;
+    minigame_screen->spriteBoardCreated = false;
+    minigame_screen->shuffled = false;
+    logic_->setPlayState(Logic::PLAYING);
+    current_screen=game_screen;
+}
+
+void ScreenManager::switchToMinigame(sf::RenderWindow* window){
+    sf::View camera = window->getView();
+    camera.setCenter(sf::Vector2f(400,300));
+    window->setView(camera);
+    current_screen=minigame_screen;
+}
+
+bool ScreenManager::isOnMinigameScreen(){
+    return current_screen==minigame_screen;
+}
+
+bool ScreenManager::isMinigameOver(){
+    return minigame_screen->gameWon;
+}
+
+void ScreenManager::passInputToMinigame(sf::Vector2<float> coordinates, sf::RenderWindow* window){
+    minigame_screen->moveOnClick(minigame_screen->shuffledPuzzle, coordinates, window);
+}

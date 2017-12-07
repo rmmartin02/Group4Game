@@ -13,7 +13,13 @@ Logic::PlayState Logic::getPlayState() {
     return state_;
 }
 
+void Logic::setPlayState(Logic::PlayState state){
+    state_ = state;
+}
+
 void Logic::update(float delta) {
+    // adjust the timer
+    time_left_ -= delta;
     // check for timeout
     if (time_left_ < 0) {
         onTimeExpired();
@@ -22,8 +28,6 @@ void Logic::update(float delta) {
     
     // should this check be here?
     if (state_ == PlayState::PLAYING) {
-        // adjust the timer
-        time_left_ -= delta;
     
         // update every entity.
         for ( auto& pair : getEntities() ) {
@@ -45,7 +49,7 @@ void Logic::update(float delta) {
             if (Enemy* enemy = dynamic_cast<Enemy*>(&e)){
                 sf::Vector2f hit;
                 sf::Vector2f lastKnownCharPos;
-                if(enemy->canSeePlayer(getCharacter().getPos()) && !sightObstructed(enemy->getPos(), getCharacter().getPos(), hit)){
+                if(!enemy->isHacked() && enemy->canSeePlayer(getCharacter().getPos()) && !sightObstructed(enemy->getPos(), getCharacter().getPos(), hit)){
                     //std::cout<<"Logic: Charcter in line of sight\n";
                     //chase player, send out signal
                     enemy->alert();
@@ -55,15 +59,17 @@ void Logic::update(float delta) {
                     //if close enough attack
                     float dist = vecutil::distance(enemy->getPos(),getCharacter().getPos());
                     if(dist<enemy->getAttackRadius()){
-                        //std::cout<<"Logic: Charcter attacked\n";
+                        std::cout<<"Logic: Charcter attacked\n";
+                        state_ = PlayState::MINIGAME;
                         enemy->attack();
+                        enemy->setVel(sf::Vector2f(0,0));
                         // I don't see this getting reached yet.
                         //onEnemyAttack(enemy);
                     }
                 }
                 else{
                     //cant see player but is alerted, so countdown
-                    if(enemy->isAlerted()){
+                    if(enemy->isAlerted() && !enemy->isHacked()){
                         if(!enemy->hasChasePath() || vecutil::distance(getCharacter().getPos(),enemy->getChaseEndPos())>32){
                             enemy->setChasePath(pathFinder(enemy->getPos(),getCharacter().getPos()));
                         }
@@ -71,12 +77,12 @@ void Logic::update(float delta) {
                         enemy->timer(delta);
                     }
                 }
-                if(enemy->isAlerted()){
+                if(enemy->isAlerted() && !enemy->isHacked()){
                     //std::cout << "Enemy chasing\n";
                     enemy->followChasePath();
                     //std::cout << "Followed path";
                 }
-                else{
+                else if (!enemy->isHacked()){
                     //return to patrol route/go to next patrol point
                     //std::cout<<"Logic: Return to patrol\n";
                     if(enemy->isOffPatrol()){
@@ -495,6 +501,9 @@ std::deque<sf::Vector2f> Logic::pathFinder(sf::Vector2f startPos, sf::Vector2f e
     endCol=(endPos.x-1)/32;
 
     if(startRow==endRow && startCol==endCol){
+        path_.push_front(std::make_pair(startRow,startCol));
+        enemyPath_.push_front(sf::Vector2f(startRow*32+16,startCol*32+16));
+
         path_.push_front(std::make_pair(startRow,startCol));
         enemyPath_.push_front(sf::Vector2f(startRow*32+16,startCol*32+16));
 

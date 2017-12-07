@@ -47,6 +47,8 @@ public:
     
     // Return the current state of play. See PlayState enum above.
     PlayState getPlayState();
+
+    void setPlayState(PlayState);
     
     // Loads a level from a file, and sets the time limit to complete it
     void load(std::string level_name, std::string mapfilename, std::string enemyfilename, float time);
