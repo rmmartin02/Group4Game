@@ -20,7 +20,6 @@ void Logic::setPlayState(Logic::PlayState state){
 void Logic::update(float delta) {
     // adjust the timer
     time_left_ -= delta;
-
     // check for timeout
     if (time_left_ < 0) {
         onTimeExpired();
@@ -48,61 +47,58 @@ void Logic::update(float delta) {
 
             //check if character is in enemies line of sight
             if (Enemy* enemy = dynamic_cast<Enemy*>(&e)){
-                float dist = vecutil::distance(enemy->getPos(),getCharacter().getPos());
-                if(!enemy->isHacked() && dist<enemy->getAttackRadius()){
-                    std::cout<<"Logic: Charcter attacked\n";
-                    state_ = PlayState::MINIGAME;
-                    enemy->attack();
-                    enemy->setVel(sf::Vector2f(0,0));
-                    // I don't see this getting reached yet.
-                    //onEnemyAttack(enemy);
+                sf::Vector2f hit;
+                sf::Vector2f lastKnownCharPos;
+                if(!enemy->isHacked() && enemy->canSeePlayer(getCharacter().getPos()) && !sightObstructed(enemy->getPos(), getCharacter().getPos(), hit)){
+                    //std::cout<<"Logic: Charcter in line of sight\n";
+                    //chase player, send out signal
+                    enemy->alert();
+                    enemy->signal(getEntities());
+                    enemy->setChasePath(pathFinder(enemy->getPos(),getCharacter().getPos()));
+                    //lastKnownCharPos = getCharacter().getPos();
+                    //if close enough attack
+                    float dist = vecutil::distance(enemy->getPos(),getCharacter().getPos());
+                    if(dist<enemy->getAttackRadius()){
+                        std::cout<<"Logic: Charcter attacked\n";
+                        state_ = PlayState::MINIGAME;
+                        enemy->attack();
+                        enemy->setVel(sf::Vector2f(0,0));
+                        // I don't see this getting reached yet.
+                        //onEnemyAttack(enemy);
+                    }
                 }
-                if(!enemy->isHacked()){
-                    sf::Vector2f hit;
-                    sf::Vector2f lastKnownCharPos;
-                    if(enemy->canSeePlayer(getCharacter().getPos()) && !sightObstructed(enemy->getPos(), getCharacter().getPos(), hit)){
-                        //std::cout<<"Logic: Charcter in line of sight\n";
-                        //chase player, send out signal
-                        enemy->alert();
-                        enemy->signal(getEntities());
-                        enemy->setChasePath(pathFinder(enemy->getPos(),getCharacter().getPos()));
-                        //lastKnownCharPos = getCharacter().getPos();
-                        //if close enough attack
-                        
-                    }
-                    else{
-                        //cant see player but is alerted, so countdown
-                        if(enemy->isAlerted()){
-                            if(!enemy->hasChasePath() || vecutil::distance(getCharacter().getPos(),enemy->getChaseEndPos())>32){
-                                enemy->setChasePath(pathFinder(enemy->getPos(),getCharacter().getPos()));
-                            }
-                            //std::cout<<"Logic: Enemy Timer\n";
-                            enemy->timer(delta);
+                else{
+                    //cant see player but is alerted, so countdown
+                    if(enemy->isAlerted() && !enemy->isHacked()){
+                        if(!enemy->hasChasePath() || vecutil::distance(getCharacter().getPos(),enemy->getChaseEndPos())>32){
+                            enemy->setChasePath(pathFinder(enemy->getPos(),getCharacter().getPos()));
                         }
+                        //std::cout<<"Logic: Enemy Timer\n";
+                        enemy->timer(delta);
                     }
-                    if(enemy->isAlerted()){
-                        //std::cout << "Enemy chasing\n";
-                        enemy->followChasePath();
-                        //std::cout << "Followed path";
-                    }
-                    else{
-                        //return to patrol route/go to next patrol point
-                        //std::cout<<"Logic: Return to patrol\n";
-                        if(enemy->isOffPatrol()){
-                            if(!enemy->hasPathBack()){
-                                std::cout << "set return path\n";
-                                enemy->setReturnPath(pathFinder(enemy->getPos(),enemy->getCurrentPatrolNode()));
-                                enemy->setPathBackTrue();
-                            }
-                            else{
-                                //std::cout << "follow return path\n";
-                                enemy->followReturnPath();
-                            }
+                }
+                if(enemy->isAlerted() && !enemy->isHacked()){
+                    //std::cout << "Enemy chasing\n";
+                    enemy->followChasePath();
+                    //std::cout << "Followed path";
+                }
+                else if (!enemy->isHacked()){
+                    //return to patrol route/go to next patrol point
+                    //std::cout<<"Logic: Return to patrol\n";
+                    if(enemy->isOffPatrol()){
+                        if(!enemy->hasPathBack()){
+                            std::cout << "set return path\n";
+                            enemy->setReturnPath(pathFinder(enemy->getPos(),enemy->getCurrentPatrolNode()));
+                            enemy->setPathBackTrue();
                         }
                         else{
-                            //std::cout << "follow patrol path\n";
-                            enemy->followPatrolPath();
+                            //std::cout << "follow return path\n";
+                            enemy->followReturnPath();
                         }
+                    }
+                    else{
+                        //std::cout << "follow patrol path\n";
+                        enemy->followPatrolPath();
                     }
                 }
             }
