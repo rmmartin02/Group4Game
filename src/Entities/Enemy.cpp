@@ -191,11 +191,10 @@ void Enemy::signal(std::map<std::string, std::unique_ptr<Entity>> &entities){
 }
 
 void Enemy::attack(){
-//switch to minigame screen
-    std::cout << "attack\n";
+    //std::cout << "attack\n";
+    // after this is reached, if the logic continues updating, the minigame was beaten;
+    // this enemy has been hacked
     hacked_ = true;
-//if player fails minigame, damage?
-//else player wins minigame, enemy hacked
 }
 
 void Enemy::timer(float deltaTime){
@@ -203,18 +202,20 @@ void Enemy::timer(float deltaTime){
     //std::cout << alert_time_left_ << "\n";
     if(alert_time_left_<=0){
         unAlert();
-        std::cout << "Unalert\n";
+        //std::cout << "Unalert\n";
     }
 }
 
 void Enemy::setPatrolPath(std::vector<std::deque<sf::Vector2f>> paths){
     patrol_paths_.clear();
     patrol_paths_.shrink_to_fit();
+    /*
     for(int i = 0; i<paths.size(); i++){
         for(int j = 0; j<paths.at(i).size();j++){ 
             std::cout << paths.at(i).at(j).x << " " << paths.at(i).at(j).y << "\n";
         }
     }
+    */
     patrol_paths_=paths;
     paths.clear();
     paths.shrink_to_fit();

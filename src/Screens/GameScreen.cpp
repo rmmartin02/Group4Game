@@ -2,6 +2,8 @@
 
 #include "VecUtil.hpp"
 
+const std::string GameScreen::TIMER_FONT_FILENAME = "../resource/fonts/digital-7-italic.ttf";
+
 const std::string GameScreen::BLANK_TEX_NAME = "blank";
 
 const std::string GameScreen::TILESET_FILENAME = "../resource/maps/map_tiles.png";
@@ -27,7 +29,7 @@ GameScreen::GameScreen(Logic* logic, TextureManager* tex_manager) {
     keys_[3] = sf::Keyboard::Right;
     loadKeys();
 
-    if (!text_font.loadFromFile("../resource/fonts/digital-7-italic.ttf"))
+    if (!text_font.loadFromFile(TIMER_FONT_FILENAME))
     {
         // error...
     }
@@ -79,8 +81,8 @@ bool GameScreen::loadTextures() {
     // load tileset texture coordinates
     for (int i = 0; i<4;i++){
         for (int j = 0; j<4;j++){
-            std::cout << "GameScreen.cpp: loading tile texture coordinates: "
-                      << i*4+j << " " << j << " " << i << "\n";
+            //std::cout << "GameScreen.cpp: loading tile texture coordinates: "
+            //          << i*4+j << " " << j << " " << i << "\n";
             texture_coords_[i*4+j] = std::make_pair(Logic::TILE_SIZE*j, Logic::TILE_SIZE*i);
         }
     }
@@ -313,7 +315,8 @@ void GameScreen::interpretInput(std::vector<sf::Event>& events) {
         input.x += 1;
     }
 
-    // for sight obstruction testing, check mouse position
+    // for debug sight obstruction testing, check mouse position
+    /*
     for (auto event : events) {
         if (event.type == sf::Event::MouseButtonPressed) {
             sf::Vector2f mousePos(event.mouseButton.x, event.mouseButton.y);
@@ -333,13 +336,13 @@ void GameScreen::interpretInput(std::vector<sf::Event>& events) {
                 std::cout << "GameScreen.cpp: sight unobstructed" << std::endl;
             }
         }
-    }
+    }*/
     
     logic_->registerMoveInput(input);
 }
 
 bool GameScreen::loadKeys(){
-    std::cout << "GameScreen: loading keys\n";
+    //std::cout << "GameScreen: loading keys\n";
     std::string line;
     std::ifstream myfile("../resource/keyBindings.txt");
     if ( !myfile.is_open() ) {

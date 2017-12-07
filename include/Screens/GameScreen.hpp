@@ -36,6 +36,9 @@ public:
     void renderTimeLeft(sf::RenderWindow *window);
 
 private:
+    // Filename for font used to display timer
+    static const std::string TIMER_FONT_FILENAME;
+    
     // Name in texture manager for small blank texture
     static const std::string BLANK_TEX_NAME;
     
