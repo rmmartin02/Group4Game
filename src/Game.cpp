@@ -63,8 +63,15 @@ void Game::Loop() {
             }
             if (screenManager->isOnMinigameScreen()){
                 if(screenManager->isMinigameOver()){
-                    screenManager->switchToGameScreen();
+                    if(!screenManager->isMinigameFinal()){
+                        screenManager->switchToGameScreen();
+
+                    }else{
+                        screenManager->switchToWin(window);
+                    }
+
                 }
+
                 else if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
                     screenManager->passInputToMinigame(sf::Vector2f(sf::Mouse::getPosition(*window)), window);
                     logic->update(deltaTime);
@@ -89,7 +96,7 @@ void Game::Loop() {
                         std::cout << "Game.cpp: detected game logic WON state" << std::endl;
                         // switch to intermediate / loading screen
                         // TODO; make this a win instead of a timeout
-                        screenManager->switchToTimeout(window);
+                        screenManager->switchToTransit(window);
                         std::cout << "Game.cpp: switched to timeout?" << std::endl;
                         
                         // if we have another level
@@ -102,7 +109,15 @@ void Game::Loop() {
                             std::cout << "Game.cpp: next level loaded." << std::endl;
                         }
                         else {
-                            // TODO switch to the final hacking challenge, or an intermediate screen that introduces it
+                            if(screenManager->isMinigameFinal()==false){
+                                screenManager->setMinigameToFinal();
+                                screenManager->switchToFinalScreen(window);
+                                //screenManager->switchToMiniGame();
+
+                            }else{
+                                screenManager->switchToWin(window);
+                            }
+
                         }
                         
                         break;

@@ -34,7 +34,7 @@ void WinScreen::render(sf::RenderWindow *window){
     window->draw(bg);
 
     window->draw(message);
-    window->draw(enter);
+    //window->draw(enter);
     window->display();
 
 }

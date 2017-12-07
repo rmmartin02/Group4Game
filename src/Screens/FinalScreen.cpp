@@ -1,9 +1,11 @@
 //
-// Created by Ruoying Hao on 12/6/17.
+// Created by Ruoying Hao on 12/7/17.
 //
-#include "Screens/TransitScreen.hpp"
-TransitScreen::TransitScreen(){
-    if (!background.loadFromFile("../resource/background/transit_background.jpg"))
+
+#include "Screens/FinalScreen.hpp"
+
+FinalScreen::FinalScreen(){
+    if (!background.loadFromFile("../resource/background/final_background.jpg"))
     {
         // error...
     }
@@ -14,8 +16,8 @@ TransitScreen::TransitScreen(){
     }
     message.setFont(textFont);
 
-    message.setString("You have reached the exit!\n"
-                                  " But there's more to go");
+    message.setString("You have reached the missile!\n"
+                              " Now Hack the Missile!");
 
 
 
@@ -24,7 +26,7 @@ TransitScreen::TransitScreen(){
     message.setPosition(sf::Vector2f(SCREEN_WIDTH/2-message.getLocalBounds().width/2,200));
 
     enter.setFont(textFont);
-    enter.setString("Press Space to play the next level");
+    enter.setString("Press Space to hack");
     enter.setCharacterSize(30);
     enter.setFillColor(sf::Color::White);
     enter.setPosition(sf::Vector2f(SCREEN_WIDTH/2-enter.getLocalBounds().width/2,200+message.getLocalBounds().height+30));
@@ -33,7 +35,7 @@ TransitScreen::TransitScreen(){
 
 }
 
-void TransitScreen::render(sf::RenderWindow *window){
+void FinalScreen::render(sf::RenderWindow *window){
     window->clear();
     window->draw(bg);
 
@@ -42,6 +44,6 @@ void TransitScreen::render(sf::RenderWindow *window){
     window->display();
 
 }
-void TransitScreen::interpretInput(std::vector<sf::Event>& events){
+void FinalScreen::interpretInput(std::vector<sf::Event>& events){
 
 }

@@ -1,19 +1,18 @@
 //
-// Created by Ruoying Hao on 12/6/17.
+// Created by Ruoying Hao on 12/7/17.
 //
 
-#ifndef TRANSITSCREEN_HPP
-#define TRANSITSCREEN_HPP
-
+#ifndef FINALSCREEN_HPP
+#define FINALSCREEN_HPP
 #include "Global.hpp"
 #include "Screens/Screen.hpp"
 #include <sstream>
 #include <fstream>
 #include <string>
 
-class TransitScreen : public Screen {
+class FinalScreen : public Screen {
 public:
-    TransitScreen();
+    FinalScreen();
     void render(sf::RenderWindow *window) override;
     void interpretInput(std::vector<sf::Event>& events) override;
     bool finalState=false;
@@ -25,4 +24,4 @@ private:
     sf::Text enter;
 };
 
-#endif //TRANSITSCREEN_HPP
+#endif //FINALSCREEN_HPP
