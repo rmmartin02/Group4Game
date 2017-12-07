@@ -10,6 +10,9 @@ ScreenManager::ScreenManager(Logic *logic){
     minigame_screen = new MiniGameScreen();
 	minigame_screen->setShuffleLength(40);
     info_screen = new InfoScreen();
+    transit_screen = new TransitScreen();
+    win_screen = new WinScreen();
+    final_screen = new FinalScreen();
 	current_screen = menu_screen;
 }
 
@@ -68,10 +71,28 @@ void ScreenManager::interpretInput(std::vector<sf::Event>& events){
 
         }
         else if (current_screen == timeout_screen) {
+//            if (event.type == sf::Event::KeyPressed) {
+//                if (event.key.code == sf::Keyboard::Space) {
+//                    //std::cout << "ScreenManager: debug: tried to switch back to gamescreen" << std::endl;
+//                    current_screen = game_screen;
+//                }
+//                eventAccepted = true;
+//            }
+        }
+        else if(current_screen == transit_screen){
             if (event.type == sf::Event::KeyPressed) {
                 if (event.key.code == sf::Keyboard::Space) {
                     std::cout << "ScreenManager: debug: tried to switch back to gamescreen" << std::endl;
                     current_screen = game_screen;
+                }
+                eventAccepted = true;
+            }
+
+        }else if(current_screen==final_screen){
+            if (event.type == sf::Event::KeyPressed) {
+                if (event.key.code == sf::Keyboard::Space) {
+                    std::cout << "ScreenManager: debug: tried to switch to minigame screen" << std::endl;
+                    current_screen = minigame_screen;
                 }
                 eventAccepted = true;
             }
@@ -108,6 +129,41 @@ void ScreenManager::switchToGameScreen(){
     current_screen=game_screen;
 }
 
+void ScreenManager::switchToFinalScreen(sf::RenderWindow* window){
+    minigame_screen->gameWon = false;
+    minigame_screen->spriteBoardCreated = false;
+    minigame_screen->shuffled = false;
+    sf::View camera = window->getView();
+    camera.setCenter(sf::Vector2f(400,300));
+    window->setView(camera);
+    current_screen=final_screen;
+
+
+}
+
+void ScreenManager::switchToWin(sf::RenderWindow* window){
+    //minigame_screen->gameWon = false;
+    //minigame_screen->spriteBoardCreated = false;
+    //minigame_screen->shuffled = false;
+    sf::View camera = window->getView();
+    camera.setCenter(sf::Vector2f(400,300));
+    window->setView(camera);
+    //logic_->setPlayState(Logic::WIN);
+    current_screen=win_screen;
+}
+
+void ScreenManager::switchToTransit(sf::RenderWindow* window){
+    //minigame_screen->gameWon = false;
+    //minigame_screen->spriteBoardCreated = false;
+    //minigame_screen->shuffled = false;
+    sf::View camera = window->getView();
+    camera.setCenter(sf::Vector2f(400,300));
+    window->setView(camera);
+    //logic_->setPlayState(Logic::WIN);
+    current_screen=transit_screen;
+}
+
+
 void ScreenManager::switchToMinigame(sf::RenderWindow* window){
     sf::View camera = window->getView();
     camera.setCenter(sf::Vector2f(400,300));
@@ -125,4 +181,12 @@ bool ScreenManager::isMinigameOver(){
 
 void ScreenManager::passInputToMinigame(sf::Vector2<float> coordinates, sf::RenderWindow* window){
     minigame_screen->moveOnClick(minigame_screen->shuffledPuzzle, coordinates, window);
+}
+
+bool ScreenManager::isMinigameFinal(){
+    return minigame_screen->getMinigameFinal();
+}
+
+void ScreenManager::setMinigameToFinal(){
+    minigame_screen->setMinigameFinal();
 }
