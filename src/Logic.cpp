@@ -26,7 +26,6 @@ void Logic::update(float delta) {
         return;
     }
     
-    // should this check be here?
     if (state_ == PlayState::PLAYING) {
     
         // update every entity.
@@ -59,7 +58,7 @@ void Logic::update(float delta) {
                     //if close enough attack
                     float dist = vecutil::distance(enemy->getPos(),getCharacter().getPos());
                     if(dist<enemy->getAttackRadius()){
-                        std::cout<<"Logic: Charcter attacked\n";
+                        //std::cout<<"Logic: Charcter attacked\n";
                         state_ = PlayState::MINIGAME;
                         enemy->attack();
                         enemy->setVel(sf::Vector2f(0,0));
@@ -87,17 +86,17 @@ void Logic::update(float delta) {
                     //std::cout<<"Logic: Return to patrol\n";
                     if(enemy->isOffPatrol()){
                         if(!enemy->hasPathBack()){
-                            std::cout << "set return path\n";
+                            //std::cout << "Logic: set return path\n";
                             enemy->setReturnPath(pathFinder(enemy->getPos(),enemy->getCurrentPatrolNode()));
                             enemy->setPathBackTrue();
                         }
                         else{
-                            //std::cout << "follow return path\n";
+                            //std::cout << "Logic: follow return path\n";
                             enemy->followReturnPath();
                         }
                     }
                     else{
-                        //std::cout << "follow patrol path\n";
+                        //std::cout << "Logic: follow patrol path\n";
                         enemy->followPatrolPath();
                     }
                 }
@@ -105,28 +104,28 @@ void Logic::update(float delta) {
         }
     }
     else {
-        std::cout << "Logic.cpp: updated logic while not playing" << std::endl;
+        //std::cout << "Logic.cpp: updated logic while not playing" << std::endl;
     }
 }
 
 
 void Logic::onEnemyAttack(Enemy* enemy) {
-    std::cout << "Logic.cpp: Enemy attacked!" << std::endl;
+    //std::cout << "Logic.cpp: Enemy attacked!" << std::endl;
     state_ = PlayState::MINIGAME;
 }
 
 void Logic::onTimeExpired() {
-    std::cout << "Logic.cpp: Ran out of time!" << std::endl;
+    //std::cout << "Logic.cpp: Ran out of time!" << std::endl;
     state_ = PlayState::LOST;
 }
 
 void Logic::onExitReached() {
-    std::cout << "Logic.cpp: Reached the exit!" << std::endl;
+    //std::cout << "Logic.cpp: Reached the exit!" << std::endl;
     state_ = PlayState::WON;
 }
 
 void Logic::load(std::string level_name, std::string mapfilename, std::string enemyfilename, float time) {
-    std::cout << "Logic.cpp: Loading level: " << level_name << std::endl;
+    //std::cout << "Logic.cpp: Loading level: " << level_name << std::endl;
     level_name_             = level_name;
     level_tile_filename_    = mapfilename;
     level_entity_filename_  = enemyfilename;
@@ -140,9 +139,9 @@ void Logic::reload() {
     loadTiles(level_tile_filename_);
     loadEntities(level_entity_filename_);
     //pathFinder(sf::Vector2f(40,160),sf::Vector2f(200,160));//40 160 200 160
-    std::cout<<"character pos"<<getCharacter().getPos().x<<" "<<getCharacter().getPos().y<<"\n";
-    std::cout << "Logic.cpp: Map size: " << getMapSize().first 
-              << "," << getMapSize().second << std::endl;
+    //std::cout<<"character pos"<<getCharacter().getPos().x<<" "<<getCharacter().getPos().y<<"\n";
+    //std::cout << "Logic.cpp: Map size: " << getMapSize().first 
+    //          << "," << getMapSize().second << std::endl;
               
     // reset timer to the amount of time we had when we first loaded the level
     time_left_ = level_time_limit_;
@@ -171,7 +170,6 @@ int Logic::getTileAt(std::pair<int,int> coords) {
 }
 
 void Logic::addEntity(std::string id, Entity* e) {
-    std::cout << id;
     entities_[id] = std::unique_ptr<Entity>(e);
 }
 
@@ -322,7 +320,7 @@ void Logic::buildWallShapes() {
     wall_shapes_.clear();
     buildAxisWalls(true);
     buildAxisWalls(false);
-    std::cout << "Logic.cpp: Created " << wall_shapes_.size() << " Box2D shapes for the tiles." << std::endl;
+    //std::cout << "Logic.cpp: Created " << wall_shapes_.size() << " Box2D shapes for the tiles." << std::endl;
 }
 
 int Logic::buildAxisWalls(bool vertical) {
@@ -394,7 +392,7 @@ bool Logic::coordsInBounds(std::pair<int,int> coords) {
 }
 
 bool Logic::tileIsWall(int tile) {
-    return tile != 4 && tile != 5 && tile != 14 && !tileIsExit(tile);
+    return tile != 4 && tile != 5 && !tileIsExit(tile);
 }
 
 bool Logic::tileIsExit(int tile) {

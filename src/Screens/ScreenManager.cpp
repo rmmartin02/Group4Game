@@ -28,8 +28,8 @@ void ScreenManager::interpretInput(std::vector<sf::Event>& events){
         if(current_screen == menu_screen){
             if (event.type == sf::Event::KeyPressed){
                 if (event.key.code == sf::Keyboard::Return){
-                    std::cout << "ScreenManager: menu screen has highlighted "
-                              << menu_screen->getHighlighted() << std::endl;
+                    //std::cout << "ScreenManager: menu screen has highlighted "
+                      //        << menu_screen->getHighlighted() << std::endl;
                     if(menu_screen->getHighlighted()==0){
                         current_screen = game_screen;
                     }
@@ -82,7 +82,7 @@ void ScreenManager::interpretInput(std::vector<sf::Event>& events){
         else if(current_screen == transit_screen){
             if (event.type == sf::Event::KeyPressed) {
                 if (event.key.code == sf::Keyboard::Space) {
-                    std::cout << "ScreenManager: debug: tried to switch back to gamescreen" << std::endl;
+                    //std::cout << "ScreenManager: debug: tried to switch back to gamescreen" << std::endl;
                     current_screen = game_screen;
                 }
                 eventAccepted = true;
@@ -91,7 +91,7 @@ void ScreenManager::interpretInput(std::vector<sf::Event>& events){
         }else if(current_screen==final_screen){
             if (event.type == sf::Event::KeyPressed) {
                 if (event.key.code == sf::Keyboard::Space) {
-                    std::cout << "ScreenManager: debug: tried to switch to minigame screen" << std::endl;
+                    //std::cout << "ScreenManager: debug: tried to switch to minigame screen" << std::endl;
                     current_screen = minigame_screen;
                 }
                 eventAccepted = true;
